@@ -1,0 +1,54 @@
+name: ArtixPractice
+main: dev.artixdev.practice.BoltPlugin
+version: 22.9
+author: Faastyzin
+description: A feature-rich and well optimized Practice Core
+#api-version: "1.13"
+website: https://github.com/PotDevxs/ArtixPractice
+
+commands:
+  practice:
+    description: Main practice command
+    usage: /practice <subcommand>
+    permission: artixpractice.use
+    aliases: [artixpractice, practice]
+
+permissions:
+  artixpractice.use:
+    description: Allows use of basic practice commands
+    default: true
+  artixpractice.admin:
+    description: Allows use of admin commands
+    default: op
+  artixpractice.arena.create:
+    description: Allows creation of arenas
+    default: op
+  artixpractice.arena.delete:
+    description: Allows deletion of arenas
+    default: op
+  artixpractice.arena.edit:
+    description: Allows editing of arenas
+    default: op
+  artixpractice.bot.spawn:
+    description: Allows spawning of bots
+    default: op
+  artixpractice.bot.remove:
+    description: Allows removal of bots
+    default: op
+  artixpractice.reload:
+    description: Allows reloading the plugin
+    default: op
+
+softdepend:
+  - Citizens
+  - FastAsyncWorldEdit
+  - ProtocolLib
+  - Apollo-Bukkit
+  - ProtocolSupport
+  - ViaVersion
+  - ViaBackwards
+  - ViaRewind
+  - WorldEdit
+  - HolographicDisplays
+  - PlaceholderAPI
+  - KarhuLoader

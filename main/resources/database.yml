@@ -1,0 +1,77 @@
+#############################################################
+#                                                           #
+#  Articos Revamped | Versão exclusiva do Plugin conhecido  #
+#  Recuse imitações, Adquira o melhor de todos em nosso...  #
+#  Discord logo abaixo, está versão é exclusiva do Yulgar   #
+#                                                           #
+#       YULGAR | COMPETITIVE NETWORK [1.7x - 1.8.9]         #
+#      IP: yulgar.com.br | LOJA: loja.yulgar.com.br         #
+#                                                           #
+#        ArtixDevelopment • Melhor Loja de Plugins          #
+#                                                           #
+#    Discord: https://discord.gg/yqK5wyPPV6 | @Faastyzin    #
+#                                                           #
+#############################################################
+
+Faastyzin:
+  Link: "FaastyzinTheBestDEV"
+
+# Database Configuration
+# ======================
+
+# Database Type: MONGODB, MYSQL, SQLITE
+DATABASE_TYPE: "MONGODB"
+
+# MongoDB Configuration
+MONGODB:
+  URI_MODE: true
+  URL_ENCODE: false
+  
+  # Normal Connection Settings
+  NORMAL:
+    HOST: "127.0.0.1"
+    PORT: 27017
+    DATABASE: "bolt_practice"
+    AUTHENTICATION:
+      ENABLED: false
+      USERNAME: ""
+      PASSWORD: ""
+      AUTH_DATABASE: "admin"
+  
+  # URI Connection String
+  URI:
+    DATABASE: "bolt_practice"
+    CONNECTION_STRING: "mongodb://127.0.0.1:27017/bolt_practice"
+  
+  # Connection Pool Settings
+  CONNECTION_POOL:
+    MIN_SIZE: 2
+    MAX_SIZE: 10
+    MAX_WAIT_TIME: 30000 # milliseconds
+    MAX_CONNECTION_IDLE_TIME: 600000 # milliseconds
+
+# MySQL Configuration (Alternative)
+MYSQL:
+  HOST: "127.0.0.1"
+  PORT: 3306
+  DATABASE: "bolt_practice"
+  USERNAME: "root"
+  PASSWORD: ""
+  SSL_ENABLED: false
+  CONNECTION_TIMEOUT: 30000 # milliseconds
+  MAX_CONNECTIONS: 10
+
+# SQLite Configuration (Alternative)
+SQLITE:
+  FILE_PATH: "plugins/Bolt/database.db"
+  BACKUP_ENABLED: true
+  BACKUP_INTERVAL: 3600 # seconds
+
+# General Database Settings
+SETTINGS:
+  AUTO_RECONNECT: true
+  RECONNECT_DELAY: 5000 # milliseconds
+  MAX_RECONNECT_ATTEMPTS: 5
+  QUERY_TIMEOUT: 30000 # milliseconds
+  CACHE_ENABLED: true
+  CACHE_SIZE: 1000

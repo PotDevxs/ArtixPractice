@@ -1,0 +1,90 @@
+﻿package dev.artixdev.api.practice.spigot.knockback.impl.atom;
+
+import java.lang.reflect.Method;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
+import dev.artixdev.api.practice.spigot.event.IListener;
+import dev.artixdev.api.practice.spigot.event.impl.RefinePotionAddEvent;
+import dev.artixdev.api.practice.spigot.event.impl.RefinePotionRemoveEvent;
+import dev.artixdev.api.practice.spigot.event.impl.RefineRefinePotionExpireEvent;
+
+public class AtomSpigotListener implements Listener, IListener {
+   private Class<?> potionEffectExpireEventClass;
+   private Class<?> potionEffectAddEventClass;
+   private Class<?> potionEffectRemoveEventClass;
+   private boolean paperEventsAvailable = false;
+
+   public AtomSpigotListener() {
+      try {
+         potionEffectExpireEventClass = Class.forName("org.bukkit.event.entity.PotionEffectExpireEvent");
+         potionEffectAddEventClass = Class.forName("org.bukkit.event.entity.PotionEffectAddEvent");
+         potionEffectRemoveEventClass = Class.forName("org.bukkit.event.entity.PotionEffectRemoveEvent");
+         paperEventsAvailable = true;
+      } catch (ClassNotFoundException e) {
+         // Paper events not available, will use alternative approach
+         paperEventsAvailable = false;
+      }
+   }
+
+   @EventHandler
+   public void onExpire(Object event) {
+      if (!paperEventsAvailable || !potionEffectExpireEventClass.isInstance(event)) {
+         return;
+      }
+      try {
+         Method getEntity = potionEffectExpireEventClass.getMethod("getEntity");
+         Method getEffect = potionEffectExpireEventClass.getMethod("getEffect");
+         Object entity = getEntity.invoke(event);
+         Object effect = getEffect.invoke(event);
+         RefineRefinePotionExpireEvent custom = new RefineRefinePotionExpireEvent((org.bukkit.entity.LivingEntity)entity, (org.bukkit.potion.PotionEffect)effect);
+         Bukkit.getPluginManager().callEvent(custom);
+      } catch (Exception e) {
+         // Reflection failed
+      }
+   }
+
+   @EventHandler
+   public void onAdd(Object event) {
+      if (!paperEventsAvailable || !potionEffectAddEventClass.isInstance(event)) {
+         return;
+      }
+      try {
+         Method getEntity = potionEffectAddEventClass.getMethod("getEntity");
+         Method getEffect = potionEffectAddEventClass.getMethod("getEffect");
+         Object entity = getEntity.invoke(event);
+         Object effect = getEffect.invoke(event);
+         RefinePotionAddEvent.EffectAddReason reason = RefinePotionAddEvent.EffectAddReason.UNKNOWN;
+         RefinePotionAddEvent custom = new RefinePotionAddEvent((org.bukkit.entity.LivingEntity)entity, (org.bukkit.potion.PotionEffect)effect, reason);
+         Bukkit.getPluginManager().callEvent(custom);
+      } catch (Exception e) {
+         // Reflection failed
+      }
+   }
+
+   @EventHandler
+   public void onRemove(Object event) {
+      if (!paperEventsAvailable || !potionEffectRemoveEventClass.isInstance(event)) {
+         return;
+      }
+      try {
+         Method getEntity = potionEffectRemoveEventClass.getMethod("getEntity");
+         Method getEffect = potionEffectRemoveEventClass.getMethod("getEffect");
+         Object entity = getEntity.invoke(event);
+         Object effect = getEffect.invoke(event);
+         RefinePotionRemoveEvent custom = new RefinePotionRemoveEvent((org.bukkit.entity.LivingEntity)entity, (org.bukkit.potion.PotionEffect)effect);
+         Bukkit.getPluginManager().callEvent(custom);
+      } catch (Exception e) {
+         // Reflection failed
+      }
+   }
+
+   public void register(JavaPlugin plugin) {
+      plugin.getServer().getPluginManager().registerEvents(this, plugin);
+   }
+
+   public boolean isApplicable() {
+      return true;
+   }
+}

@@ -1,0 +1,194 @@
+#############################################################
+#                                                           #
+#  Articos Revamped | Versão exclusiva do Plugin conhecido  #
+#  Recuse imitações, Adquira o melhor de todos em nosso...  #
+#  Discord logo abaixo, está versão é exclusiva do Yulgar   #
+#                                                           #
+#       YULGAR | COMPETITIVE NETWORK [1.7x - 1.8.9]         #
+#      IP: yulgar.com.br | LOJA: loja.yulgar.com.br         #
+#                                                           #
+#        ArtixDevelopment • Melhor Loja de Plugins          #
+#                                                           #
+#    Discord: https://discord.gg/yqK5wyPPV6 | @Faastyzin    #
+#                                                           #
+#############################################################
+
+Faastyzin:
+  Link: "FaastyzinTheBestDEV"
+
+DIVISIONS:
+  IronI:
+    NAME: "Iron I"
+    COLOR: "DARK_GRAY"
+    ELO-NEEDED: 0
+    PRIORITY: 0
+    MATERIAL: "IRON_INGOT"
+    DURABILITY: 0
+  IronII:
+    NAME: "Iron II"
+    COLOR: "DARK_GRAY"
+    ELO-NEEDED: 100
+    PRIORITY: 1
+    MATERIAL: "IRON_INGOT"
+    DURABILITY: 0
+  IronIII:
+    NAME: "Iron III"
+    COLOR: "DARK_GRAY"
+    ELO-NEEDED: 200
+    PRIORITY: 2
+    MATERIAL: "IRON_INGOT"
+    DURABILITY: 0
+  BronzeI:
+    NAME: "Bronze I"
+    COLOR: "YELLOW"
+    ELO-NEEDED: 300
+    PRIORITY: 3
+    MATERIAL: "CLAY_BRICK"
+    DURABILITY: 0
+  BronzeII:
+    NAME: "Bronze II"
+    COLOR: "YELLOW"
+    ELO-NEEDED: 700
+    PRIORITY: 4
+    MATERIAL: "CLAY_BRICK"
+    DURABILITY: 0
+  BronzeIII:
+    NAME: "Bronze III"
+    COLOR: "YELLOW"
+    ELO-NEEDED: 1100
+    PRIORITY: 5
+    MATERIAL: "CLAY_BRICK"
+    DURABILITY: 0
+  SilverI:
+    NAME: "Silver I"
+    COLOR: "GRAY"
+    ELO-NEEDED: 1300
+    PRIORITY: 6
+    MATERIAL: "GRAY_DYE"
+    DURABILITY: 0
+  SilverII:
+    NAME: "Silver II"
+    COLOR: "GRAY"
+    ELO-NEEDED: 1500
+    PRIORITY: 7
+    MATERIAL: "GRAY_DYE"
+    DURABILITY: 0
+  SilverIII:
+    NAME: "Silver III"
+    COLOR: "GRAY"
+    ELO-NEEDED: 1700
+    PRIORITY: 8
+    MATERIAL: "GRAY_DYE"
+    DURABILITY: 0
+  GoldI:
+    NAME: "Gold I"
+    COLOR: "GOLD"
+    ELO-NEEDED: 2000
+    PRIORITY: 9
+    MATERIAL: "GOLD_INGOT"
+    DURABILITY: 0
+  GoldII:
+    NAME: "Gold II"
+    COLOR: "GOLD"
+    ELO-NEEDED: 2200
+    PRIORITY: 10
+    MATERIAL: "GOLD_INGOT"
+    DURABILITY: 0
+  GoldIII:
+    NAME: "Gold III"
+    COLOR: "GOLD"
+    ELO-NEEDED: 2400
+    PRIORITY: 11
+    MATERIAL: "GOLD_INGOT"
+    DURABILITY: 0
+  PlatinumI:
+    NAME: "Platinum I"
+    COLOR: "AQUA"
+    ELO-NEEDED: 2600
+    PRIORITY: 12
+    MATERIAL: "LIGHT_BLUE_DYE"
+    DURABILITY: 0
+  PlatinumII:
+    NAME: "Platinum II"
+    COLOR: "AQUA"
+    ELO-NEEDED: 2800
+    PRIORITY: 13
+    MATERIAL: "LIGHT_BLUE_DYE"
+    DURABILITY: 0
+  PlatinumIII:
+    NAME: "Platinum III"
+    COLOR: "AQUA"
+    ELO-NEEDED: 3000
+    PRIORITY: 14
+    MATERIAL: "LIGHT_BLUE_DYE"
+    DURABILITY: 0
+  DiamondI:
+    NAME: "Diamond I"
+    COLOR: "DARK_PURPLE"
+    ELO-NEEDED: 3200
+    PRIORITY: 15
+    MATERIAL: "PURPLE_DYE"
+    DURABILITY: 0
+  DiamondII:
+    NAME: "Diamond II"
+    COLOR: "DARK_PURPLE"
+    ELO-NEEDED: 3600
+    PRIORITY: 16
+    MATERIAL: "PURPLE_DYE"
+    DURABILITY: 0
+  DiamondIII:
+    NAME: "Diamond III"
+    COLOR: "DARK_PURPLE"
+    ELO-NEEDED: 4000
+    PRIORITY: 17
+    MATERIAL: "PURPLE_DYE"
+    DURABILITY: 0
+  AscendantI:
+    NAME: "Ascendant I"
+    COLOR: "GREEN"
+    ELO-NEEDED: 5000
+    PRIORITY: 18
+    MATERIAL: "LIME_DYE"
+    DURABILITY: 0
+  AscendantII:
+    NAME: "Ascendant II"
+    COLOR: "GREEN"
+    ELO-NEEDED: 6000
+    PRIORITY: 19
+    MATERIAL: "LIME_DYE"
+    DURABILITY: 0
+  AscendantIII:
+    NAME: "Ascendant III"
+    COLOR: "GREEN"
+    ELO-NEEDED: 6500
+    PRIORITY: 20
+    MATERIAL: "LIME_DYE"
+    DURABILITY: 0
+  ImmortalI:
+    NAME: "Immortal I"
+    COLOR: "LIGHT_PURPLE"
+    ELO-NEEDED: 7000
+    PRIORITY: 21
+    MATERIAL: "MAGENTA_DYE"
+    DURABILITY: 0
+  ImmortalII:
+    NAME: "Immortal II"
+    COLOR: "LIGHT_PURPLE"
+    ELO-NEEDED: 7400
+    PRIORITY: 22
+    MATERIAL: "MAGENTA_DYE"
+    DURABILITY: 0
+  ImmortalIII:
+    NAME: "Immortal III"
+    COLOR: "LIGHT_PURPLE"
+    ELO-NEEDED: 7800
+    PRIORITY: 24
+    MATERIAL: "MAGENTA_DYE"
+    DURABILITY: 0
+  Radiant:
+    NAME: "Radiant"
+    COLOR: "GOLD"
+    ELO-NEEDED: 8200
+    PRIORITY: 25
+    MATERIAL: "ENCHANTED_GOLDEN_APPLE"
+    DURABILITY: 0

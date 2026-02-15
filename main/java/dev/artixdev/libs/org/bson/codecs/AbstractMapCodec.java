@@ -1,0 +1,95 @@
+﻿package dev.artixdev.libs.org.bson.codecs;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
+import java.util.Map.Entry;
+import java.util.function.Supplier;
+import javax.annotation.Nullable;
+import dev.artixdev.libs.org.bson.BsonReader;
+import dev.artixdev.libs.org.bson.BsonType;
+import dev.artixdev.libs.org.bson.BsonWriter;
+import dev.artixdev.libs.org.bson.assertions.Assertions;
+import dev.artixdev.libs.org.bson.codecs.configuration.CodecConfigurationException;
+
+abstract class AbstractMapCodec<T, M extends Map<String, T>> implements Codec<M> {
+   private final Supplier<M> supplier;
+   private final Class<M> clazz;
+
+   AbstractMapCodec(@Nullable Class<M> clazz) {
+      this.clazz = (Class)Assertions.notNull("clazz", clazz);
+      if (clazz != Map.class && clazz != AbstractMap.class && clazz != HashMap.class) {
+         if (clazz != NavigableMap.class && clazz != TreeMap.class) {
+            Supplier supplier;
+            try {
+               Constructor<? extends Map<?, ?>> constructor = clazz.getDeclaredConstructor();
+               supplier = () -> {
+                  try {
+                     return (M) constructor.newInstance();
+                  } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                     throw new CodecConfigurationException("Can not invoke no-args constructor for Map class %s", e);
+                  }
+               };
+            } catch (NoSuchMethodException e) {
+               supplier = () -> {
+                  throw new CodecConfigurationException(String.format("Map class %s has no public no-args constructor", clazz), e);
+               };
+            }
+
+            this.supplier = supplier;
+         } else {
+            this.supplier = () -> (M) new TreeMap();
+         }
+      } else {
+         this.supplier = () -> (M) new HashMap();
+      }
+
+   }
+
+   abstract T readValue(BsonReader reader, DecoderContext decoderContext);
+
+   abstract void writeValue(BsonWriter writer, T value, EncoderContext encoderContext);
+
+   public void encode(BsonWriter writer, M map, EncoderContext encoderContext) {
+      writer.writeStartDocument();
+      Iterator<Entry<String, T>> iterator = map.entrySet().iterator();
+
+      while(iterator.hasNext()) {
+         Entry<String, T> entry = iterator.next();
+         writer.writeName((String)entry.getKey());
+         T value = entry.getValue();
+         if (value == null) {
+            writer.writeNull();
+         } else {
+            this.writeValue(writer, value, encoderContext);
+         }
+      }
+
+      writer.writeEndDocument();
+   }
+
+   public M decode(BsonReader reader, DecoderContext decoderContext) {
+      M map = this.supplier.get();
+      reader.readStartDocument();
+      while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
+         String fieldName = reader.readName();
+         if (reader.getCurrentBsonType() == BsonType.NULL) {
+            reader.readNull();
+            map.put(fieldName, null);
+         } else {
+            map.put(fieldName, this.readValue(reader, decoderContext));
+         }
+      }
+      reader.readEndDocument();
+      return map;
+   }
+
+   public Class<M> getEncoderClass() {
+      return this.clazz;
+   }
+}
