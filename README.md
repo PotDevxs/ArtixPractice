@@ -1,4 +1,4 @@
-# Bolt - Practice Core Plugin
+# ArtixPractice - Practice Core Plugin
 
 Plugin Spigot/Bukkit para servidores de prática (Practice) de Minecraft.
 
@@ -31,7 +31,7 @@ Para compilar o projeto, execute:
 mvn clean package
 ```
 
-O JAR compilado estará em `target/bolt-1.0.9.jar`.
+O JAR compilado estará em `target/ArtixPractice-22.0.jar`.
 
 ### Estrutura do Projeto
 
