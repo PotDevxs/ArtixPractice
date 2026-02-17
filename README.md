@@ -17,10 +17,10 @@ Este projeto está configurado para ser compilado com Maven.
 
 ```xml
 <!-- Antes (incorreto) -->
-<n>Bolt</n>
+<n>Artix</n>
 
 <!-- Depois (correto) -->
-<name>Bolt</name>
+<name>Artix</name>
 ```
 
 ### Compilação
@@ -90,6 +90,6 @@ mvn dependency:tree
 
 ### Notas
 
-- O plugin requer Spigot 1.20.1 ou superior
+- O plugin requer Spigot 1.8.8 ou Spigot 1.20.1 ou superior
 - Todas as dependências são incluídas no JAR final (shaded)
 - O projeto usa Java 17 como versão de compilação
