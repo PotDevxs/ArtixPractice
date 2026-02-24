@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -25,8 +25,11 @@ public class ProjectilePhysics {
    private static final int MAX_TICKS_LIVED = 500; // 25 seconds
    private static final double DEFAULT_DAMAGE = 0.0;
    
+   private static final long COOLDOWN_MS = 1000L;
+
    private final Main plugin;
    private final Map<UUID, ProjectileData> projectileData;
+   private final Map<UUID, Long> playerCooldowns;
    
    /**
     * Projectile Data
@@ -74,6 +77,7 @@ public class ProjectilePhysics {
    public ProjectilePhysics(Main plugin) {
       this.plugin = plugin;
       this.projectileData = new HashMap<>();
+      this.playerCooldowns = new HashMap<>();
    }
    
    /**
@@ -159,7 +163,7 @@ public class ProjectilePhysics {
       
       // Check cooldown
       if (isInCooldown(shooter)) {
-         shooter.sendMessage(ChatUtils.colorize("&cYou are in cooldown!"));
+         shooter.sendMessage(dev.artixdev.practice.utils.Messages.get("COMBAT.COOLDOWN"));
          return;
       }
       
@@ -231,26 +235,14 @@ public class ProjectilePhysics {
     * @return true if in cooldown
     */
    private boolean isInCooldown(Player player) {
-      if (player == null) {
-         return false;
-      }
-      
-      // TODO: Implement cooldown tracking
-      // This would require storing player cooldown times
-      return false;
+      if (player == null) return false;
+      Long last = playerCooldowns.get(player.getUniqueId());
+      return last != null && (System.currentTimeMillis() - last) < COOLDOWN_MS;
    }
-   
-   /**
-    * Set cooldown for player
-    * @param player the player
-    */
+
    private void setCooldown(Player player) {
-      if (player == null) {
-         return;
-      }
-      
-      // TODO: Implement cooldown setting
-      // This would require storing player cooldown times
+      if (player == null) return;
+      playerCooldowns.put(player.getUniqueId(), System.currentTimeMillis());
    }
    
    /**
@@ -305,16 +297,24 @@ public class ProjectilePhysics {
             }
             break;
          case TIPPED_ARROW:
-            // Apply potion effects
-            // TODO: Implement potion effect application
+            if (target instanceof Player) {
+               Player p = (Player) target;
+               if (PotionEffectType.WEAKNESS != null) p.addPotionEffect(new org.bukkit.potion.PotionEffect(PotionEffectType.WEAKNESS, 80, 0, false, false));
+            }
             break;
          case FIREWORK_ROCKET:
-            // Apply explosion effect
-            // TODO: Implement explosion effect
+            try {
+               target.getWorld().createExplosion(target.getLocation(), 0.2f, false);
+            } catch (IllegalArgumentException e) {
+               org.bukkit.Location loc = target.getLocation();
+               target.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 0.2f, false, false);
+            }
             break;
          case TRIDENT:
-            // Apply trident effects
-            // TODO: Implement trident effects
+            if (target instanceof Player) {
+               Player p = (Player) target;
+               if (PotionEffectType.SLOW != null) p.addPotionEffect(new org.bukkit.potion.PotionEffect(PotionEffectType.SLOW, 60, 0, false, false));
+            }
             break;
          default:
             // No special effects

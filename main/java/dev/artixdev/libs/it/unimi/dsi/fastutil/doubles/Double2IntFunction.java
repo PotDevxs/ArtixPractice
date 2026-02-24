@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
 
 import java.util.function.DoubleToIntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -52,7 +52,7 @@ public interface Double2IntFunction extends DoubleToIntFunction, Function<Double
    default Integer put(Double key, Integer value) {
       double k = key;
       boolean containsKey = this.containsKey(k);
-      int v = this.put(k, value);
+      int v = this.put(k, value.intValue());
       return containsKey ? v : null;
    }
 

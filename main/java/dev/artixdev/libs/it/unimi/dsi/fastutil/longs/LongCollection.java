@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -66,9 +66,10 @@ public interface LongCollection extends Collection<Long>, LongIterable {
    /** @deprecated */
    @Deprecated
    default boolean removeIf(Predicate<? super Long> filter) {
-      return this.removeIf(filter instanceof java.util.function.LongPredicate ? (java.util.function.LongPredicate)filter : (key) -> {
-         return filter.test(key);
-      });
+      java.util.function.LongPredicate p = filter instanceof java.util.function.LongPredicate
+         ? (java.util.function.LongPredicate) filter
+         : (key) -> filter.test(key);
+      return this.removeIf(p);
    }
 
    default boolean removeIf(java.util.function.LongPredicate filter) {
@@ -95,7 +96,7 @@ public interface LongCollection extends Collection<Long>, LongIterable {
    /** @deprecated */
    @Deprecated
    default Stream<Long> stream() {
-      return super.stream();
+      return this.longStream().boxed();
    }
 
    default LongStream longStream() {
@@ -105,7 +106,7 @@ public interface LongCollection extends Collection<Long>, LongIterable {
    /** @deprecated */
    @Deprecated
    default Stream<Long> parallelStream() {
-      return super.parallelStream();
+      return this.longParallelStream().boxed();
    }
 
    default LongStream longParallelStream() {

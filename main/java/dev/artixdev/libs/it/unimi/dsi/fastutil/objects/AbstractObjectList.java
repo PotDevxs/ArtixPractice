@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -136,7 +136,7 @@ public abstract class AbstractObjectList<K> extends AbstractObjectCollection<K> 
       int i = this.size();
       if (size > i) {
          while(i++ < size) {
-            this.add((Object)null);
+            this.add(null);
          }
       } else {
          while(i-- != size) {
@@ -315,16 +315,16 @@ public abstract class AbstractObjectList<K> extends AbstractObjectCollection<K> 
       if (l == this) {
          return 0;
       } else {
-         ObjectListIterator i1;
+         ObjectListIterator<K> i1;
          int r;
          if (l instanceof ObjectList) {
             i1 = this.listIterator();
-            ObjectListIterator i2 = ((ObjectList)l).listIterator();
+            ObjectListIterator<? extends K> i2 = ((ObjectList<? extends K>)l).listIterator();
 
             while(i1.hasNext() && i2.hasNext()) {
                K e1 = i1.next();
                K e2 = i2.next();
-               if ((r = ((Comparable)e1).compareTo(e2)) != 0) {
+               if ((r = ((Comparable<? super K>)e1).compareTo(e2)) != 0) {
                   return r;
                }
             }
@@ -332,10 +332,10 @@ public abstract class AbstractObjectList<K> extends AbstractObjectCollection<K> 
             return i2.hasNext() ? -1 : (i1.hasNext() ? 1 : 0);
          } else {
             i1 = this.listIterator();
-            ListIterator i2 = l.listIterator();
+            ListIterator<? extends K> i2 = l.listIterator();
 
             while(i1.hasNext() && i2.hasNext()) {
-               if ((r = ((Comparable)i1.next()).compareTo(i2.next())) != 0) {
+               if ((r = ((Comparable<? super K>)i1.next()).compareTo(i2.next())) != 0) {
                   return r;
                }
             }

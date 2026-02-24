@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.models;
+package dev.artixdev.practice.models;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -56,6 +56,12 @@ public class Arena {
     
     @SerializedName("bounds")
     private Cuboid bounds;
+    
+    @SerializedName("min")
+    private Location min;
+    
+    @SerializedName("max")
+    private Location max;
     
     @SerializedName("kits")
     private final Set<String> kits;
@@ -423,22 +429,26 @@ public class Arena {
     }
 
     public void setMin(Location min) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setMin'");
+        this.min = min;
+        if (min != null && max != null) {
+            this.bounds = new Cuboid(min, max);
+        }
     }
 
     public void setMax(Location max) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setMax'");
+        this.max = max;
+        if (min != null && max != null) {
+            this.bounds = new Cuboid(min, max);
+        }
     }
 
-    public Object getMin() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMin'");
+    public Location getMin() {
+        if (min != null) return min;
+        return bounds != null ? bounds.getLowerCorner() : null;
     }
 
-    public Object getMax() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMax'");
+    public Location getMax() {
+        if (max != null) return max;
+        return bounds != null ? bounds.getUpperCorner() : null;
     }
 }

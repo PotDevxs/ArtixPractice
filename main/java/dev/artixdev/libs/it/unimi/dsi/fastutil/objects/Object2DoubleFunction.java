@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.util.function.ToDoubleFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -35,6 +35,10 @@ public interface Object2DoubleFunction<K> extends ToDoubleFunction<K>, Function<
    }
 
    double getDouble(Object var1);
+
+   default boolean containsKey(Object key) {
+      return this.getDouble(key) != this.defaultReturnValue();
+   }
 
    default double getOrDefault(Object key, double defaultValue) {
       double v;

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.menus;
+package dev.artixdev.practice.menus;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
+import dev.artixdev.api.practice.menu.MenuHandler;
 import dev.artixdev.api.practice.menu.pagination.PaginatedMenu;
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.PlayerProfile;
@@ -33,23 +34,13 @@ public class LeaderboardMenu extends PaginatedMenu {
         
         Main plugin = Main.getInstance();
         
-        // Get leaderboard by ELO (default category) from storage
-        // Note: This is a synchronous call - in production this should be handled asynchronously
-        // TODO: Implement async leaderboard loading with CompletableFuture
         List<PlayerProfile> leaderboard = new java.util.ArrayList<>();
-        
         try {
-            // Try to get top players by ELO
-            java.util.concurrent.CompletableFuture<List<PlayerProfile>> future = 
+            java.util.concurrent.CompletableFuture<List<PlayerProfile>> future =
                 plugin.getStorageManager().getTopPlayers("elo", 100);
-            
-            // For now, use empty list if async call is not immediately available
-            // In production, this menu should be updated asynchronously
-            if (future.isDone()) {
-                leaderboard = future.get();
-            }
+            leaderboard = future.get(3, java.util.concurrent.TimeUnit.SECONDS);
+            if (leaderboard == null) leaderboard = new java.util.ArrayList<>();
         } catch (Exception e) {
-            // If there's an error, use empty list
             leaderboard = new java.util.ArrayList<>();
         }
         
@@ -104,9 +95,8 @@ public class LeaderboardMenu extends PaginatedMenu {
         
         @Override
         public void clicked(Player player, ClickType clickType) {
-            // Open profile menu for this player
-            // TODO: Implement profile menu opening
-            player.sendMessage(ChatUtils.colorize("&7Viewing profile of &f" + profile.getName()));
+            if (profile == null) return;
+            MenuHandler.getInstance().openMenu(new StatisticsMenu(LeaderboardMenu.this, profile), player);
         }
     }
 }

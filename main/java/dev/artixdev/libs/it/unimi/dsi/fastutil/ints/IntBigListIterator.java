@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import dev.artixdev.libs.it.unimi.dsi.fastutil.BigListIterator;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.SafeMath;
@@ -15,13 +15,13 @@ public interface IntBigListIterator extends BigListIterator<Integer>, IntBidirec
    /** @deprecated */
    @Deprecated
    default void set(Integer k) {
-      this.set(k);
+      this.set(k.intValue());
    }
 
    /** @deprecated */
    @Deprecated
    default void add(Integer k) {
-      this.add(k);
+      this.add(k.intValue());
    }
 
    default long skip(long n) {

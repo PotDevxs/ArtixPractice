@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,16 +36,23 @@ public class ExpirableList<E> implements List<E>, Expirable<E> {
     private void clearExpired() {
         long currentTime = System.nanoTime();
         Iterator<E> iterator = elements.iterator();
-        
         while (iterator.hasNext()) {
             E element = iterator.next();
             Long timestamp = timestamps.get(element);
-            
             if (timestamp != null && (currentTime - timestamp) > expirationTime) {
                 onExpire(element);
                 iterator.remove();
                 timestamps.remove(element);
             }
+        }
+    }
+
+    private void trimToMaxSize() {
+        if (maxSize < 0) return;
+        while (elements.size() > maxSize) {
+            E oldest = elements.remove(0);
+            timestamps.remove(oldest);
+            onExpire(oldest);
         }
     }
 
@@ -89,7 +96,9 @@ public class ExpirableList<E> implements List<E>, Expirable<E> {
     public boolean add(E e) {
         clearExpired();
         timestamps.put(e, System.nanoTime());
-        return elements.add(e);
+        boolean added = elements.add(e);
+        trimToMaxSize();
+        return added;
     }
 
     @Override
@@ -112,7 +121,9 @@ public class ExpirableList<E> implements List<E>, Expirable<E> {
         for (E element : c) {
             timestamps.put(element, currentTime);
         }
-        return elements.addAll(c);
+        boolean added = elements.addAll(c);
+        trimToMaxSize();
+        return added;
     }
 
     @Override
@@ -122,7 +133,9 @@ public class ExpirableList<E> implements List<E>, Expirable<E> {
         for (E element : c) {
             timestamps.put(element, currentTime);
         }
-        return elements.addAll(index, c);
+        boolean added = elements.addAll(index, c);
+        trimToMaxSize();
+        return added;
     }
 
     @Override
@@ -166,6 +179,7 @@ public class ExpirableList<E> implements List<E>, Expirable<E> {
         clearExpired();
         elements.add(index, element);
         timestamps.put(element, System.nanoTime());
+        trimToMaxSize();
     }
 
     @Override
@@ -207,8 +221,10 @@ public class ExpirableList<E> implements List<E>, Expirable<E> {
     }
 
     public void setMaxSize(int i) {
-        // Set maximum size for the list
-        // This would typically limit the number of elements
         maxSize = i;
+    }
+
+    public int getMaxSize() {
+        return maxSize;
     }
 }

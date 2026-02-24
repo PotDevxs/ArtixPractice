@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.menus;
+package dev.artixdev.practice.menus;
 
 import java.util.Map;
 import org.bukkit.entity.Player;
@@ -7,7 +7,6 @@ import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
 import dev.artixdev.api.practice.menu.pagination.PaginatedMenu;
 import dev.artixdev.practice.Main;
-import dev.artixdev.practice.configs.menus.SpectateMenus;
 import dev.artixdev.practice.models.Match;
 import dev.artixdev.practice.utils.ChatUtils;
 import dev.artixdev.practice.utils.ItemBuilder;
@@ -62,7 +61,7 @@ public class SpectateMenu extends PaginatedMenu {
                      ChatUtils.colorize("&7Kit: &f" + match.getKitType().getDisplayName()),
                      ChatUtils.colorize("&7Players: &f" + match.getPlayers().size() + "/" + match.getMaxPlayers()),
                      ChatUtils.colorize("&7Duration: &f" + getMatchDuration(match)),
-                     ChatUtils.colorize("&7Arena: &f" + match.getArena().getName()),
+                     ChatUtils.colorize("&7Arena: &f" + (match.getArena() != null ? match.getArena().getName() : "Unknown")),
                      "",
                      ChatUtils.colorize("&eClick to spectate this match")
                   )
@@ -172,7 +171,6 @@ public class SpectateMenu extends PaginatedMenu {
    }
 
    protected void openMenu(Player player) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'openMenu'");
+      dev.artixdev.api.practice.menu.MenuHandler.getInstance().openMenu(this, player);
    }
 }

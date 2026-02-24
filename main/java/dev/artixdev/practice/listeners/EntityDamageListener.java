@@ -1,10 +1,13 @@
-﻿package dev.artixdev.practice.listeners;
+package dev.artixdev.practice.listeners;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import dev.artixdev.practice.Main;
+import dev.artixdev.practice.models.Match;
 
 public class EntityDamageListener implements Listener {
     private static final String[] DAMAGE_CONSTANTS = {"EntityDamageListener"};
@@ -31,15 +34,39 @@ public class EntityDamageListener implements Listener {
         priority = EventPriority.HIGHEST
     )
     public void onEntityDamage(EntityDamageEvent event) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for entity damage handling
+        if (!(event.getEntity() instanceof Player)) return;
+        Player victim = (Player) event.getEntity();
+        Main main = Main.getInstance();
+        if (main == null || main.getMatchManager() == null) return;
+        Match match = main.getMatchManager().getMatchByPlayer(victim);
+        if (match != null && match.isInWarmup()) {
+            event.setCancelled(true);
+            return;
+        }
+        if (main.getMatchManager().isSpectating(victim)) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(
         priority = EventPriority.NORMAL
     )
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for entity damage by entity handling
+        if (!(event.getEntity() instanceof Player)) return;
+        Player victim = (Player) event.getEntity();
+        Player damager = null;
+        if (event.getDamager() instanceof Player) {
+            damager = (Player) event.getDamager();
+        }
+        Main main = Main.getInstance();
+        if (main == null || main.getMatchManager() == null) return;
+        if (main.getMatchManager().isSpectating(victim) || (damager != null && main.getMatchManager().isSpectating(damager))) {
+            event.setCancelled(true);
+            return;
+        }
+        Match match = main.getMatchManager().getMatchByPlayer(victim);
+        if (match != null && match.isInWarmup()) {
+            event.setCancelled(true);
+        }
     }
 }

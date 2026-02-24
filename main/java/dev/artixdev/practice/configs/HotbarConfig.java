@@ -13,6 +13,6 @@ public class HotbarConfig extends BasicYamlStorage {
    }
 
    public String[] getHeader() {
-      return new String[]{"Layout Types: LOBBY, QUEUE, PARTY_LEADER (Leader Only), PARTY_MEMBER (Member Only), PARTY (Both), SPECTATING, EVENT, OTHER (For built-in items)", "ACTION is optional and it's field can be removed if need be. It can also be replaced by COMMAND followed by command without '/'.", "You need help with the configuration or have any questions related to Bolt?", "Join us in our Discord: https://dsc.gg/refine", null, "NOTE: All Material IDs are supported from 1.8x-1.20.x. Recommended: https://minecraftitemids.com/"};
+      return new String[]{"Layout Types: LOBBY, QUEUE, PARTY_LEADER (Leader Only), PARTY_MEMBER (Member Only), PARTY (Both), SPECTATING, EVENT, OTHER (For built-in items)", "ACTION is optional and it's field can be removed if need be. It can also be replaced by COMMAND followed by command without '/'.", "You need help with the configuration or have any questions related to Artix?", "Join us in our Discord: https://dsc.gg/artix", null, "NOTE: All Material IDs are supported from 1.8x-1.20.x. Recommended: https://minecraftitemids.com/"};
    }
 }

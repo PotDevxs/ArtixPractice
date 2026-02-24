@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.tasks;
+package dev.artixdev.practice.tasks;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
@@ -34,9 +34,6 @@ public class CooldownTask implements Runnable {
         
         // Update cooldowns
         playerProfile.updateCooldowns();
-        
-        // TODO: Check if all cooldowns are finished when getActiveCooldowns() is implemented
-        // The getActiveCooldowns() method doesn't exist on PlayerProfile yet
         
         ticks--;
         if (ticks <= 0) {

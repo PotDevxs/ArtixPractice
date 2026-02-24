@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -45,7 +45,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
             this.mask = this.n - 1;
             this.maxFill = HashCommon.maxFill(this.n, f);
             this.key = new long[this.n + 1];
-            this.value = new Object[this.n + 1];
+            this.value = (V[]) new Object[this.n + 1];
          }
       } else {
          throw new IllegalArgumentException("Load factor must be greater than 0 and smaller than 1");
@@ -155,7 +155,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
          long[] key = this.key;
          long curr;
          int pos;
-         if ((curr = key[pos = (int)HashCommon.mix(k) & this.mask]) == 0L) {
+         if ((curr = key[pos = (int) (HashCommon.mix(k) & this.mask)]) == 0L) {
             return -(pos + 1);
          } else if (k == curr) {
             return pos;
@@ -211,7 +211,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
                return;
             }
 
-            int slot = (int)HashCommon.mix(curr) & this.mask;
+            int slot = (int) (HashCommon.mix(curr) & this.mask);
             if (last <= pos) {
                if (last >= slot || slot > pos) {
                   break;
@@ -235,7 +235,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
          long[] key = this.key;
          long curr;
          int pos;
-         if ((curr = key[pos = (int)HashCommon.mix(k) & this.mask]) == 0L) {
+         if ((curr = key[pos = (int) (HashCommon.mix(k) & this.mask)]) == 0L) {
             return this.defRetValue;
          } else if (k == curr) {
             return this.removeEntry(pos);
@@ -258,7 +258,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
          long[] key = this.key;
          long curr;
          int pos;
-         if ((curr = key[pos = (int)HashCommon.mix(k) & this.mask]) == 0L) {
+         if ((curr = key[pos = (int) (HashCommon.mix(k) & this.mask)]) == 0L) {
             return this.defRetValue;
          } else if (k == curr) {
             return this.value[pos];
@@ -281,7 +281,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
          long[] key = this.key;
          long curr;
          int pos;
-         if ((curr = key[pos = (int)HashCommon.mix(k) & this.mask]) == 0L) {
+         if ((curr = key[pos = (int) (HashCommon.mix(k) & this.mask)]) == 0L) {
             return false;
          } else if (k == curr) {
             return true;
@@ -322,7 +322,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
          long[] key = this.key;
          long curr;
          int pos;
-         if ((curr = key[pos = (int)HashCommon.mix(k) & this.mask]) == 0L) {
+         if ((curr = key[pos = (int) (HashCommon.mix(k) & this.mask)]) == 0L) {
             return defaultValue;
          } else if (k == curr) {
             return this.value[pos];
@@ -360,7 +360,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
          long[] key = this.key;
          long curr;
          int pos;
-         if ((curr = key[pos = (int)HashCommon.mix(k) & this.mask]) == 0L) {
+         if ((curr = key[pos = (int) (HashCommon.mix(k) & this.mask)]) == 0L) {
             return false;
          } else if (k == curr && Objects.equals(v, this.value[pos])) {
             this.removeEntry(pos);
@@ -597,7 +597,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       V[] value = this.value;
       int mask = newN - 1;
       long[] newKey = new long[newN + 1];
-      V[] newValue = new Object[newN + 1];
+      V[] newValue = (V[]) new Object[newN + 1];
       int i = this.n;
 
       int pos;
@@ -623,9 +623,9 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
    }
 
    public Long2ObjectOpenHashMap<V> clone() {
-      Long2ObjectOpenHashMap c;
+      Long2ObjectOpenHashMap<V> c;
       try {
-         c = (Long2ObjectOpenHashMap)super.clone();
+         c = (Long2ObjectOpenHashMap<V>) super.clone();
       } catch (CloneNotSupportedException e) {
          throw new InternalError(e);
       }
@@ -635,7 +635,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       c.entries = null;
       c.containsNullKey = this.containsNullKey;
       c.key = (long[])this.key.clone();
-      c.value = (Object[])this.value.clone();
+      c.value = this.value.clone();
       return c;
    }
 
@@ -667,7 +667,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
    private void writeObject(ObjectOutputStream s) throws IOException {
       long[] key = this.key;
       V[] value = this.value;
-      Long2ObjectOpenHashMap<V>.EntryIterator i = new Long2ObjectOpenHashMap.EntryIterator();
+      Long2ObjectOpenHashMap<V>.EntryIterator i = new EntryIterator();
       s.defaultWriteObject();
       int var5 = this.size;
 
@@ -685,11 +685,11 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       this.maxFill = HashCommon.maxFill(this.n, this.f);
       this.mask = this.n - 1;
       long[] key = this.key = new long[this.n + 1];
-      V[] value = this.value = new Object[this.n + 1];
+      V[] value = this.value = (V[]) new Object[this.n + 1];
 
       Object v;
       int pos;
-      for(int var7 = this.size; var7-- != 0; value[pos] = v) {
+      for(int var7 = this.size; var7-- != 0; value[pos] = (V) v) {
          long k = s.readLong();
          v = s.readObject();
          if (k == 0L) {
@@ -728,10 +728,10 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
          if (!(o instanceof java.util.Map.Entry)) {
             return false;
          } else {
-            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
+            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry<?, ?>) o;
             if (e.getKey() != null && e.getKey() instanceof Long) {
-               long k = (Long)e.getKey();
-               V v = e.getValue();
+               long k = (Long) e.getKey();
+               V v = (V) e.getValue();
                if (k == 0L) {
                   return Long2ObjectOpenHashMap.this.containsNullKey && Objects.equals(Long2ObjectOpenHashMap.this.value[Long2ObjectOpenHashMap.this.n], v);
                } else {
@@ -762,10 +762,10 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
          if (!(o instanceof java.util.Map.Entry)) {
             return false;
          } else {
-            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
+            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry<?, ?>) o;
             if (e.getKey() != null && e.getKey() instanceof Long) {
-               long k = (Long)e.getKey();
-               V v = e.getValue();
+               long k = (Long) e.getKey();
+               V v = (V) e.getValue();
                if (k == 0L) {
                   if (Long2ObjectOpenHashMap.this.containsNullKey && Objects.equals(Long2ObjectOpenHashMap.this.value[Long2ObjectOpenHashMap.this.n], v)) {
                      Long2ObjectOpenHashMap.this.removeNullEntry();
@@ -902,7 +902,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       }
    }
 
-   private final class EntryIterator extends Long2ObjectOpenHashMap.MapIterator implements ObjectIterator {
+   private final class EntryIterator extends Long2ObjectOpenHashMap<V>.MapIterator<Consumer<? super Long2ObjectMap.Entry<V>>> implements ObjectIterator<Long2ObjectMap.Entry<V>> {
       private Long2ObjectOpenHashMap<V>.MapEntry entry;
 
       private EntryIterator() {
@@ -928,7 +928,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       }
    }
 
-   private final class ValueSpliterator extends Long2ObjectOpenHashMap.MapSpliterator implements ObjectSpliterator {
+   private final class ValueSpliterator extends Long2ObjectOpenHashMap<V>.MapSpliterator<Consumer<? super V>, ValueSpliterator> implements ObjectSpliterator<V> {
       private static final int POST_SPLIT_CHARACTERISTICS = 0;
 
       ValueSpliterator() {
@@ -952,7 +952,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       }
    }
 
-   private final class ValueIterator extends Long2ObjectOpenHashMap.MapIterator implements ObjectIterator {
+   private final class ValueIterator extends Long2ObjectOpenHashMap<V>.MapIterator<Consumer<? super V>> implements ObjectIterator<V> {
       public ValueIterator() {
          super(null);
       }
@@ -966,7 +966,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       }
    }
 
-   private final class KeySpliterator extends Long2ObjectOpenHashMap.MapSpliterator implements LongSpliterator {
+   private final class KeySpliterator extends Long2ObjectOpenHashMap<V>.MapSpliterator<java.util.function.LongConsumer, KeySpliterator> implements LongSpliterator {
       private static final int POST_SPLIT_CHARACTERISTICS = 257;
 
       KeySpliterator() {
@@ -990,7 +990,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       }
    }
 
-   private final class KeyIterator extends Long2ObjectOpenHashMap.MapIterator implements LongIterator {
+   private final class KeyIterator extends Long2ObjectOpenHashMap<V>.MapIterator<java.util.function.LongConsumer> implements LongIterator {
       public KeyIterator() {
          super(null);
       }
@@ -1004,7 +1004,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       }
    }
 
-   private final class EntrySpliterator extends Long2ObjectOpenHashMap.MapSpliterator implements ObjectSpliterator {
+   private final class EntrySpliterator extends Long2ObjectOpenHashMap<V>.MapSpliterator<Consumer<? super Long2ObjectMap.Entry<V>>, EntrySpliterator> implements ObjectSpliterator<Long2ObjectMap.Entry<V>> {
       private static final int POST_SPLIT_CHARACTERISTICS = 1;
 
       EntrySpliterator() {
@@ -1028,7 +1028,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       }
    }
 
-   private abstract class MapSpliterator<ConsumerType, SplitType extends Long2ObjectOpenHashMap<V>.MapSpliterator<ConsumerType, SplitType>> {
+   private abstract class MapSpliterator<ConsumerType, SplitType extends Long2ObjectOpenHashMap<V>.MapSpliterator<ConsumerType, ?>> {
       int pos = 0;
       int max;
       int c;
@@ -1142,7 +1142,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       }
    }
 
-   private final class FastEntryIterator extends Long2ObjectOpenHashMap.MapIterator implements ObjectIterator {
+   private final class FastEntryIterator extends Long2ObjectOpenHashMap<V>.MapIterator<Consumer<? super Long2ObjectMap.Entry<V>>> implements ObjectIterator<Long2ObjectMap.Entry<V>> {
       private final Long2ObjectOpenHashMap<V>.MapEntry entry;
 
       private FastEntryIterator() {
@@ -1324,7 +1324,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
       }
    }
 
-   final class MapEntry implements java.util.Map.Entry<Long, V>, Long2ObjectMap.Entry<V>, LongObjectPair<V> {
+   final class MapEntry implements Long2ObjectMap.Entry<V> {
       int index;
 
       MapEntry(int index) {
@@ -1338,15 +1338,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
          return Long2ObjectOpenHashMap.this.key[this.index];
       }
 
-      public long leftLong() {
-         return Long2ObjectOpenHashMap.this.key[this.index];
-      }
-
       public V getValue() {
-         return Long2ObjectOpenHashMap.this.value[this.index];
-      }
-
-      public V right() {
          return Long2ObjectOpenHashMap.this.value[this.index];
       }
 
@@ -1354,11 +1346,6 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
          V oldValue = Long2ObjectOpenHashMap.this.value[this.index];
          Long2ObjectOpenHashMap.this.value[this.index] = v;
          return oldValue;
-      }
-
-      public LongObjectPair<V> right(V v) {
-         Long2ObjectOpenHashMap.this.value[this.index] = v;
-         return this;
       }
 
       /** @deprecated */
@@ -1371,7 +1358,7 @@ public class Long2ObjectOpenHashMap<V> extends AbstractLong2ObjectMap<V> impleme
          if (!(o instanceof java.util.Map.Entry)) {
             return false;
          } else {
-            java.util.Map.Entry<Long, V> e = (java.util.Map.Entry)o;
+            java.util.Map.Entry<Long, V> e = (java.util.Map.Entry<Long, V>) o;
             return Long2ObjectOpenHashMap.this.key[this.index] == (Long)e.getKey() && Objects.equals(Long2ObjectOpenHashMap.this.value[this.index], e.getValue());
          }
       }

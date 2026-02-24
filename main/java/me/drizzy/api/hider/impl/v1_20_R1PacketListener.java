@@ -4,16 +4,15 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import me.drizzy.api.hider.AbstractPacketListener;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.entity.item.EntityItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftItem;
+import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
@@ -25,6 +24,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class v1_20_R1PacketListener extends AbstractPacketListener {
+   private static final Set<String> FILTERED_SOUND_NAMES = new HashSet<>(Arrays.asList(
+      "ENTITY_ARROW_HIT", "ARROW_HIT",
+      "ENTITY_ARROW_HIT_PLAYER", "SUCCESSFUL_HIT",
+      "ENTITY_ARROW_SHOOT", "BOW",
+      "ENTITY_CHICKEN_EGG", "CHICKEN_EGG_POP",
+      "ENTITY_SNOWBALL_THROW", "SHOOT_ARROW",
+      "ENTITY_PLAYER_HURT", "HURT_FLESH", "FALL_BIG",
+      "ENTITY_ENDER_PEARL_THROW", "ENTITY_ENDERPEARL_THROW",
+      "ENTITY_GENERIC_EAT", "EAT", "BURP",
+      "ENTITY_GENERIC_DRINK", "DRINK"
+   ));
    private static final PacketType[] ENTITY_PACKETS;
 
    public v1_20_R1PacketListener(JavaPlugin plugin) {
@@ -49,17 +59,16 @@ public class v1_20_R1PacketListener extends AbstractPacketListener {
                BlockPosition position = (BlockPosition)event.getPacket().getBlockPositionModifier().readSafely(0);
                y = position.getX();
                z = position.getY();
-               int z = position.getZ();
+               int posZ = position.getZ();
                isInMatch = false;
-               boolean isInMatch = false;
-               Iterator var11 = receiver.getWorld().getEntitiesByClass(ThrownPotion.class).iterator();
+               Iterator<ThrownPotion> var11 = receiver.getWorld().getEntitiesByClass(ThrownPotion.class).iterator();
 
                while(var11.hasNext()) {
-                  ThrownPotion potion = (ThrownPotion)var11.next();
-                  int potionX = MathHelper.b(y);
-                  int potionY = MathHelper.b(z);
-                  int potionZ = MathHelper.b(z);
-                  if (potion.getShooter() instanceof Player && y == potionX && z == potionY && z == potionZ) {
+                  ThrownPotion potion = var11.next();
+                  int potionX = (int) Math.floor(y);
+                  int potionY = (int) Math.floor(z);
+                  int potionZ = (int) Math.floor(posZ);
+                  if (potion.getShooter() instanceof Player && y == potionX && z == potionY && posZ == potionZ) {
                      isInMatch = true;
                      Player shooter = (Player)potion.getShooter();
                      if (receiver.canSee(shooter)) {
@@ -73,7 +82,8 @@ public class v1_20_R1PacketListener extends AbstractPacketListener {
                }
             } else if (type == Server.NAMED_SOUND_EFFECT) {
                Sound sound = (Sound)event.getPacket().getSoundEffects().readSafely(0);
-               if (!sound.equals(Sound.ENTITY_ARROW_HIT) && !sound.equals(Sound.ENTITY_ARROW_HIT_PLAYER) && !sound.equals(Sound.ENTITY_ARROW_SHOOT) && !sound.equals(Sound.ENTITY_CHICKEN_EGG) && !sound.equals(Sound.ENTITY_SNOWBALL_THROW) && !sound.equals(Sound.ENTITY_PLAYER_HURT) && !sound.equals(Sound.ENTITY_ENDER_PEARL_THROW) && !sound.equals(Sound.ENTITY_GENERIC_EAT) && !sound.equals(Sound.ENTITY_GENERIC_DRINK)) {
+               String soundName = sound.name();
+               if (!FILTERED_SOUND_NAMES.contains(soundName)) {
                   return;
                }
 
@@ -82,7 +92,7 @@ public class v1_20_R1PacketListener extends AbstractPacketListener {
                z = (Integer)event.getPacket().getIntegers().readSafely(2);
                boolean isVisible = false;
                isInMatch = false;
-               Iterator var27 = receiver.getWorld().getEntitiesByClasses(new Class[]{Player.class, Projectile.class}).iterator();
+               Iterator<Entity> var27 = receiver.getWorld().getEntitiesByClasses(new Class[]{Player.class, Projectile.class}).iterator();
 
                while(true) {
                   Entity entity;
@@ -129,25 +139,20 @@ public class v1_20_R1PacketListener extends AbstractPacketListener {
                   } while(!three);
 
                   boolean pass = false;
-                  switch(sound) {
-                  case ENTITY_ARROW_SHOOT:
+                  if ("ENTITY_ARROW_SHOOT".equals(soundName) || "BOW".equals(soundName)) {
                      ItemStack hand = player.getItemInHand();
-                     if (hand.getType() == Material.POTION || hand.getType() == Material.BOW || hand.getType() == Material.ENDER_PEARL) {
+                     if (hand != null && (hand.getType() == Material.POTION || hand.getType() == Material.BOW || hand.getType() == Material.ENDER_PEARL)) {
                         pass = true;
                      }
-                     break;
-                  case ENTITY_ARROW_HIT:
-                  case ENTITY_ARROW_HIT_PLAYER:
+                  } else if ("ENTITY_ARROW_HIT".equals(soundName) || "ENTITY_ARROW_HIT_PLAYER".equals(soundName) || "ARROW_HIT".equals(soundName) || "SUCCESSFUL_HIT".equals(soundName)) {
                      if (entity instanceof Arrow) {
                         pass = true;
-                        break;
                      }
-                  case ENTITY_CHICKEN_EGG:
+                  } else if ("ENTITY_CHICKEN_EGG".equals(soundName) || "CHICKEN_EGG_POP".equals(soundName)) {
                      if (entity instanceof Egg) {
                         pass = true;
-                        break;
                      }
-                  default:
+                  } else {
                      if (entity instanceof Player) {
                         pass = true;
                      }
@@ -162,12 +167,10 @@ public class v1_20_R1PacketListener extends AbstractPacketListener {
                }
             } else {
                entityID = (Integer)event.getPacket().getIntegers().readSafely(0);
-               net.minecraft.world.entity.Entity nmsEntity = ((CraftWorld)receiver.getWorld()).getHandle().a(entityID);
-               if (nmsEntity == null) {
+               Entity entity = getBukkitEntityById(receiver.getWorld(), entityID);
+               if (entity == null) {
                   return;
                }
-
-               Entity entity = nmsEntity.getBukkitEntity();
                Player dropper;
                if (entity instanceof Projectile) {
                   Projectile projectile = (Projectile)entity;
@@ -201,11 +204,24 @@ public class v1_20_R1PacketListener extends AbstractPacketListener {
    }
 
    public Player getPlayerWhoDropped(Item item) {
-      net.minecraft.world.entity.Entity entity = ((EntityItem)((CraftItem)item).getHandle()).v();
-      if (entity instanceof EntityPlayer) {
-         EntityPlayer entityPlayer = (EntityPlayer)entity;
-         return entityPlayer.getBukkitEntity();
-      } else {
+      try {
+         Object handle = item.getClass().getMethod("getHandle").invoke(item);
+         Object throwerEntity = handle.getClass().getMethod("v").invoke(handle);
+         if (throwerEntity == null) return null;
+         Object bukkitEntity = throwerEntity.getClass().getMethod("getBukkitEntity").invoke(throwerEntity);
+         return bukkitEntity instanceof Player ? (Player) bukkitEntity : null;
+      } catch (Exception e) {
+         return null;
+      }
+   }
+
+   private static Entity getBukkitEntityById(World world, int entityId) {
+      try {
+         Object worldHandle = world.getClass().getMethod("getHandle").invoke(world);
+         Object nmsEntity = worldHandle.getClass().getMethod("a", int.class).invoke(worldHandle, entityId);
+         if (nmsEntity == null) return null;
+         return (Entity) nmsEntity.getClass().getMethod("getBukkitEntity").invoke(nmsEntity);
+      } catch (Exception e) {
          return null;
       }
    }

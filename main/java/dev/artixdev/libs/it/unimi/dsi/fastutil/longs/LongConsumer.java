@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -8,7 +8,7 @@ public interface LongConsumer extends Consumer<Long>, java.util.function.LongCon
    /** @deprecated */
    @Deprecated
    default void accept(Long t) {
-      this.accept(t);
+      this.accept(t.longValue());
    }
 
    default LongConsumer andThen(java.util.function.LongConsumer after) {
@@ -26,6 +26,6 @@ public interface LongConsumer extends Consumer<Long>, java.util.function.LongCon
    /** @deprecated */
    @Deprecated
    default Consumer<Long> andThen(Consumer<? super Long> after) {
-      return super.andThen(after);
+      return Consumer.super.andThen(after);
    }
 }

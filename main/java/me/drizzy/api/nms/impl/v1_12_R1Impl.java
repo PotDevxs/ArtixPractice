@@ -1,67 +1,135 @@
-﻿package me.drizzy.api.nms.impl;
+package me.drizzy.api.nms.impl;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 import me.drizzy.api.nms.INMSImpl;
-import net.minecraft.server.v1_12_R1.EntityPlayer;
-import net.minecraft.server.v1_12_R1.EnumHand;
-import net.minecraft.server.v1_12_R1.PacketPlayOutAnimation;
-import net.minecraft.server.v1_12_R1.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import dev.artixdev.practice.llIllIlIIlIIlII.IIIIIllIIlIIlII;
-import dev.artixdev.practice.llIllIlIIlIIlII.IllllIlIIlIIlII;
 
 public class v1_12_R1Impl implements INMSImpl {
+   private static final String NMS = "net.minecraft.server.v1_12_R1";
+   private static final double PACKET_VIEW_RADIUS = 64.0;
+   private static final AtomicInteger ENTITY_ID_COUNTER = new AtomicInteger(-1);
    private final JavaPlugin plugin;
-   private final Random random = ThreadLocalRandom.current();
+
+   private static Object getHandle(Player player) {
+      try {
+         Method getHandle = player.getClass().getMethod("getHandle");
+         return getHandle.invoke(player);
+      } catch (Exception e) {
+         throw new RuntimeException("Failed to get NMS handle for player", e);
+      }
+   }
+
+   private static Field findField(Class<?> start, String name) throws NoSuchFieldException {
+      for (Class<?> c = start; c != null; c = c.getSuperclass()) {
+         try {
+            Field f = c.getDeclaredField(name);
+            f.setAccessible(true);
+            return f;
+         } catch (NoSuchFieldException ignored) { }
+      }
+      throw new NoSuchFieldException(name);
+   }
+
+   private static int nextEntityId() {
+      return ENTITY_ID_COUNTER.decrementAndGet();
+   }
+
+   private static List<Player> getNearbyPlayers(Location location) {
+      List<Player> out = new ArrayList<>();
+      if (location.getWorld() == null) return out;
+      for (Player p : location.getWorld().getPlayers()) {
+         if (p.getLocation().distanceSquared(location) <= PACKET_VIEW_RADIUS * PACKET_VIEW_RADIUS) {
+            out.add(p);
+         }
+      }
+      return out;
+   }
+
+   private static void sendPacket(Player player, PacketContainer packet) {
+      ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+   }
 
    public void removeArrows(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      craftPlayer.getHandle().setArrowCount(0);
+      try {
+         Object entityPlayer = getHandle(player);
+         Method setArrowCount = entityPlayer.getClass().getMethod("setArrowCount", int.class);
+         setArrowCount.invoke(entityPlayer, 0);
+      } catch (Exception e) {
+         throw new RuntimeException("removeArrows failed", e);
+      }
    }
 
    public void setCanCollide(Player player, boolean canCollide) {
-      player.setCollidable(canCollide);
+      player.spigot().setCollidesWithEntities(canCollide);
    }
 
    public boolean isViewingInventory(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      return craftPlayer.getHandle().activeContainer.windowId != 0;
+      try {
+         Object entityPlayer = getHandle(player);
+         Object activeContainer = entityPlayer.getClass().getField("activeContainer").get(entityPlayer);
+         int windowId = activeContainer.getClass().getField("windowId").getInt(activeContainer);
+         return windowId != 0;
+      } catch (Exception e) {
+         return false;
+      }
    }
 
    public void sendEatingAnimation(Player player) {
-      EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
-      WorldServer worldServer = (WorldServer)entityPlayer.getWorld();
-      worldServer.getTracker().a(entityPlayer, new PacketPlayOutAnimation(entityPlayer, 2));
+      try {
+         Object entityPlayer = getHandle(player);
+         Method getWorld = entityPlayer.getClass().getMethod("getWorld");
+         Object world = getWorld.invoke(entityPlayer);
+         Method getTracker = world.getClass().getMethod("getTracker");
+         Object tracker = getTracker.invoke(world);
+         Class<?> packetClass = Class.forName(NMS + ".PacketPlayOutAnimation");
+         Object packet = packetClass.getConstructor(Class.forName(NMS + ".Entity"), int.class)
+             .newInstance(entityPlayer, 2);
+         Method a = tracker.getClass().getMethod("a", Class.forName(NMS + ".Entity"),
+             Class.forName(NMS + ".Packet"));
+         a.invoke(tracker, entityPlayer, packet);
+      } catch (Exception e) {
+         throw new RuntimeException("sendEatingAnimation failed", e);
+      }
    }
 
    public void setJumping(Player player) {
-      EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
-      entityPlayer.l(true);
-      if (!entityPlayer.isInWater() && !entityPlayer.au()) {
-         if (entityPlayer.onGround) {
-            entityPlayer.cu();
+      try {
+         Object entityPlayer = getHandle(player);
+         Method l = entityPlayer.getClass().getMethod("l", boolean.class);
+         l.invoke(entityPlayer, true);
+         Method isInWater = entityPlayer.getClass().getMethod("isInWater");
+         Method au = entityPlayer.getClass().getMethod("au");
+         if (!(Boolean) isInWater.invoke(entityPlayer) && !(Boolean) au.invoke(entityPlayer)) {
+            Field onGroundField = findField(entityPlayer.getClass(), "onGround");
+            if (onGroundField.getBoolean(entityPlayer)) {
+               Method cu = entityPlayer.getClass().getMethod("cu");
+               cu.invoke(entityPlayer);
+            }
+         } else {
+            Field motYField = findField(entityPlayer.getClass(), "motY");
+            motYField.setDouble(entityPlayer, motYField.getDouble(entityPlayer) + 0.03999999910593033D);
          }
-      } else {
-         entityPlayer.motY += 0.03999999910593033D;
+      } catch (Exception e) {
+         throw new RuntimeException("setJumping failed", e);
       }
-
    }
 
    public void animateDeath(Player player) {
-      int entityId = IIIIIllIIlIIlII.llllIIlIIlIIlII();
+      int entityId = nextEntityId();
       PacketContainer spawnPacket = new PacketContainer(Server.NAMED_ENTITY_SPAWN);
       spawnPacket.getModifier().writeDefaults();
       spawnPacket.getIntegers().write(0, entityId);
@@ -76,22 +144,21 @@ public class v1_12_R1Impl implements INMSImpl {
       statusPacket.getModifier().writeDefaults();
       statusPacket.getIntegers().write(0, entityId);
       statusPacket.getBytes().write(0, (byte)3);
-      double[] delta = IIIIIllIIlIIlII.lIIIIllIIlIIlII(player.getLocation());
       PacketContainer velocityPacket = new PacketContainer(Server.REL_ENTITY_MOVE);
       velocityPacket.getModifier().writeDefaults();
       velocityPacket.getIntegers().write(0, entityId);
-      velocityPacket.getIntegers().write(1, (int)delta[0]);
-      velocityPacket.getIntegers().write(2, (int)(delta[1] + 3.0D));
-      velocityPacket.getIntegers().write(3, (int)delta[2]);
-      List<Player> sentTo = IllllIlIIlIIlII.lllllIlIIlIIlII(player.getLocation());
-      Iterator var8 = sentTo.iterator();
+      velocityPacket.getIntegers().write(1, 0);
+      velocityPacket.getIntegers().write(2, (int)(0 + 3.0D));
+      velocityPacket.getIntegers().write(3, 0);
+      List<Player> sentTo = getNearbyPlayers(player.getLocation());
+      Iterator<Player> var8 = sentTo.iterator();
 
       while(var8.hasNext()) {
-         Player watcher = (Player)var8.next();
+         Player watcher = var8.next();
          if (!watcher.getUniqueId().equals(player.getUniqueId())) {
-            IllllIlIIlIIlII.lIIIIllIIlIIlII(watcher, spawnPacket);
-            IllllIlIIlIIlII.lIIIIllIIlIIlII(watcher, statusPacket);
-            IllllIlIIlIIlII.lIIIIllIIlIIlII(watcher, velocityPacket);
+            sendPacket(watcher, spawnPacket);
+            sendPacket(watcher, statusPacket);
+            sendPacket(watcher, velocityPacket);
          }
       }
 
@@ -99,26 +166,36 @@ public class v1_12_R1Impl implements INMSImpl {
       destroyPacket.getModifier().writeDefaults();
       destroyPacket.getIntegerArrays().write(0, new int[]{entityId});
       Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-         sentTo.forEach((watcher) -> {
-            IllllIlIIlIIlII.lIIIIllIIlIIlII(watcher, destroyPacket);
-         });
+         sentTo.forEach((watcher) -> sendPacket(watcher, destroyPacket));
       }, 60L);
    }
 
    public void startRightClick(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      craftPlayer.getHandle().c(EnumHand.MAIN_HAND);
+      try {
+         Object entityPlayer = getHandle(player);
+         Class<?> enumHandClass = Class.forName(NMS + ".EnumHand");
+         Object mainHand = enumHandClass.getEnumConstants()[0];
+         Method c = entityPlayer.getClass().getMethod("c", enumHandClass);
+         c.invoke(entityPlayer, mainHand);
+      } catch (Exception e) {
+         throw new RuntimeException("startRightClick failed", e);
+      }
    }
 
    public void stopRightClick(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      craftPlayer.getHandle().cN();
+      try {
+         Object entityPlayer = getHandle(player);
+         Method cN = entityPlayer.getClass().getMethod("cN");
+         cN.invoke(entityPlayer);
+      } catch (Exception e) {
+         throw new RuntimeException("stopRightClick failed", e);
+      }
    }
 
    public void setUnbreakable(ItemStack itemStack) {
       if (itemStack.hasItemMeta()) {
          ItemMeta itemMeta = itemStack.getItemMeta();
-         itemMeta.setUnbreakable(true);
+         itemMeta.spigot().setUnbreakable(true);
       }
    }
 
@@ -130,13 +207,12 @@ public class v1_12_R1Impl implements INMSImpl {
       lightningPacket.getDoubles().write(0, location.getX());
       lightningPacket.getDoubles().write(1, location.getY());
       lightningPacket.getDoubles().write(2, location.getZ());
-      Iterator var3 = IllllIlIIlIIlII.lllllIlIIlIIlII(location).iterator();
+      Iterator<Player> var3 = getNearbyPlayers(location).iterator();
 
       while(var3.hasNext()) {
-         Player player = (Player)var3.next();
-         ProtocolLibrary.getProtocolManager().sendServerPacket(player, lightningPacket);
+         Player target = var3.next();
+         ProtocolLibrary.getProtocolManager().sendServerPacket(target, lightningPacket);
       }
-
    }
 
    public v1_12_R1Impl(JavaPlugin plugin) {

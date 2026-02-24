@@ -203,7 +203,7 @@ public class NameTagHandler {
          do {
             if (!var3.hasNext()) {
                ++TEAM_INDEX;
-               NameTagTeam newTeam = new NameTagTeam("boltNT" + TEAM_INDEX, prefix, suffix, this.collisionEnabled);
+               NameTagTeam newTeam = new NameTagTeam("artixNT" + TEAM_INDEX, prefix, suffix, this.collisionEnabled);
                this.cachedTeam = newTeam;
                if (this.debugMode) {
                   log.info("[NameTagAPI-Debug] Creating Team with Name: {} with Prefix {} and Suffix {}", newTeam.getName(), ColorUtil.getRaw(newTeam.getPrefix()), ColorUtil.getRaw(newTeam.getSuffix()));

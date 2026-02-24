@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.listeners;
+package dev.artixdev.practice.listeners;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,7 +25,6 @@ public class PacketListener extends SimplePacketListenerAbstract {
 
     @Override
     public void onPacketPlayReceive(PacketPlayReceiveEvent event) {
-        // Handle incoming packets
-        // This would typically involve custom packet processing for practice matches
+        // Extend to process packets (e.g. combat, movement) for practice matches
     }
 }

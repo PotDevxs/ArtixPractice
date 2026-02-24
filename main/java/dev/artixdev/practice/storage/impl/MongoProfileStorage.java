@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.storage.impl;
+package dev.artixdev.practice.storage.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -209,9 +209,38 @@ public class MongoProfileStorage implements StorageProvider {
    @Override
    public CompletableFuture<List<PlayerProfile>> getTopPlayers(String category, int limit) {
       return CompletableFuture.supplyAsync(() -> {
-         // Simple implementation - load all and sort
          List<PlayerProfile> all = loadAll();
-         // TODO: Implement proper sorting by category
+         if (category != null && !category.isEmpty()) {
+            switch (category.toLowerCase()) {
+               case "wins":
+                  all.sort((a, b) -> Integer.compare(b.getWins(), a.getWins()));
+                  break;
+               case "losses":
+                  all.sort((a, b) -> Integer.compare(b.getLosses(), a.getLosses()));
+                  break;
+               case "elo":
+               case "rating":
+                  all.sort((a, b) -> Integer.compare(b.getElo(), a.getElo()));
+                  break;
+               case "kills":
+                  all.sort((a, b) -> Integer.compare(b.getKills(), a.getKills()));
+                  break;
+               case "deaths":
+                  all.sort((a, b) -> Integer.compare(b.getDeaths(), a.getDeaths()));
+                  break;
+               case "level":
+                  all.sort((a, b) -> Integer.compare(b.getLevel(), a.getLevel()));
+                  break;
+               case "win_streak":
+               case "winstreak":
+                  all.sort((a, b) -> Integer.compare(b.getWinStreak(), a.getWinStreak()));
+                  break;
+               default:
+                  all.sort((a, b) -> Integer.compare(b.getElo(), a.getElo()));
+            }
+         } else {
+            all.sort((a, b) -> Integer.compare(b.getElo(), a.getElo()));
+         }
          return all.size() > limit ? all.subList(0, limit) : all;
       });
    }
@@ -341,14 +370,13 @@ public class MongoProfileStorage implements StorageProvider {
       document.put("elo", profile.getElo());
       document.put("level", profile.getLevel());
       document.put("experience", profile.getExperience());
-      // TODO: coins field/method doesn't exist in PlayerProfile yet
-      // document.put("coins", profile.getCoins());
+      document.put("coins", profile.getCoins());
       document.put("lastSeen", profile.getLastSeen());
-      // TODO: firstJoin field/method doesn't exist in PlayerProfile yet
-      // document.put("firstJoin", profile.getFirstJoin());
+      Object firstJoin = profile.getFirstJoin();
+      if (firstJoin != null) document.put("firstJoin", firstJoin);
       document.put("state", profile.getState().name());
-      // TODO: preferences field/method doesn't exist in PlayerProfile yet
-      // document.put("preferences", profile.getPreferences());
+      Object prefs = profile.getPreferences();
+      if (prefs != null) document.put("preferences", prefs);
       return document;
    }
    
@@ -375,13 +403,10 @@ public class MongoProfileStorage implements StorageProvider {
          profile.setLevel(document.getInteger("level", 1));
          Integer experience = document.getInteger("experience");
          profile.setExperience(experience != null ? experience : 0);
-         // TODO: coins field/method doesn't exist in PlayerProfile yet
+         Integer coins = document.getInteger("coins");
+         if (coins != null) profile.setCoins(coins);
          Long lastSeenValue = document.getLong("lastSeen");
-         if (lastSeenValue != null) {
-            profile.setLastSeen(lastSeenValue);
-         }
-         // TODO: firstJoin field/method doesn't exist in PlayerProfile yet
-         
+         if (lastSeenValue != null) profile.setLastSeen(lastSeenValue);
          String stateName = document.getString("state");
          if (stateName != null) {
             try {
@@ -390,9 +415,6 @@ public class MongoProfileStorage implements StorageProvider {
                profile.setState(dev.artixdev.practice.enums.PlayerState.LOBBY);
             }
          }
-         
-         // TODO: preferences field/method doesn't exist in PlayerProfile yet
-         
          return profile;
       } catch (Exception e) {
          logger.error("Failed to convert document to profile", e);

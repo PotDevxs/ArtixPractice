@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.floats;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.floats;
 
 import java.util.function.DoubleToIntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -55,7 +55,7 @@ public interface Float2ShortFunction extends DoubleToIntFunction, Function<Float
    default Short put(Float key, Short value) {
       float k = key;
       boolean containsKey = this.containsKey(k);
-      short v = this.put(k, value);
+      short v = this.put(k, value.shortValue());
       return containsKey ? v : null;
    }
 

@@ -1,63 +1,127 @@
-﻿package me.drizzy.api.nms.impl;
+package me.drizzy.api.nms.impl;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.events.PacketContainer;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import me.drizzy.api.nms.INMSImpl;
-import net.minecraft.server.v1_16_R3.ChunkProviderServer;
-import net.minecraft.server.v1_16_R3.EntityPlayer;
-import net.minecraft.server.v1_16_R3.EnumHand;
-import net.minecraft.server.v1_16_R3.PacketPlayOutAnimation;
-import net.minecraft.server.v1_16_R3.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import dev.artixdev.practice.llIllIlIIlIIlII.IIIIIllIIlIIlII;
-import dev.artixdev.practice.llIllIlIIlIIlII.IllllIlIIlIIlII;
 
 public class v1_16_R3Impl implements INMSImpl {
+   private static final String NMS = "net.minecraft.server.v1_16_R3";
+   private static final double PACKET_VIEW_RADIUS = 64.0;
+   private static final AtomicInteger ENTITY_ID_COUNTER = new AtomicInteger(-1);
    private final JavaPlugin plugin;
 
+   private static Object getHandle(Player player) {
+      try {
+         Method getHandle = player.getClass().getMethod("getHandle");
+         return getHandle.invoke(player);
+      } catch (Exception e) {
+         throw new RuntimeException("Failed to get NMS handle for player", e);
+      }
+   }
+
+   private static int nextEntityId() {
+      return ENTITY_ID_COUNTER.decrementAndGet();
+   }
+
+   private static List<Player> getNearbyPlayers(Location location) {
+      List<Player> out = new ArrayList<>();
+      if (location.getWorld() == null) return out;
+      for (Player p : location.getWorld().getPlayers()) {
+         if (p.getLocation().distanceSquared(location) <= PACKET_VIEW_RADIUS * PACKET_VIEW_RADIUS) {
+            out.add(p);
+         }
+      }
+      return out;
+   }
+
+   private static void sendPacket(Player player, PacketContainer packet) {
+      ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+   }
+
    public void removeArrows(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      craftPlayer.getHandle().setArrowCount(0, true);
+      try {
+         Object entityPlayer = getHandle(player);
+         Method setArrowCount = entityPlayer.getClass().getMethod("setArrowCount", int.class, boolean.class);
+         setArrowCount.invoke(entityPlayer, 0, true);
+      } catch (Exception e) {
+         throw new RuntimeException("removeArrows failed", e);
+      }
    }
 
    public void setCanCollide(Player player, boolean canCollide) {
-      player.setCollidable(canCollide);
+      player.spigot().setCollidesWithEntities(canCollide);
    }
 
    public boolean isViewingInventory(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      return craftPlayer.getHandle().activeContainer.windowId != 0;
+      try {
+         Object entityPlayer = getHandle(player);
+         Object activeContainer = entityPlayer.getClass().getField("activeContainer").get(entityPlayer);
+         int windowId = activeContainer.getClass().getField("windowId").getInt(activeContainer);
+         return windowId != 0;
+      } catch (Exception e) {
+         return false;
+      }
    }
 
    public void sendEatingAnimation(Player player) {
-      EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
-      ChunkProviderServer chunkproviderserver = ((WorldServer)entityPlayer.getWorld()).getChunkProvider();
-      chunkproviderserver.broadcast(entityPlayer, new PacketPlayOutAnimation(entityPlayer, 2));
+      try {
+         Object entityPlayer = getHandle(player);
+         Method getWorld = entityPlayer.getClass().getMethod("getWorld");
+         Object world = getWorld.invoke(entityPlayer);
+         Method getChunkProvider = world.getClass().getMethod("getChunkProvider");
+         Object chunkProvider = getChunkProvider.invoke(world);
+         Class<?> packetClass = Class.forName(NMS + ".PacketPlayOutAnimation");
+         Object packet = packetClass.getConstructor(Class.forName(NMS + ".Entity"), int.class)
+             .newInstance(entityPlayer, 2);
+         Method broadcast = chunkProvider.getClass().getMethod("broadcast",
+             Class.forName(NMS + ".Entity"),
+             Class.forName(NMS + ".Packet"));
+         broadcast.invoke(chunkProvider, entityPlayer, packet);
+      } catch (Exception e) {
+         throw new RuntimeException("sendEatingAnimation failed", e);
+      }
    }
 
    public void setJumping(Player player) {
-      EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
-      entityPlayer.setJumping(true);
-      if (!entityPlayer.isInWater() && !entityPlayer.aQ()) {
-         if (entityPlayer.isOnGround()) {
-            entityPlayer.jump();
+      try {
+         Object entityPlayer = getHandle(player);
+         Method setJumping = entityPlayer.getClass().getMethod("setJumping", boolean.class);
+         setJumping.invoke(entityPlayer, true);
+         Method isInWater = entityPlayer.getClass().getMethod("isInWater");
+         Method aQ = entityPlayer.getClass().getMethod("aQ");
+         if (!(Boolean) isInWater.invoke(entityPlayer) && !(Boolean) aQ.invoke(entityPlayer)) {
+            Method isOnGround = entityPlayer.getClass().getMethod("isOnGround");
+            if ((Boolean) isOnGround.invoke(entityPlayer)) {
+               Method jump = entityPlayer.getClass().getMethod("jump");
+               jump.invoke(entityPlayer);
+            }
+         } else {
+            Method getMot = entityPlayer.getClass().getMethod("getMot");
+            Object mot = getMot.invoke(entityPlayer);
+            Method add = mot.getClass().getMethod("add", double.class, double.class, double.class);
+            Object newMot = add.invoke(mot, 0.0D, 0.03999999910593033D, 0.0D);
+            Method setMot = entityPlayer.getClass().getMethod("setMot", mot.getClass());
+            setMot.invoke(entityPlayer, newMot);
          }
-      } else {
-         entityPlayer.setMot(entityPlayer.getMot().add(0.0D, 0.03999999910593033D, 0.0D));
+      } catch (Exception e) {
+         throw new RuntimeException("setJumping failed", e);
       }
-
    }
 
    public void animateDeath(Player player) {
-      int entityId = IIIIIllIIlIIlII.llllIIlIIlIIlII();
+      int entityId = nextEntityId();
       PacketContainer spawnPacket = new PacketContainer(Server.NAMED_ENTITY_SPAWN);
       spawnPacket.getModifier().writeDefaults();
       spawnPacket.getIntegers().write(0, entityId);
@@ -71,14 +135,14 @@ public class v1_16_R3Impl implements INMSImpl {
       statusPacket.getModifier().writeDefaults();
       statusPacket.getIntegers().write(0, entityId);
       statusPacket.getBytes().write(0, (byte)3);
-      List<Player> sentTo = IllllIlIIlIIlII.lllllIlIIlIIlII(player.getLocation());
-      Iterator var6 = sentTo.iterator();
+      List<Player> sentTo = getNearbyPlayers(player.getLocation());
+      Iterator<Player> var6 = sentTo.iterator();
 
       while(var6.hasNext()) {
-         Player watcher = (Player)var6.next();
+         Player watcher = var6.next();
          if (!watcher.getUniqueId().equals(player.getUniqueId())) {
-            IllllIlIIlIIlII.lIIIIllIIlIIlII(watcher, spawnPacket);
-            IllllIlIIlIIlII.lIIIIllIIlIIlII(watcher, statusPacket);
+            sendPacket(watcher, spawnPacket);
+            sendPacket(watcher, statusPacket);
          }
       }
 
@@ -86,27 +150,37 @@ public class v1_16_R3Impl implements INMSImpl {
       destroyPacket.getModifier().writeDefaults();
       destroyPacket.getIntegerArrays().write(0, new int[]{entityId});
       Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-         sentTo.forEach((watcher) -> {
-            IllllIlIIlIIlII.lIIIIllIIlIIlII(watcher, destroyPacket);
-         });
+         sentTo.forEach((watcher) -> sendPacket(watcher, destroyPacket));
       }, 60L);
    }
 
    public void startRightClick(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      craftPlayer.getHandle().c(EnumHand.MAIN_HAND);
+      try {
+         Object entityPlayer = getHandle(player);
+         Class<?> enumHandClass = Class.forName(NMS + ".EnumHand");
+         Object mainHand = enumHandClass.getEnumConstants()[0];
+         Method c = entityPlayer.getClass().getMethod("c", enumHandClass);
+         c.invoke(entityPlayer, mainHand);
+      } catch (Exception e) {
+         throw new RuntimeException("startRightClick failed", e);
+      }
    }
 
    public void stopRightClick(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      craftPlayer.getHandle().releaseActiveItem();
+      try {
+         Object entityPlayer = getHandle(player);
+         Method releaseActiveItem = entityPlayer.getClass().getMethod("releaseActiveItem");
+         releaseActiveItem.invoke(entityPlayer);
+      } catch (Exception e) {
+         throw new RuntimeException("stopRightClick failed", e);
+      }
    }
 
    public void setUnbreakable(ItemStack itemStack) {
       if (itemStack.hasItemMeta()) {
          ItemMeta itemMeta = itemStack.getItemMeta();
          if (itemMeta != null) {
-            itemMeta.setUnbreakable(true);
+            itemMeta.spigot().setUnbreakable(true);
          }
       }
    }

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.floats;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.floats;
 
 import java.util.function.DoubleFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -42,8 +42,8 @@ public interface Float2ObjectFunction<V> extends DoubleFunction<V>, Function<Flo
    V get(float var1);
 
    default V getOrDefault(float key, V defaultValue) {
-      Object v;
-      return (v = this.get(key)) == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
+      V v = this.get(key);
+      return v == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
    }
 
    default V remove(float key) {
@@ -66,8 +66,8 @@ public interface Float2ObjectFunction<V> extends DoubleFunction<V>, Function<Flo
          return null;
       } else {
          float k = (Float)key;
-         Object v;
-         return (v = this.get(k)) == this.defaultReturnValue() && !this.containsKey(k) ? null : v;
+         V v = this.get(k);
+         return v == this.defaultReturnValue() && !this.containsKey(k) ? null : v;
       }
    }
 

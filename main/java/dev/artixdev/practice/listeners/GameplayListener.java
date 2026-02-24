@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.listeners;
+package dev.artixdev.practice.listeners;
 
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
@@ -19,12 +19,9 @@ import org.bukkit.event.player.PlayerFishEvent.State;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
-import dev.artixdev.practice.Practice;
+import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.PlayerProfile;
 import dev.artixdev.practice.managers.PlayerManager;
-
-import java.util.Iterator;
-import java.util.UUID;
 
 public class GameplayListener implements Listener {
     
@@ -36,8 +33,7 @@ public class GameplayListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onNPCSpawn(NPCSpawnEvent event) {
-        // Handle NPC spawn events
-        // This would typically involve setting up NPCs for practice matches
+        // NPCs used for bots/arenas are configured via BotManager/ArenaManager
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -58,16 +54,20 @@ public class GameplayListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        // Handle player quit events
-        // This would typically involve cleaning up player data
+        Player player = event.getPlayer();
+        if (player != null && playerManager != null) {
+            PlayerProfile profile = playerManager.getPlayerProfile(player.getUniqueId());
+            if (profile != null) {
+                profile.setLastSeen(System.currentTimeMillis());
+            }
+        }
     }
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
-        // Handle projectile hit events
-        // This would typically involve custom projectile mechanics
+        // Projectile damage/effects are handled by EntityDamageByEntity and ProjectileHandler
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -108,7 +108,7 @@ public class GameplayListener implements Listener {
                     caughtPlayer.setNoDamageTicks(0);
                     
                     // Apply velocity after a short delay
-                    Bukkit.getScheduler().runTaskLater(Practice.getPlugin(), () -> {
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                         caughtPlayer.setVelocity(velocity);
                     }, 1L);
                 }
@@ -118,13 +118,18 @@ public class GameplayListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        // Handle entity damage by entity events
-        // This would typically involve custom PvP mechanics
+        if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player)) return;
+        Player victim = (Player) event.getEntity();
+        Player damager = (Player) event.getDamager();
+        dev.artixdev.practice.models.Match matchV = Main.getInstance().getMatchManager().getMatchByPlayer(victim);
+        dev.artixdev.practice.models.Match matchD = Main.getInstance().getMatchManager().getMatchByPlayer(damager);
+        if (matchV != matchD) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onNPCRemove(NPCRemoveEvent event) {
-        // Handle NPC removal events
-        // This would typically involve cleaning up NPC data
+        // BotManager / match logic handles NPC cleanup when matches end
     }
 }

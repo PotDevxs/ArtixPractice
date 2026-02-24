@@ -22,7 +22,7 @@ public class ConfigCommand implements CommandExecutor {
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("bolt.config")) {
+        if (!sender.hasPermission("artix.config")) {
             sender.sendMessage("§cYou don't have permission to use this command!");
             return true;
         }
@@ -87,7 +87,7 @@ public class ConfigCommand implements CommandExecutor {
      * Handle info command
      */
     private void handleInfoCommand(CommandSender sender) {
-        sender.sendMessage("§6=== Bolt Configuration Info ===");
+        sender.sendMessage("§6=== Artix Configuration Info ===");
         sender.sendMessage("§7Database Type: §f" + plugin.getDatabaseManager().getDatabaseType());
         sender.sendMessage("§7Bots Enabled: §f" + "true"); // Placeholder
         sender.sendMessage("§7Starting ELO: §f" + SettingsConfig.STARTING_ELO);
@@ -160,7 +160,7 @@ public class ConfigCommand implements CommandExecutor {
      * Send help message
      */
     private void sendHelpMessage(CommandSender sender) {
-        sender.sendMessage("§6=== Bolt Configuration Commands ===");
+        sender.sendMessage("§6=== Artix Configuration Commands ===");
         sender.sendMessage("§7/config reload §f- Reload all configurations");
         sender.sendMessage("§7/config validate §f- Validate all configurations");
         sender.sendMessage("§7/config info §f- Show configuration information");

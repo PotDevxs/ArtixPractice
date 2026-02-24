@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -58,7 +58,7 @@ public class ObjectArraySet<K> extends AbstractObjectSet<K> implements Serializa
       this(c.size());
       int i = 0;
 
-      for(Iterator var3 = c.iterator(); var3.hasNext(); ++i) {
+      for(Iterator<? extends K> var3 = c.iterator(); var3.hasNext(); ++i) {
          K x = var3.next();
          this.a[i] = x;
       }
@@ -128,7 +128,7 @@ public class ObjectArraySet<K> extends AbstractObjectSet<K> implements Serializa
             if (!this.hasNext()) {
                throw new NoSuchElementException();
             } else {
-               return ObjectArraySet.this.a[this.next++];
+               return (K) ObjectArraySet.this.a[this.next++];
             }
          }
 
@@ -217,11 +217,12 @@ public class ObjectArraySet<K> extends AbstractObjectSet<K> implements Serializa
       return size == 0 ? ObjectArrays.EMPTY_ARRAY : Arrays.copyOf(this.a, size, Object[].class);
    }
 
+   @SuppressWarnings("unchecked")
    public <T> T[] toArray(T[] a) {
       if (a == null) {
-         a = new Object[this.size];
+         a = (T[]) new Object[this.size];
       } else if (a.length < this.size) {
-         a = (Object[])Array.newInstance(a.getClass().getComponentType(), this.size);
+         a = (T[]) Array.newInstance(a.getClass().getComponentType(), this.size);
       }
 
       System.arraycopy(this.a, 0, a, 0, this.size);
@@ -298,14 +299,14 @@ public class ObjectArraySet<K> extends AbstractObjectSet<K> implements Serializa
          if (this.pos >= this.getWorkingMax()) {
             return false;
          } else {
-            action.accept(ObjectArraySet.this.a[this.pos++]);
+            action.accept((K) ObjectArraySet.this.a[this.pos++]);
             return true;
          }
       }
 
       public void forEachRemaining(Consumer<? super K> action) {
          for(int max = this.getWorkingMax(); this.pos < max; ++this.pos) {
-            action.accept(ObjectArraySet.this.a[this.pos]);
+            action.accept((K) ObjectArraySet.this.a[this.pos]);
          }
 
       }

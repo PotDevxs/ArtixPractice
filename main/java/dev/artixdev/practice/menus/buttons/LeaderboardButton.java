@@ -1,13 +1,23 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
 import com.google.common.base.Preconditions;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
-import dev.artixdev.practice.Practice;
+import dev.artixdev.api.practice.menu.MenuHandler;
+import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.LeaderboardEntry;
+import dev.artixdev.practice.models.PlayerProfile;
+import dev.artixdev.practice.menus.LeaderboardMenu;
+import dev.artixdev.practice.utils.ChatUtils;
+import dev.artixdev.practice.utils.ItemBuilder;
+import dev.artixdev.practice.utils.StatisticsUtils;
+import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
 import dev.artixdev.practice.utils.other.Callback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LeaderboardButton extends Button {
     public static final boolean DEBUG_MODE = false;
@@ -19,47 +29,64 @@ public class LeaderboardButton extends Button {
 
     public LeaderboardButton(LeaderboardEntry leaderboardEntry, Callback<LeaderboardEntry> callback) {
         Preconditions.checkNotNull(leaderboardEntry, "LeaderboardEntry cannot be null");
-        Preconditions.checkNotNull(callback, "Callback cannot be null");
         this.leaderboardEntry = leaderboardEntry;
         this.callback = callback;
     }
 
+    /** Single-argument constructor for ProfileMenu: opens leaderboard then stats on click. */
+    public LeaderboardButton(PlayerProfile profile) {
+        this.leaderboardEntry = profile != null ? new LeaderboardEntry(profile, profile.getName()) : null;
+        this.callback = null;
+    }
+
     private String formatLeaderboardText(String text) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for leaderboard text formatting
-        return text;
+        return text == null ? "" : ChatUtils.colorize(text);
     }
 
     @Override
     public ItemStack getButtonItem(Player player) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for leaderboard button item
-        return null;
+        if (leaderboardEntry == null) return null;
+        PlayerProfile profile = leaderboardEntry.getPlayerProfile();
+        if (profile == null) return null;
+        String name = leaderboardEntry.getPlayerName();
+        List<String> lore = new ArrayList<>();
+        lore.add(formatLeaderboardText("&7" + BUTTON_MESSAGES[8] + ": &f" + profile.getElo()));
+        lore.add(formatLeaderboardText("&7" + BUTTON_MESSAGES[9] + ": &f" + profile.getWins()));
+        lore.add(formatLeaderboardText("&7" + BUTTON_MESSAGES[10] + ": &f" + profile.getLosses()));
+        lore.add(formatLeaderboardText("&7" + BUTTON_MESSAGES[11] + ": &f" + profile.getKills()));
+        lore.add(formatLeaderboardText("&7" + BUTTON_MESSAGES[12] + ": &f" + profile.getDeaths()));
+        lore.add(formatLeaderboardText("&7" + BUTTON_MESSAGES[13] + ": &f" + StatisticsUtils.formatKdr(profile.getKills(), profile.getDeaths())));
+        lore.add("");
+        lore.add(formatLeaderboardText("&eClick to view profile"));
+        return new ItemBuilder(XMaterial.PLAYER_HEAD).name(formatLeaderboardText("&f" + name)).lore(lore).build();
     }
 
     private String formatLeaderboardText(String format, LeaderboardEntry entry, String text) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for leaderboard text formatting with entry
-        return text;
+        if (entry == null || entry.getPlayerProfile() == null) return text;
+        return text.replace("<player>", entry.getPlayerName())
+            .replace("<elo>", String.valueOf(entry.getPlayerProfile().getElo()))
+            .replace("<wins>", String.valueOf(entry.getPlayerProfile().getWins()));
     }
 
     private static String getButtonMessage(int param0, int param1) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for button message generation
-        return "LeaderboardButton";
+        if (param0 >= 0 && param0 < BUTTON_MESSAGES.length) return BUTTON_MESSAGES[param0];
+        return BUTTON_CONSTANTS[0];
     }
 
     private String formatLeaderboardText(String text, String format) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for leaderboard text formatting
-        return text;
+        return formatLeaderboardText(text);
     }
 
     @Override
     public void clicked(Player player, ClickType clickType) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for leaderboard button click handling
-        // Typically used to open leaderboard details or perform actions
+        if (leaderboardEntry == null) return;
+        if (callback != null) {
+            callback.call(leaderboardEntry);
+        } else {
+            if (Main.getInstance() != null) {
+                MenuHandler.getInstance().openMenu(new LeaderboardMenu(), player);
+            }
+        }
     }
 
     static {

@@ -1,7 +1,12 @@
-﻿package dev.artixdev.practice.managers;
+package dev.artixdev.practice.managers;
 
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.configs.MenuConfig;
+import dev.artixdev.practice.configs.menus.GeneralMenus;
+import dev.artixdev.practice.configs.menus.QueueMenus;
+import dev.artixdev.practice.configs.menus.PartyMenus;
+import dev.artixdev.practice.configs.menus.StatsMenus;
+import dev.artixdev.practice.utils.ChatUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -89,63 +94,57 @@ public class MenuManager {
         createStatsMenu();
     }
     
+    private static int menuSize(int size) {
+        if (size <= 0) return 54;
+        int slots = (size + 8) / 9 * 9;
+        return Math.max(9, Math.min(54, slots));
+    }
+    
     /**
-     * Create lobby menu
+     * Create lobby menu (title/size from config where available)
      */
     private void createLobbyMenu() {
-        Inventory menu = Bukkit.createInventory(null, 54, "Lobby Menu");
-        
-        // Add lobby items based on configuration
-        // This would read from the menu configuration files
-        
+        String title = ChatUtils.translate("&8Lobby Menu");
+        Inventory menu = Bukkit.createInventory(null, 54, title);
         menuCache.put("lobby", menu);
     }
     
     /**
-     * Create queue menu
+     * Create queue menu from config (QueueMenus.QUEUE_TYPE_TITLE / SIZE)
      */
     private void createQueueMenu() {
-        Inventory menu = Bukkit.createInventory(null, 54, "Queue Menu");
-        
-        // Add queue items based on configuration
-        // This would read from the menu configuration files
-        
+        String title = QueueMenus.QUEUE_TYPE_TITLE != null ? ChatUtils.translate(QueueMenus.QUEUE_TYPE_TITLE) : "Queue";
+        int size = menuSize(QueueMenus.QUEUE_TYPE_SIZE > 0 ? QueueMenus.QUEUE_TYPE_SIZE : 54);
+        Inventory menu = Bukkit.createInventory(null, size, title);
         menuCache.put("queue", menu);
     }
     
     /**
-     * Create party menu
+     * Create party menu from config (PartyMenus)
      */
     private void createPartyMenu() {
-        Inventory menu = Bukkit.createInventory(null, 54, "Party Menu");
-        
-        // Add party items based on configuration
-        // This would read from the menu configuration files
-        
+        String title = PartyMenus.PARTY_GAMES_TITLE != null ? ChatUtils.translate(PartyMenus.PARTY_GAMES_TITLE) : "Party Menu";
+        int size = menuSize(PartyMenus.PARTY_GAMES_SIZE > 0 ? PartyMenus.PARTY_GAMES_SIZE : 54);
+        Inventory menu = Bukkit.createInventory(null, size, title);
         menuCache.put("party", menu);
     }
     
     /**
-     * Create kit menu
+     * Create kit menu from config (GeneralMenus.SELECT_KIT_*)
      */
     private void createKitMenu() {
-        Inventory menu = Bukkit.createInventory(null, 54, "Kit Menu");
-        
-        // Add kit items based on configuration
-        // This would read from the menu configuration files
-        
+        String title = GeneralMenus.SELECT_KIT_TITLE != null ? ChatUtils.translate(GeneralMenus.SELECT_KIT_TITLE) : "Kit Menu";
+        int size = menuSize(GeneralMenus.SELECT_KIT_SIZE > 0 ? GeneralMenus.SELECT_KIT_SIZE : 54);
+        Inventory menu = Bukkit.createInventory(null, size, title);
         menuCache.put("kit", menu);
     }
     
     /**
-     * Create stats menu
+     * Create stats menu from config (StatsMenus.STATS_MENU_TITLE)
      */
     private void createStatsMenu() {
-        Inventory menu = Bukkit.createInventory(null, 54, "Stats Menu");
-        
-        // Add stats items based on configuration
-        // This would read from the menu configuration files
-        
+        String title = StatsMenus.STATS_MENU_TITLE != null ? ChatUtils.translate(StatsMenus.STATS_MENU_TITLE) : "Stats Menu";
+        Inventory menu = Bukkit.createInventory(null, 54, title);
         menuCache.put("stats", menu);
     }
     

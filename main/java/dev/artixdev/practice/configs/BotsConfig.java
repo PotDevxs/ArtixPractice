@@ -40,7 +40,7 @@ public class BotsConfig extends BasicYamlStorage {
    @ConfigValue(
       priority = 3,
       path = "BOT-SETTINGS.SPIGOT-BASED-KB",
-      comment = "This will disable bolt's bot knockback system and use spigot's knockback system instead.\nIt is recommended to only enable this if you know the spigot will support Citizens NPC knockback.\nIf the spigot uses a kohi-based knockback system or mSpigot based knockback system, then it's likely it will."
+      comment = "This will disable artix's bot knockback system and use spigot's knockback system instead.\nIt is recommended to only enable this if you know the spigot will support Citizens NPC knockback.\nIf the spigot uses a kohi-based knockback system or mSpigot based knockback system, then it's likely it will."
    )
    public static boolean SPIGOT_BASED_KB = false;
    @ConfigValue(
@@ -127,7 +127,7 @@ public class BotsConfig extends BasicYamlStorage {
       this.addComment("BOT-SETTINGS.MODES.GOLDEN-APPLE.ENABLED", "Do you want to enable the Golden Apple bot mode?");
       this.addComment("BOT-SETTINGS.MODES.SOUP.ENABLED", "Do you want to enable the Soup bot mode?");
       this.addCommentWithBlankLine("BOT-PRESETS", "Here you can add/change bot presets, these are built-in configured settings of the bot.\nThese settings directly affect the pvp experience and its difficulty.");
-      this.addCommentWithBlankLine("BOT-NAMES", "Bolt randomly picks a name from this list, although if you want to enforce only one name\nthen just put one single name here. Note that putting any color codes here won't work, that's in the Bot-Prefix");
+      this.addCommentWithBlankLine("BOT-NAMES", "Artix randomly picks a name from this list, although if you want to enforce only one name\nthen just put one single name here. Note that putting any color codes here won't work, that's in the Bot-Prefix");
       this.addCommentWithBlankLine("BOT-SETTINGS.MODES", "Bot modes are essentially pre-determined logic related to the kit for the bot.\nFor example, Speed PvP mode would be catering to Speed kits like NoDebuff, Debuff etc.\nMeanwhile, UHC mode would be catering to BuildUHC or SG type of kits. (Keep in mind, Bot cannot build right now)");
    }
 
@@ -153,6 +153,6 @@ public class BotsConfig extends BasicYamlStorage {
    }
 
    public String[] getHeader() {
-      return new String[]{"This is the configuration file for the PvP-Bots of Bolt. There's a lot of things to configure along", "with the knockback profiles specifically made for the bots. The default config contains four bot presets", "that have pre-defined combat settings which will be perfectly fine if you use them as is. As always if you", "need any help, feel free to contact customer support at https://dsc.gg/refine", null};
+      return new String[]{"This is the configuration file for the PvP-Bots of Artix. There's a lot of things to configure along", "with the knockback profiles specifically made for the bots. The default config contains four bot presets", "that have pre-defined combat settings which will be perfectly fine if you use them as is. As always if you", "need any help, feel free to contact customer support at https://dsc.gg/refine", null};
    }
 }

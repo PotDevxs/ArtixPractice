@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -15,9 +15,10 @@ public class ProfileMenuButton extends Button {
 
     @Override
     public ItemStack getButtonItem(Player player) {
-        // Implementation for profile menu button item
-        // This would typically show a menu icon
-        return null; // Placeholder
+        return new dev.artixdev.practice.utils.ItemBuilder(dev.artixdev.libs.com.cryptomorin.xseries.XMaterial.PLAYER_HEAD)
+            .name(dev.artixdev.practice.utils.ChatUtils.colorize("&eProfile Menu"))
+            .lore(dev.artixdev.practice.utils.ChatUtils.colorize("&7Click to open"))
+            .build();
     }
 
     @Override

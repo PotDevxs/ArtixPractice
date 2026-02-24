@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -33,15 +33,16 @@ public final class Object2LongFunctions {
       return new Object2LongFunctions.UnmodifiableFunction(f);
    }
 
+   @SuppressWarnings("unchecked")
    public static <K> Object2LongFunction<K> primitive(Function<? super K, ? extends Long> f) {
       Objects.requireNonNull(f);
       if (f instanceof Object2LongFunction) {
-         return (Object2LongFunction)f;
-      } else {
-         return (Object2LongFunction)(f instanceof ToLongFunction ? (key) -> {
-            return ((ToLongFunction)f).applyAsLong(key);
-         } : new Object2LongFunctions.PrimitiveFunction(f));
+         return (Object2LongFunction<K>) f;
       }
+      if (f instanceof ToLongFunction) {
+         return (Object2LongFunction<K>) (ToLongFunction<K>) key -> ((ToLongFunction<? super K>) f).applyAsLong((K) key);
+      }
+      return new Object2LongFunctions.PrimitiveFunction<>(f);
    }
 
    public static class Singleton<K> extends AbstractObject2LongFunction<K> implements Serializable, Cloneable {
@@ -108,14 +109,12 @@ public final class Object2LongFunctions {
       @Deprecated
       public Long apply(K key) {
          synchronized(this.sync) {
-            return (Long)this.function.apply(key);
+            return this.function.get(key);
          }
       }
 
       public int size() {
-         synchronized(this.sync) {
-            return this.function.size();
-         }
+         throw new UnsupportedOperationException();
       }
 
       public long defaultReturnValue() {
@@ -161,9 +160,7 @@ public final class Object2LongFunctions {
       }
 
       public void clear() {
-         synchronized(this.sync) {
-            this.function.clear();
-         }
+         throw new UnsupportedOperationException();
       }
 
       /** @deprecated */
@@ -240,7 +237,7 @@ public final class Object2LongFunctions {
       }
 
       public int size() {
-         return this.function.size();
+         throw new UnsupportedOperationException();
       }
 
       public long defaultReturnValue() {
@@ -312,6 +309,7 @@ public final class Object2LongFunctions {
       }
    }
 
+   @SuppressWarnings("unchecked")
    public static class PrimitiveFunction<K> implements Object2LongFunction<K> {
       protected final Function<? super K, ? extends Long> function;
 
@@ -320,30 +318,30 @@ public final class Object2LongFunctions {
       }
 
       public boolean containsKey(Object key) {
-         return this.function.apply(key) != null;
+         return this.function.apply((K) key) != null;
       }
 
       public long getLong(Object key) {
-         Long v = (Long)this.function.apply(key);
+         Long v = (Long)this.function.apply((K) key);
          return v == null ? this.defaultReturnValue() : v;
       }
 
       public long getOrDefault(Object key, long defaultValue) {
-         Long v = (Long)this.function.apply(key);
+         Long v = (Long)this.function.apply((K) key);
          return v == null ? defaultValue : v;
       }
 
       /** @deprecated */
       @Deprecated
       public Long get(Object key) {
-         return (Long)this.function.apply(key);
+         return (Long)this.function.apply((K) key);
       }
 
       /** @deprecated */
       @Deprecated
       public Long getOrDefault(Object key, Long defaultValue) {
          Long v;
-         return (v = (Long)this.function.apply(key)) == null ? defaultValue : v;
+         return (v = (Long)this.function.apply((K) key)) == null ? defaultValue : v;
       }
 
       /** @deprecated */
@@ -395,11 +393,7 @@ public final class Object2LongFunctions {
       }
 
       public boolean equals(Object o) {
-         if (!(o instanceof dev.artixdev.libs.it.unimi.dsi.fastutil.Function)) {
-            return false;
-         } else {
-            return ((dev.artixdev.libs.it.unimi.dsi.fastutil.Function)o).size() == 0;
-         }
+         return o == this || o instanceof EmptyFunction;
       }
 
       public String toString() {

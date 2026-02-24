@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -80,8 +80,8 @@ public class ArenaButton extends Button {
       
       // Handle arena selection
       if (clickType == ClickType.LEFT) {
+         dev.artixdev.practice.Main.getInstance().getArenaManager().setSelectedArena(player, arena);
          player.sendMessage(ChatUtils.colorize("&aSelected arena: &f" + arena.getName()));
-         // TODO: Implement arena selection logic
       } else if (clickType == ClickType.SHIFT_LEFT) {
          // Teleport to arena
          player.teleport(arena.getSpawn1());

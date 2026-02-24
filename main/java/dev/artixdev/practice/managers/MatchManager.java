@@ -1,13 +1,12 @@
-﻿package dev.artixdev.practice.managers;
+package dev.artixdev.practice.managers;
 
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.Match;
 import dev.artixdev.practice.models.PlayerProfile;
 import dev.artixdev.practice.enums.KitType;
 import dev.artixdev.practice.enums.PlayerState;
-import dev.artixdev.practice.utils.ChatUtils;
+import dev.artixdev.practice.utils.Messages;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,11 +27,13 @@ public class MatchManager {
     private final Main plugin;
     private final Map<UUID, Match> matches;
     private final Map<UUID, BukkitTask> matchTasks;
-    
+    private final Map<UUID, Match> spectators;
+
     public MatchManager(Main plugin) {
         this.plugin = plugin;
         this.matches = new ConcurrentHashMap<>();
         this.matchTasks = new ConcurrentHashMap<>();
+        this.spectators = new ConcurrentHashMap<>();
     }
     
     public void initialize() {
@@ -53,7 +54,10 @@ public class MatchManager {
     public Match createMatch(Player player1, Player player2, KitType kitType) {
         UUID matchId = UUID.randomUUID();
         Match match = new Match(matchId, player1, player2, kitType);
-        
+        int warmupSeconds = dev.artixdev.practice.configs.SettingsConfig.MATCH_SPAWN_PROTECTION > 0
+            ? dev.artixdev.practice.configs.SettingsConfig.MATCH_SPAWN_PROTECTION
+            : 5;
+        match.setWarmupEndTime(System.currentTimeMillis() + warmupSeconds * 1000L);
         matches.put(matchId, match);
         
         // Save match to storage
@@ -287,6 +291,7 @@ public class MatchManager {
         if (player == null) {
             return;
         }
+        spectators.remove(player.getUniqueId());
 
         Match match = getMatchByPlayer(player);
         if (match == null) {
@@ -438,16 +443,16 @@ public class MatchManager {
      * Send match start messages
      */
     private void sendMatchStartMessages(Match match) {
+        String kitName = match.getKitType() != null ? match.getKitType().getDisplayName() : "Unknown";
         if (match.getPlayer1() != null) {
-            match.getPlayer1().sendMessage(ChatUtils.colorize("&6&lMatch Started!"));
-            match.getPlayer1().sendMessage(ChatUtils.colorize("&eOpponent: &f" + match.getPlayer2().getName()));
-            match.getPlayer1().sendMessage(ChatUtils.colorize("&eKit: &f" + match.getKitType().getDisplayName()));
+            match.getPlayer1().sendMessage(Messages.get("MATCH.STARTED_TITLE"));
+            match.getPlayer1().sendMessage(Messages.get("MATCH.OPPONENT", "opponent", match.getPlayer2().getName()));
+            match.getPlayer1().sendMessage(Messages.get("MATCH.KIT", "kit", kitName));
         }
-        
         if (match.getPlayer2() != null) {
-            match.getPlayer2().sendMessage(ChatUtils.colorize("&6&lMatch Started!"));
-            match.getPlayer2().sendMessage(ChatUtils.colorize("&eOpponent: &f" + match.getPlayer1().getName()));
-            match.getPlayer2().sendMessage(ChatUtils.colorize("&eKit: &f" + match.getKitType().getDisplayName()));
+            match.getPlayer2().sendMessage(Messages.get("MATCH.STARTED_TITLE"));
+            match.getPlayer2().sendMessage(Messages.get("MATCH.OPPONENT", "opponent", match.getPlayer1().getName()));
+            match.getPlayer2().sendMessage(Messages.get("MATCH.KIT", "kit", kitName));
         }
     }
     
@@ -456,8 +461,8 @@ public class MatchManager {
      */
     private void sendMatchEndMessages(Match match) {
         if (match.getWinner() != null && match.getLoser() != null) {
-            match.getWinner().sendMessage(ChatUtils.colorize("&a&lYou won the match!"));
-            match.getLoser().sendMessage(ChatUtils.colorize("&c&lYou lost the match!"));
+            match.getWinner().sendMessage(Messages.get("MATCH.YOU_WON"));
+            match.getLoser().sendMessage(Messages.get("MATCH.YOU_LOST"));
         }
     }
     
@@ -472,11 +477,10 @@ public class MatchManager {
         String timeString = String.format("%d:%02d", minutes, seconds);
         
         if (match.getPlayer1() != null) {
-            match.getPlayer1().sendMessage(ChatUtils.colorize("&7Match Time: &f" + timeString));
+            match.getPlayer1().sendMessage(Messages.get("MATCH.TIME", "time", timeString));
         }
-        
         if (match.getPlayer2() != null) {
-            match.getPlayer2().sendMessage(ChatUtils.colorize("&7Match Time: &f" + timeString));
+            match.getPlayer2().sendMessage(Messages.get("MATCH.TIME", "time", timeString));
         }
     }
     
@@ -489,12 +493,29 @@ public class MatchManager {
     }
 
     public void addSpectator(Player player, Match match) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addSpectator'");
+        if (player == null || match == null) return;
+        spectators.put(player.getUniqueId(), match);
+        if (match.getLocation() != null) {
+            player.teleport(match.getLocation());
+        }
+        String msg = Messages.get("MATCH.SPECTATING");
+        if (msg == null) msg = "§7Spectating match.";
+        player.sendMessage(Messages.getPrefix() + " " + msg);
+    }
+
+    public void stopSpectating(Player player) {
+        Match match = spectators.remove(player.getUniqueId());
+        if (match != null) {
+            plugin.getPlayerManager().teleportToSpawn(player);
+            player.sendMessage(Messages.getPrefix() + " §7You are no longer spectating.");
+        }
+    }
+
+    public boolean isSpectating(Player player) {
+        return spectators.containsKey(player.getUniqueId());
     }
 
     public List<Match> getOngoingMatches() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getOngoingMatches'");
+        return new ArrayList<>(matches.values());
     }
 }

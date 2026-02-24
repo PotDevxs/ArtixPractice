@@ -1,4 +1,4 @@
-﻿package dev.artixdev.api.practice.command.parametric;
+package dev.artixdev.api.practice.command.parametric;
 
 import com.google.common.base.Preconditions;
 import java.lang.annotation.Annotation;
@@ -27,7 +27,7 @@ public class DrinkBinding<T> {
 
             while(var2.hasNext()) {
                final Class<? extends Annotation> annotation = (Class<? extends Annotation>)var2.next();
-               if (parameter.getClassifierAnnotations().stream().anyMatch((a) -> {
+               if (!parameter.getClassifierAnnotations().stream().anyMatch((a) -> {
                   return a.annotationType().equals(annotation);
                })) {
                   return false;

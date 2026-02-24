@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.bytes;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.bytes;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -1300,16 +1300,16 @@ public final class ByteArrays {
       if (to - from < 1024) {
          quickSort(a, b, from, to);
       } else {
-         int layers = true;
-         int maxLevel = true;
-         int stackSize = true;
+         int layers = 2;
+         int maxLevel = 1;
+         int stackSize = 256;
          int stackPos = 0;
          int[] offsetStack = new int[256];
          int[] lengthStack = new int[256];
          int[] levelStack = new int[256];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -1383,11 +1383,11 @@ public final class ByteArrays {
    public static void parallelRadixSort(byte[] a, byte[] b, int from, int to) {
       ForkJoinPool pool = getPool();
       if (to - from >= 1024 && pool.getParallelism() != 1) {
-         int layers = true;
+         int layers = 2;
          if (a.length != b.length) {
             throw new IllegalArgumentException("Array size mismatch.");
          } else {
-            int maxLevel = true;
+            int maxLevel = 1;
             LinkedBlockingQueue<ByteArrays.Segment> queue = new LinkedBlockingQueue();
             queue.add(new ByteArrays.Segment(from, to - from, 0));
             AtomicInteger queueSize = new AtomicInteger(1);
@@ -1538,16 +1538,16 @@ public final class ByteArrays {
       if (to - from < 64) {
          insertionSortIndirect(perm, a, b, from, to);
       } else {
-         int layers = true;
-         int maxLevel = true;
-         int stackSize = true;
+         int layers = 2;
+         int maxLevel = 1;
+         int stackSize = 256;
          int stackPos = 0;
          int[] offsetStack = new int[256];
          int[] lengthStack = new int[256];
          int[] levelStack = new int[256];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -1570,7 +1570,6 @@ public final class ByteArrays {
                lastUsed = -1;
                int i = 0;
 
-               int i;
                for(i = stable ? 0 : first; i < 256; ++i) {
                   if (count[i] != 0) {
                      lastUsed = i;
@@ -1650,13 +1649,13 @@ public final class ByteArrays {
 
          int p;
          for(p = i + 1; p < to; ++p) {
-            for(int p = firstLayer; p < layers; ++p) {
-               if (a[p][p] < a[p][m]) {
+            for(int q = firstLayer; q < layers; ++q) {
+               if (a[q][p] < a[q][m]) {
                   m = p;
                   break;
                }
 
-               if (a[p][p] > a[p][m]) {
+               if (a[q][p] > a[q][m]) {
                   break;
                }
             }
@@ -1693,7 +1692,7 @@ public final class ByteArrays {
          }
 
          p = 255 * (layers * 1 - 1) + 1;
-         int stackPos = 0;
+         stackPos = 0;
          int[] offsetStack = new int[p];
          int[] lengthStack = new int[p];
          int[] levelStack = new int[p];
@@ -1735,7 +1734,6 @@ public final class ByteArrays {
 
             int c;
             for(boolean var22 = true; i <= end; count[c] = 0) {
-               int p;
                for(p = layers; p-- != 0; t[p] = a[p][i]) {
                }
 
@@ -2088,7 +2086,6 @@ public final class ByteArrays {
             int d = c;
 
             while(true) {
-               int t;
                int t;
                while(b > c || (t = (t = Byte.compare(x[b], v)) == 0 ? Byte.compare(y[b], w) : t) > 0) {
                   for(; c >= b && (t = (t = Byte.compare(x[c], v)) == 0 ? Byte.compare(y[c], w) : t) >= 0; --c) {

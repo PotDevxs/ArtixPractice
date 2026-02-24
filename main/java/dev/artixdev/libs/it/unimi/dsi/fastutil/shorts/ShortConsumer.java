@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -18,7 +18,7 @@ public interface ShortConsumer extends Consumer<Short>, IntConsumer {
    /** @deprecated */
    @Deprecated
    default void accept(Short t) {
-      this.accept(t);
+      this.accept(t.shortValue());
    }
 
    default ShortConsumer andThen(ShortConsumer after) {
@@ -35,7 +35,7 @@ public interface ShortConsumer extends Consumer<Short>, IntConsumer {
          var10001 = (ShortConsumer)after;
       } else {
          Objects.requireNonNull(after);
-         var10001 = after::accept;
+         var10001 = t -> after.accept(t);
       }
 
       return this.andThen(var10001);
@@ -44,6 +44,6 @@ public interface ShortConsumer extends Consumer<Short>, IntConsumer {
    /** @deprecated */
    @Deprecated
    default Consumer<Short> andThen(Consumer<? super Short> after) {
-      return super.andThen(after);
+      return Consumer.super.andThen(after);
    }
 }

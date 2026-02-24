@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -36,9 +36,9 @@ public final class Object2IntFunctions {
    public static <K> Object2IntFunction<K> primitive(Function<? super K, ? extends Integer> f) {
       Objects.requireNonNull(f);
       if (f instanceof Object2IntFunction) {
-         return (Object2IntFunction)f;
+         return (Object2IntFunction<K>)f;
       } else {
-         return (Object2IntFunction)(f instanceof ToIntFunction ? (key) -> {
+         return (Object2IntFunction<K>)(f instanceof ToIntFunction ? (Object2IntFunction<K>)(key) -> {
             return ((ToIntFunction)f).applyAsInt(key);
          } : new Object2IntFunctions.PrimitiveFunction(f));
       }
@@ -108,14 +108,12 @@ public final class Object2IntFunctions {
       @Deprecated
       public Integer apply(K key) {
          synchronized(this.sync) {
-            return (Integer)this.function.apply(key);
+            return this.function.get(key);
          }
       }
 
       public int size() {
-         synchronized(this.sync) {
-            return this.function.size();
-         }
+         throw new UnsupportedOperationException();
       }
 
       public int defaultReturnValue() {
@@ -161,9 +159,7 @@ public final class Object2IntFunctions {
       }
 
       public void clear() {
-         synchronized(this.sync) {
-            this.function.clear();
-         }
+         throw new UnsupportedOperationException();
       }
 
       /** @deprecated */
@@ -240,7 +236,7 @@ public final class Object2IntFunctions {
       }
 
       public int size() {
-         return this.function.size();
+         throw new UnsupportedOperationException();
       }
 
       public int defaultReturnValue() {
@@ -312,6 +308,7 @@ public final class Object2IntFunctions {
       }
    }
 
+   @SuppressWarnings("unchecked")
    public static class PrimitiveFunction<K> implements Object2IntFunction<K> {
       protected final Function<? super K, ? extends Integer> function;
 
@@ -320,30 +317,30 @@ public final class Object2IntFunctions {
       }
 
       public boolean containsKey(Object key) {
-         return this.function.apply(key) != null;
+         return this.function.apply((K)key) != null;
       }
 
       public int getInt(Object key) {
-         Integer v = (Integer)this.function.apply(key);
+         Integer v = (Integer)this.function.apply((K)key);
          return v == null ? this.defaultReturnValue() : v;
       }
 
       public int getOrDefault(Object key, int defaultValue) {
-         Integer v = (Integer)this.function.apply(key);
+         Integer v = (Integer)this.function.apply((K)key);
          return v == null ? defaultValue : v;
       }
 
       /** @deprecated */
       @Deprecated
       public Integer get(Object key) {
-         return (Integer)this.function.apply(key);
+         return (Integer)this.function.apply((K)key);
       }
 
       /** @deprecated */
       @Deprecated
       public Integer getOrDefault(Object key, Integer defaultValue) {
          Integer v;
-         return (v = (Integer)this.function.apply(key)) == null ? defaultValue : v;
+         return (v = (Integer)this.function.apply((K)key)) == null ? defaultValue : v;
       }
 
       /** @deprecated */
@@ -395,11 +392,7 @@ public final class Object2IntFunctions {
       }
 
       public boolean equals(Object o) {
-         if (!(o instanceof dev.artixdev.libs.it.unimi.dsi.fastutil.Function)) {
-            return false;
-         } else {
-            return ((dev.artixdev.libs.it.unimi.dsi.fastutil.Function)o).size() == 0;
-         }
+         return o == this || o instanceof EmptyFunction;
       }
 
       public String toString() {

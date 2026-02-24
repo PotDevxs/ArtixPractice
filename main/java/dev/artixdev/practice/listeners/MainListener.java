@@ -1,8 +1,5 @@
-﻿package dev.artixdev.practice.listeners;
+package dev.artixdev.practice.listeners;
 
-import java.util.Map;
-import java.util.UUID;
-import me.drizzy.api.nms.INMSImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
@@ -29,10 +26,12 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
+
+import java.util.UUID;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.PluginManager;
 import dev.artixdev.practice.Main;
-import dev.artixdev.practice.utils.ChatUtils;
+import dev.artixdev.practice.utils.Messages;
 
 /**
  * Main Listener
@@ -55,17 +54,59 @@ public final class MainListener implements Listener {
    public void onJoin(PlayerJoinEvent event) {
       event.setJoinMessage(null);
       Player player = event.getPlayer();
-      
-      // Load player profile
-      plugin.getPlayerManager().loadPlayer(player.getUniqueId());
-      
-      // Send welcome message
-      player.sendMessage(ChatUtils.colorize("&6&lWelcome to Bolt Practice!"));
-      player.sendMessage(ChatUtils.colorize("&7Use &f/practice &7to get started!"));
-      
+
+      // Load player profile (cache + storage/FLATFILE)
+      dev.artixdev.practice.models.PlayerProfile profile = plugin.getPlayerManager().loadPlayer(player.getUniqueId());
+
+      // Welcome message (fallback if messages missing)
+      String w1 = Messages.get("GENERAL.WELCOME_LINE1");
+      String w2 = Messages.get("GENERAL.WELCOME_LINE2");
+      if (w1 != null && !w1.isEmpty()) player.sendMessage(w1);
+      if (w2 != null && !w2.isEmpty()) player.sendMessage(w2);
+
       // Teleport to spawn
       plugin.getPlayerManager().teleportToSpawn(player);
-      
+
+      // Scoreboard and hotbar for lobby
+      if (plugin.getScoreboardManager() != null) {
+         plugin.getScoreboardManager().setScoreboard(player, "lobby");
+      }
+      if (plugin.getHotbarManager() != null) {
+         plugin.getHotbarManager().setHotbarLayout(player, "LOBBY");
+      }
+
+      // Fire custom PlayerJoinEvent so ScoreboardListener / NameTag etc. can run
+      if (profile != null) {
+         dev.artixdev.practice.events.PlayerJoinEvent customJoin = new dev.artixdev.practice.events.PlayerJoinEvent(profile);
+         Bukkit.getPluginManager().callEvent(customJoin);
+      }
+
+      // Apply visibility preference: joining player hides others who have visibility disabled
+      for (Player other : Bukkit.getOnlinePlayers()) {
+         if (other.equals(player)) continue;
+         dev.artixdev.practice.models.PlayerProfile op = plugin.getPlayerManager().getPlayerProfile(other.getUniqueId());
+         if (op != null && !op.isVisibilityEnabled()) {
+            player.hidePlayer(other);
+         }
+      }
+
+      // Daily reward and achievements (delayed)
+      Bukkit.getScheduler().runTaskLater(plugin.getPlugin(), () -> {
+         dev.artixdev.practice.models.PlayerProfile p = plugin.getPlayerManager().getPlayerProfile(player.getUniqueId());
+         if (p != null) {
+            if (plugin.getDailyRewardManager() != null) {
+               plugin.getDailyRewardManager().onPlayerJoin(player, p);
+            }
+            if (plugin.getAchievementsManager() != null) {
+               java.util.Set<String> newly = plugin.getAchievementsManager().checkAndUnlockAll(p);
+               for (String id : newly) {
+                  dev.artixdev.practice.enums.AchievementType type = dev.artixdev.practice.enums.AchievementType.fromId(id);
+                  if (type != null) plugin.getAchievementsManager().notifyUnlock(player, type);
+               }
+            }
+         }
+      }, 40L);
+
       logger.info("Player joined: " + player.getName());
    }
    
@@ -93,7 +134,7 @@ public final class MainListener implements Listener {
       // Prevent block breaking in practice worlds
       if (plugin.getArenaManager().isInArena(event.getBlock().getLocation())) {
          event.setCancelled(true);
-         player.sendMessage(ChatUtils.colorize("&cYou cannot break blocks in arenas!"));
+         player.sendMessage(Messages.get("ARENA.CANNOT_BREAK"));
       }
    }
    
@@ -104,7 +145,7 @@ public final class MainListener implements Listener {
       // Prevent block placing in practice worlds
       if (plugin.getArenaManager().isInArena(event.getBlock().getLocation())) {
          event.setCancelled(true);
-         player.sendMessage(ChatUtils.colorize("&cYou cannot place blocks in arenas!"));
+         player.sendMessage(Messages.get("ARENA.CANNOT_PLACE"));
       }
    }
    
@@ -156,7 +197,7 @@ public final class MainListener implements Listener {
          // Check if player can launch projectiles
          if (!plugin.getArenaManager().isInArena(shooter.getLocation())) {
             event.setCancelled(true);
-            shooter.sendMessage(ChatUtils.colorize("&cYou can only use projectiles in arenas!"));
+            shooter.sendMessage(Messages.get("ARENA.CANNOT_USE_PROJECTILES"));
          }
       }
    }
@@ -168,7 +209,7 @@ public final class MainListener implements Listener {
       // Prevent bucket usage in practice worlds
       if (plugin.getArenaManager().isInArena(event.getBlockClicked().getLocation())) {
          event.setCancelled(true);
-         player.sendMessage(ChatUtils.colorize("&cYou cannot use buckets in arenas!"));
+         player.sendMessage(Messages.get("ARENA.CANNOT_USE_BUCKETS"));
       }
    }
    
@@ -179,7 +220,7 @@ public final class MainListener implements Listener {
       // Handle world change
       if (plugin.getArenaManager().isInArena(player.getLocation())) {
          // Player entered arena world
-         player.sendMessage(ChatUtils.colorize("&aYou entered an arena world!"));
+         player.sendMessage(Messages.get("ARENA.ENTERED_ARENA_WORLD"));
       }
    }
    
@@ -195,7 +236,7 @@ public final class MainListener implements Listener {
              command.startsWith("/tpa") ||
              command.startsWith("/warp")) {
             event.setCancelled(true);
-            player.sendMessage(ChatUtils.colorize("&cYou cannot use this command in arenas!"));
+            player.sendMessage(Messages.get("ARENA.CANNOT_USE_COMMAND"));
          }
       }
    }
@@ -207,7 +248,7 @@ public final class MainListener implements Listener {
       // Prevent item dropping in practice areas
       if (plugin.getArenaManager().isInArena(player.getLocation())) {
          event.setCancelled(true);
-         player.sendMessage(ChatUtils.colorize("&cYou cannot drop items in arenas!"));
+         player.sendMessage(Messages.get("ARENA.CANNOT_DROP_ITEMS"));
       }
    }
    
@@ -267,7 +308,7 @@ public final class MainListener implements Listener {
       if (plugin.getMatchManager().isPlayerInMatch(player)) {
          if (event.getCause() != TeleportCause.UNKNOWN) {
             event.setCancelled(true);
-            player.sendMessage(ChatUtils.colorize("&cYou cannot teleport during a match!"));
+            player.sendMessage(Messages.get("ARENA.CANNOT_TELEPORT_DURING_MATCH"));
          }
       }
    }
@@ -279,10 +320,16 @@ public final class MainListener implements Listener {
          return;
       }
       
-      // Check if player is banned or has restrictions
-      // TODO: Implement ban checking
-      
+      if (!isAllowedToJoin(event.getUniqueId(), event.getName())) {
+         event.disallow(Result.KICK_BANNED, org.bukkit.ChatColor.RED + "You are not allowed to join this server.");
+         return;
+      }
       logger.info("Player pre-login: " + event.getName());
+   }
+
+   /** Returns false to disallow (e.g. banned). Plug in BanManager or storage check here. */
+   private boolean isAllowedToJoin(UUID uniqueId, String name) {
+      return true;
    }
    
    /**

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -17,10 +17,10 @@ import java.util.HashMap;
  */
 public class NotificationManager {
    
-   private static final String PREFIX = ChatUtils.colorize("&6&lBolt &8» &7");
-   private static final String ERROR_PREFIX = ChatUtils.colorize("&c&lError &8» &7");
-   private static final String SUCCESS_PREFIX = ChatUtils.colorize("&a&lSuccess &8» &7");
-   private static final String WARNING_PREFIX = ChatUtils.colorize("&e&lWarning &8» &7");
+   private static String getPrefix() { return Messages.get("NOTIFICATIONS.PREFIX"); }
+   private static String getErrorPrefix() { return Messages.get("NOTIFICATIONS.ERROR_PREFIX"); }
+   private static String getSuccessPrefix() { return Messages.get("NOTIFICATIONS.SUCCESS_PREFIX"); }
+   private static String getWarningPrefix() { return Messages.get("NOTIFICATIONS.WARNING_PREFIX"); }
    
    private final Main plugin;
    private final Map<UUID, List<String>> playerNotifications;
@@ -44,7 +44,7 @@ public class NotificationManager {
          return;
       }
       
-      player.sendMessage(PREFIX + ChatUtils.colorize(message));
+      player.sendMessage(getPrefix() + ChatUtils.colorize(message));
    }
    
    /**
@@ -57,7 +57,7 @@ public class NotificationManager {
          return;
       }
       
-      player.sendMessage(ERROR_PREFIX + ChatUtils.colorize(message));
+      player.sendMessage(getErrorPrefix() + ChatUtils.colorize(message));
    }
    
    /**
@@ -70,7 +70,7 @@ public class NotificationManager {
          return;
       }
       
-      player.sendMessage(SUCCESS_PREFIX + ChatUtils.colorize(message));
+      player.sendMessage(getSuccessPrefix() + ChatUtils.colorize(message));
    }
    
    /**
@@ -83,7 +83,7 @@ public class NotificationManager {
          return;
       }
       
-      player.sendMessage(WARNING_PREFIX + ChatUtils.colorize(message));
+      player.sendMessage(getWarningPrefix() + ChatUtils.colorize(message));
    }
    
    /**
@@ -169,9 +169,9 @@ public class NotificationManager {
          return;
       }
       
-      player.sendMessage(ChatUtils.colorize("&6&lNotifications:"));
+      player.sendMessage(Messages.get("NOTIFICATIONS.LIST_TITLE"));
       for (String notification : notifications) {
-         player.sendMessage(ChatUtils.colorize("&7- " + notification));
+         player.sendMessage(Messages.get("NOTIFICATIONS.LIST_LINE", "message", notification));
       }
       
       clearNotifications(player);
@@ -182,14 +182,20 @@ public class NotificationManager {
     * @param player the player
     * @param message the message
     */
+   @SuppressWarnings("unchecked")
    public void sendActionBar(Player player, String message) {
-      if (player == null || message == null) {
-         return;
+      if (player == null || message == null) return;
+      String text = ChatUtils.colorize(message);
+      try {
+         Object spigotInstance = Player.class.getMethod("spigot").invoke(player);
+         Class<?> chatMessageType = Class.forName("net.md_5.bungee.api.ChatMessageType");
+         Object actionBar = java.lang.Enum.valueOf((Class<Enum>) chatMessageType, "ACTION_BAR");
+         Class<?> textComponent = Class.forName("net.md_5.bungee.api.chat.TextComponent");
+         Object[] comps = (Object[]) textComponent.getMethod("fromLegacyText", String.class).invoke(null, text);
+         spigotInstance.getClass().getMethod("sendMessage", chatMessageType, comps.getClass()).invoke(spigotInstance, actionBar, comps);
+      } catch (Throwable t) {
+         player.sendMessage(Messages.get("NOTIFICATIONS.ACTION_BAR_FORMAT", "message", text));
       }
-      
-      // TODO: Implement action bar sending
-      // This would require NMS or a library like Adventure API
-      player.sendMessage(ChatUtils.colorize("&6&lAction Bar: &7" + message));
    }
    
    /**
@@ -202,15 +208,15 @@ public class NotificationManager {
     * @param fadeOut fade out time
     */
    public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
-      if (player == null) {
-         return;
-      }
-      
-      // TODO: Implement title sending
-      // This would require NMS or a library like Adventure API
-      player.sendMessage(ChatUtils.colorize("&6&lTitle: &7" + title));
-      if (subtitle != null) {
-         player.sendMessage(ChatUtils.colorize("&7" + subtitle));
+      if (player == null) return;
+      String t = title != null ? ChatUtils.colorize(title) : "";
+      String s = subtitle != null ? ChatUtils.colorize(subtitle) : "";
+      try {
+         java.lang.reflect.Method m = Player.class.getMethod("sendTitle", String.class, String.class, int.class, int.class, int.class);
+         m.invoke(player, t, s, fadeIn, stay, fadeOut);
+      } catch (Throwable e) {
+         player.sendMessage(Messages.get("NOTIFICATIONS.TITLE_FORMAT", "title", t));
+         if (!s.isEmpty()) player.sendMessage(Messages.get("NOTIFICATIONS.SUBTITLE_FORMAT", "subtitle", s));
       }
    }
    
@@ -244,7 +250,7 @@ public class NotificationManager {
          return;
       }
       
-      String fullMessage = (prefix != null ? prefix : PREFIX) + ChatUtils.colorize(message);
+      String fullMessage = (prefix != null ? prefix : getPrefix()) + ChatUtils.colorize(message);
       player.sendMessage(fullMessage);
    }
    

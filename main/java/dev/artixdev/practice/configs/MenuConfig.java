@@ -56,6 +56,6 @@ public class MenuConfig extends ParentYamlStorage {
    }
 
    public String[] getHeader() {
-      return new String[]{"This is the main menu configuration file for Bolt.", "The only menus that are configurable are one's accessible by players, not Admins.", "So menus like Arena manage or Kit manage are not configurable, since you won't need to.", "You need help with the configuration or have any questions related to Bolt?", "Join us in our Discord: https://dsc.gg/refine", null, "NOTE: All Material IDs are supported from 1.8x-1.20.x. Recommended: https://minecraftitemids.com/"};
+      return new String[]{"This is the main menu configuration file for Artix.", "The only menus that are configurable are one's accessible by players, not Admins.", "So menus like Arena manage or Kit manage are not configurable, since you won't need to.", "You need help with the configuration or have any questions related to Artix?", "Join us in our Discord: https://dsc.gg/artix", null, "NOTE: All Material IDs are supported from 1.8x-1.20.x. Recommended: https://minecraftitemids.com/"};
    }
 }

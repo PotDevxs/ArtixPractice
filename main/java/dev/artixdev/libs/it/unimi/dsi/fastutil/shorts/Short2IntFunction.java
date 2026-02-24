@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
 
 import java.util.function.IntUnaryOperator;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -55,7 +55,7 @@ public interface Short2IntFunction extends IntUnaryOperator, Function<Short, Int
    default Integer put(Short key, Integer value) {
       short k = key;
       boolean containsKey = this.containsKey(k);
-      int v = this.put(k, value);
+      int v = this.put(k, value.intValue());
       return containsKey ? v : null;
    }
 

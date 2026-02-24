@@ -1,35 +1,24 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil;
+package dev.artixdev.libs.it.unimi.dsi.fastutil;
 
-@FunctionalInterface
-public interface Function<K, V> extends java.util.function.Function<K, V> {
-   default V apply(K key) {
-      return this.get(key);
+/**
+ * Base type for fastutil function interfaces. Subinterfaces extend
+ * {@link java.util.function.Function} (via default {@code apply} delegating to primitive
+ * {@code get}) and use this base for {@link #compose} and {@link #andThen} chaining.
+ *
+ * @param <K> the type of the input to the function
+ * @param <V> the type of the output of the function
+ */
+public interface Function<K, V> {
+
+   @SuppressWarnings("unchecked")
+   default <T> java.util.function.Function<T, V> compose(java.util.function.Function<? super T, ? extends K> before) {
+      java.util.function.Function<K, V> self = (java.util.function.Function<K, V>) this;
+      return t -> self.apply(before.apply(t));
    }
 
-   default V put(K key, V value) {
-      throw new UnsupportedOperationException();
-   }
-
-   V get(Object var1);
-
-   default V getOrDefault(Object key, V defaultValue) {
-      V value = this.get(key);
-      return value == null && !this.containsKey(key) ? defaultValue : value;
-   }
-
-   default boolean containsKey(Object key) {
-      return true;
-   }
-
-   default V remove(Object key) {
-      throw new UnsupportedOperationException();
-   }
-
-   default int size() {
-      return -1;
-   }
-
-   default void clear() {
-      throw new UnsupportedOperationException();
+   @SuppressWarnings("unchecked")
+   default <T> java.util.function.Function<K, T> andThen(java.util.function.Function<? super V, ? extends T> after) {
+      java.util.function.Function<K, V> self = (java.util.function.Function<K, V>) this;
+      return k -> after.apply(self.apply(k));
    }
 }

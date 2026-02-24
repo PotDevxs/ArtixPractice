@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.threads;
+package dev.artixdev.practice.threads;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,13 +46,6 @@ public class WorkerThread extends Thread {
     * Perform tick operations
     */
    private void tick() {
-      // Perform background tasks
-      // This would typically include:
-      // - Processing queued operations
-      // - Updating statistics
-      // - Cleaning up resources
-      // - Sending periodic updates
-      
       try {
          // Example: Process queued operations
          processQueuedOperations();
@@ -72,9 +65,7 @@ public class WorkerThread extends Thread {
     * Process queued operations
     */
    private void processQueuedOperations() {
-      // Process any queued operations
-      // This would typically involve processing a queue of operations
-      // that need to be performed in the background
+      // No queue configured; override or extend to process pending operations
    }
    
    /**

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Projectile;
@@ -24,6 +24,7 @@ public class ProjectileManager {
    private final ProjectileTracker tracker;
    private final ProjectilePhysics physics;
    private final Map<UUID, Long> playerCooldowns;
+   private final Map<UUID, ProjectileType> playerLastType;
    
    /**
     * Constructor
@@ -35,6 +36,7 @@ public class ProjectileManager {
       this.tracker = new ProjectileTracker(plugin);
       this.physics = new ProjectilePhysics(plugin);
       this.playerCooldowns = new HashMap<>();
+      this.playerLastType = new HashMap<>();
    }
    
    /**
@@ -51,7 +53,7 @@ public class ProjectileManager {
       
       // Check cooldown
       if (isInCooldown(shooter)) {
-         shooter.sendMessage(ChatUtils.colorize("&cYou are in cooldown!"));
+         shooter.sendMessage(dev.artixdev.practice.utils.Messages.get("COMBAT.COOLDOWN"));
          return;
       }
       
@@ -141,13 +143,9 @@ public class ProjectileManager {
     * @return cooldown in milliseconds
     */
    private long getProjectileCooldown(org.bukkit.entity.Player player) {
-      if (player == null) {
-         return DEFAULT_COOLDOWN;
-      }
-      
-      // TODO: Implement player-specific cooldown calculation
-      // This could be based on player stats, kit, etc.
-      return 1000; // Default 1 second
+      if (player == null) return DEFAULT_COOLDOWN;
+      ProjectileType lastType = playerLastType.get(player.getUniqueId());
+      return lastType != null ? tracker.getProjectileCooldown(lastType) : 1000L;
    }
    
    /**
@@ -156,13 +154,10 @@ public class ProjectileManager {
     * @param type the projectile type
     */
    private void setCooldown(org.bukkit.entity.Player player, ProjectileType type) {
-      if (player == null || type == null) {
-         return;
-      }
-      
+      if (player == null || type == null) return;
       UUID playerId = player.getUniqueId();
-      long currentTime = System.currentTimeMillis();
-      playerCooldowns.put(playerId, currentTime);
+      playerCooldowns.put(playerId, System.currentTimeMillis());
+      playerLastType.put(playerId, type);
    }
    
    /**

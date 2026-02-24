@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -31,14 +31,6 @@ public interface IntIterable extends Iterable<Integer> {
    @Deprecated
    default void forEach(Consumer<? super Integer> action) {
       Objects.requireNonNull(action);
-      java.util.function.IntConsumer var10001;
-      if (action instanceof java.util.function.IntConsumer) {
-         var10001 = (java.util.function.IntConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEach(var10001);
+      this.forEach((int x) -> action.accept(x));
    }
 }

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -36,7 +36,7 @@ public class ObjectOpenHashSet<K> extends AbstractObjectSet<K> implements Serial
             this.minN = this.n = HashCommon.arraySize(expected, f);
             this.mask = this.n - 1;
             this.maxFill = HashCommon.maxFill(this.n, f);
-            this.key = new Object[this.n + 1];
+            this.key = (K[]) new Object[this.n + 1];
          }
       } else {
          throw new IllegalArgumentException("Load factor must be greater than 0 and smaller than 1");
@@ -138,17 +138,13 @@ public class ObjectOpenHashSet<K> extends AbstractObjectSet<K> implements Serial
 
    @SafeVarargs
    public static <K> ObjectOpenHashSet<K> of(K... a) {
-      ObjectOpenHashSet<K> result = new ObjectOpenHashSet(a.length, 0.75F);
-      Object[] var2 = a;
-      int var3 = a.length;
-
-      for(int var4 = 0; var4 < var3; ++var4) {
-         K element = var2[var4];
+      ObjectOpenHashSet<K> result = new ObjectOpenHashSet<>(a.length, 0.75F);
+      for (int i = 0; i < a.length; ++i) {
+         K element = a[i];
          if (!result.add(element)) {
             throw new IllegalArgumentException("Duplicate element " + element);
          }
       }
-
       return result;
    }
 
@@ -157,14 +153,17 @@ public class ObjectOpenHashSet<K> extends AbstractObjectSet<K> implements Serial
       return this;
    }
 
+   @SuppressWarnings("unchecked")
    public static <K> Collector<K, ?, ObjectOpenHashSet<K>> toSet() {
-      return TO_SET_COLLECTOR;
+      return (Collector<K, ?, ObjectOpenHashSet<K>>) (Collector<?, ?, ?>) TO_SET_COLLECTOR;
    }
 
    public static <K> Collector<K, ?, ObjectOpenHashSet<K>> toSetWithExpectedSize(int expectedSize) {
-      return expectedSize <= 16 ? toSet() : Collector.of(new ObjectCollections.SizeDecreasingSupplier(expectedSize, (size) -> {
-         return size <= 16 ? new ObjectOpenHashSet() : new ObjectOpenHashSet(size);
-      }), ObjectOpenHashSet::add, ObjectOpenHashSet::combine, Characteristics.UNORDERED);
+      return expectedSize <= 16 ? toSet() : Collector.<K, ObjectOpenHashSet<K>>of(
+         new ObjectCollections.SizeDecreasingSupplier<K, ObjectOpenHashSet<K>>(expectedSize, size -> size <= 16 ? new ObjectOpenHashSet<>() : new ObjectOpenHashSet<>(size)),
+         ObjectOpenHashSet::add,
+         ObjectOpenHashSet::combine,
+         Characteristics.UNORDERED);
    }
 
    private int realSize() {
@@ -240,7 +239,7 @@ public class ObjectOpenHashSet<K> extends AbstractObjectSet<K> implements Serial
       } else {
          K[] key = this.key;
          int pos;
-         Object curr;
+         K curr;
          if ((curr = key[pos = HashCommon.mix(k.hashCode()) & this.mask]) != null) {
             if (curr.equals(k)) {
                return curr;
@@ -365,7 +364,7 @@ public class ObjectOpenHashSet<K> extends AbstractObjectSet<K> implements Serial
          return this.key[this.n];
       } else {
          K[] key = this.key;
-         Object curr;
+         K curr;
          int pos;
          if ((curr = key[pos = HashCommon.mix(k.hashCode()) & this.mask]) == null) {
             return null;
@@ -444,7 +443,7 @@ public class ObjectOpenHashSet<K> extends AbstractObjectSet<K> implements Serial
    protected void rehash(int newN) {
       K[] key = this.key;
       int mask = newN - 1;
-      K[] newKey = new Object[newN + 1];
+      K[] newKey = (K[]) new Object[newN + 1];
       int i = this.n;
 
       int pos;
@@ -511,11 +510,11 @@ public class ObjectOpenHashSet<K> extends AbstractObjectSet<K> implements Serial
       this.n = HashCommon.arraySize(this.size, this.f);
       this.maxFill = HashCommon.maxFill(this.n, this.f);
       this.mask = this.n - 1;
-      K[] key = this.key = new Object[this.n + 1];
+      K[] key = this.key = (K[]) new Object[this.n + 1];
 
       Object k;
       int pos;
-      for(int var4 = this.size; var4-- != 0; key[pos] = k) {
+      for(int var4 = this.size; var4-- != 0; key[pos] = (K) k) {
          k = s.readObject();
          if (k == null) {
             pos = this.n;
@@ -563,7 +562,7 @@ public class ObjectOpenHashSet<K> extends AbstractObjectSet<K> implements Serial
                this.last = ObjectOpenHashSet.this.n;
                return ObjectOpenHashSet.this.key[ObjectOpenHashSet.this.n];
             } else {
-               Object[] key = ObjectOpenHashSet.this.key;
+               K[] key = ObjectOpenHashSet.this.key;
 
                while(--this.pos >= 0) {
                   if (key[this.pos] != null) {
@@ -578,13 +577,13 @@ public class ObjectOpenHashSet<K> extends AbstractObjectSet<K> implements Serial
       }
 
       private final void shiftKeys(int pos) {
-         Object[] key = ObjectOpenHashSet.this.key;
+         K[] key = ObjectOpenHashSet.this.key;
 
          while(true) {
             int last = pos;
             pos = pos + 1 & ObjectOpenHashSet.this.mask;
 
-            Object curr;
+            K curr;
             while(true) {
                if ((curr = key[pos]) == null) {
                   key[last] = null;
@@ -624,7 +623,7 @@ public class ObjectOpenHashSet<K> extends AbstractObjectSet<K> implements Serial
                ObjectOpenHashSet.this.key[ObjectOpenHashSet.this.n] = null;
             } else {
                if (this.pos < 0) {
-                  ObjectOpenHashSet.this.remove(this.wrapped.set(-this.pos - 1, (Object)null));
+                  ObjectOpenHashSet.this.remove(this.wrapped.set(-this.pos - 1, null));
                   this.last = -1;
                   return;
                }
@@ -698,7 +697,7 @@ public class ObjectOpenHashSet<K> extends AbstractObjectSet<K> implements Serial
             action.accept(ObjectOpenHashSet.this.key[ObjectOpenHashSet.this.n]);
             return true;
          } else {
-            for(Object[] key = ObjectOpenHashSet.this.key; this.pos < this.max; ++this.pos) {
+            for(K[] key = ObjectOpenHashSet.this.key; this.pos < this.max; ++this.pos) {
                if (key[this.pos] != null) {
                   ++this.c;
                   action.accept(key[this.pos++]);

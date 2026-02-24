@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -170,8 +170,9 @@ public final class Long2ObjectMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<Long, V>> entrySet() {
-         return this.long2ObjectEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<Map.Entry<Long, V>> entrySet() {
+         return (ObjectSet<Map.Entry<Long, V>>) (ObjectSet<?>) this.long2ObjectEntrySet();
       }
 
       public LongSet keySet() {
@@ -255,8 +256,9 @@ public final class Long2ObjectMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<Long, V>> entrySet() {
-         return this.long2ObjectEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<Map.Entry<Long, V>> entrySet() {
+         return (ObjectSet<Map.Entry<Long, V>>) (ObjectSet<?>) this.long2ObjectEntrySet();
       }
 
       public LongSet keySet() {
@@ -472,9 +474,10 @@ public final class Long2ObjectMaps {
          throw new UnsupportedOperationException();
       }
 
+      @SuppressWarnings("unchecked")
       public ObjectSet<Long2ObjectMap.Entry<V>> long2ObjectEntrySet() {
          if (this.entries == null) {
-            this.entries = ObjectSets.unmodifiable(this.map.long2ObjectEntrySet());
+            this.entries = (ObjectSet<Long2ObjectMap.Entry<V>>) (ObjectSet<?>) ObjectSets.unmodifiable(this.map.long2ObjectEntrySet());
          }
 
          return this.entries;
@@ -482,8 +485,9 @@ public final class Long2ObjectMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<Long, V>> entrySet() {
-         return this.long2ObjectEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<Map.Entry<Long, V>> entrySet() {
+         return (ObjectSet<Map.Entry<Long, V>>) (ObjectSet<?>) this.long2ObjectEntrySet();
       }
 
       public LongSet keySet() {
@@ -515,7 +519,8 @@ public final class Long2ObjectMaps {
       }
 
       public V getOrDefault(long key, V defaultValue) {
-         return this.map.getOrDefault(key, defaultValue);
+         V v = this.map.get(key);
+         return v == this.map.defaultReturnValue() && !this.map.containsKey(key) ? defaultValue : v;
       }
 
       public void forEach(BiConsumer<? super Long, ? super V> action) {
@@ -565,7 +570,10 @@ public final class Long2ObjectMaps {
       /** @deprecated */
       @Deprecated
       public V getOrDefault(Object key, V defaultValue) {
-         return this.map.getOrDefault(key, defaultValue);
+         if (key == null) return defaultValue;
+         long k = (Long) key;
+         V v = this.map.get(k);
+         return v == this.map.defaultReturnValue() && !this.map.containsKey(k) ? defaultValue : v;
       }
 
       /** @deprecated */

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -67,8 +67,9 @@ public final class ObjectBigArrays {
       BigArrays.copyToBig(srcArray, srcPos, destArray, destPos, length);
    }
 
+   @SuppressWarnings("unchecked")
    public static <K> K[][] newBigArray(K[][] prototype, long length) {
-      return newBigArray(prototype.getClass().getComponentType(), length);
+      return (K[][]) newBigArray(prototype.getClass().getComponentType(), length);
    }
 
    public static Object[][] newBigArray(Class<?> componentType, long length) {

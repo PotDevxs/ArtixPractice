@@ -94,7 +94,7 @@ public class EntityTypes {
    public static final EntityType ITEM;
    public static final EntityType FIREBALL;
    public static final EntityType LEASH_KNOT;
-   public static final EntityType LIGHTNING_BOLT;
+   public static final EntityType LIGHTNING_ARTIX;
    public static final EntityType LLAMA;
    public static final EntityType LLAMA_SPIT;
    public static final EntityType SLIME;
@@ -367,7 +367,7 @@ public class EntityTypes {
       ITEM = define("item", ENTITY);
       FIREBALL = define("fireball", ABSTRACT_FIREBALL);
       LEASH_KNOT = define("leash_knot", ABSTRACT_HANGING);
-      LIGHTNING_BOLT = define("lightning_bolt", ABSTRACT_LIGHTNING);
+      LIGHTNING_ARTIX = define("lightning_artix", ABSTRACT_LIGHTNING);
       LLAMA = define("llama", CHESTED_HORSE);
       LLAMA_SPIT = define("llama_spit", ENTITY);
       SLIME = define("slime", ABSTRACT_INSENTIENT);

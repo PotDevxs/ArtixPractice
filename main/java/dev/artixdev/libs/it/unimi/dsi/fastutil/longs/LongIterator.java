@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.util.Objects;
 import java.util.PrimitiveIterator.OfLong;
@@ -20,15 +20,8 @@ public interface LongIterator extends OfLong {
    /** @deprecated */
    @Deprecated
    default void forEachRemaining(Consumer<? super Long> action) {
-      java.util.function.LongConsumer var10001;
-      if (action instanceof java.util.function.LongConsumer) {
-         var10001 = (java.util.function.LongConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEachRemaining((java.util.function.LongConsumer)var10001);
+      Objects.requireNonNull(action);
+      this.forEachRemaining((long x) -> action.accept(x));
    }
 
    default int skip(int n) {

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
 
 import java.util.function.DoubleUnaryOperator;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -37,7 +37,7 @@ public interface Double2DoubleFunction extends DoubleUnaryOperator, Function<Dou
    default Double put(Double key, Double value) {
       double k = key;
       boolean containsKey = this.containsKey(k);
-      double v = this.put(k, value);
+      double v = this.put(k, value.doubleValue());
       return containsKey ? v : null;
    }
 

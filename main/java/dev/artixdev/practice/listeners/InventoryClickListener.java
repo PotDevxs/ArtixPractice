@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.listeners;
+package dev.artixdev.practice.listeners;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,7 +11,8 @@ import dev.artixdev.practice.Main;
  * Handles inventory click events
  */
 public class InventoryClickListener implements Listener {
-   
+
+   private static final boolean DEBUG_MENU_CLICKS = false;
    private final Main plugin;
    
    /**
@@ -27,18 +28,15 @@ public class InventoryClickListener implements Listener {
     */
    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
    public void onInventoryClick(InventoryClickEvent event) {
-      // Handle inventory click logic
-      // This would typically check if the click is in a custom menu
-      // and handle the appropriate action
-      
-      if (event.getWhoClicked() instanceof org.bukkit.entity.Player) {
-         org.bukkit.entity.Player player = (org.bukkit.entity.Player) event.getWhoClicked();
-         
-         // Check if player is in a custom menu
-         if (isCustomMenu(event.getView().getTitle())) {
-            event.setCancelled(true);
-            handleCustomMenuClick(player, event);
-         }
+      if (!(event.getWhoClicked() instanceof org.bukkit.entity.Player)) return;
+      org.bukkit.entity.Player player = (org.bukkit.entity.Player) event.getWhoClicked();
+
+      if (dev.artixdev.api.practice.menu.MenuHandler.getInstance().getOpenedMenus().containsKey(player.getUniqueId())) {
+         return;
+      }
+      if (isCustomMenu(event.getView().getTitle())) {
+         event.setCancelled(true);
+         handleCustomMenuClick(player, event);
       }
    }
    
@@ -64,17 +62,15 @@ public class InventoryClickListener implements Listener {
     * @param event the click event
     */
    private void handleCustomMenuClick(org.bukkit.entity.Player player, InventoryClickEvent event) {
-      // Handle custom menu click logic
-      // This would typically delegate to the appropriate menu handler
-      
       String title = event.getView().getTitle();
       int slot = event.getSlot();
-      
-      // Log the click for debugging
-      plugin.getLogger().info(String.format("Player %s clicked slot %d in menu: %s", 
-         player.getName(), slot, title));
-      
-      // Handle different menu types
+
+      if (DEBUG_MENU_CLICKS) {
+         plugin.getLogger().info(String.format("Player %s clicked slot %d in menu: %s",
+            player.getName(), slot, title));
+      }
+
+      // Delegate by menu title when menu was not opened via MenuHandler
       if (title.contains("Practice")) {
          handlePracticeMenuClick(player, event);
       } else if (title.contains("Arena")) {

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.floats;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.floats;
 
 import java.util.function.DoubleToIntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -55,7 +55,7 @@ public interface Float2ByteFunction extends DoubleToIntFunction, Function<Float,
    default Byte put(Float key, Byte value) {
       float k = key;
       boolean containsKey = this.containsKey(k);
-      byte v = this.put(k, value);
+      byte v = this.put(k, value.byteValue());
       return containsKey ? v : null;
    }
 

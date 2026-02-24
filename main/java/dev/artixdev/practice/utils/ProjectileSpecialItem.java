@@ -1,8 +1,12 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
+import org.bukkit.Effect;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
+import org.bukkit.Sound;
 import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
+import dev.artixdev.libs.com.cryptomorin.xseries.XSound;
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.enums.ProjectileType;
 
@@ -213,12 +217,10 @@ public class ProjectileSpecialItem {
     * @param projectile the projectile
     */
    private void applySpecialEffects(Projectile projectile) {
-      if (projectile == null) {
-         return;
-      }
-      
-      // TODO: Implement special effects
-      // This could include trail effects, sound effects, etc.
+      if (projectile == null) return;
+      Sound s = XSound.ENTITY_ARROW_SHOOT.parseSound();
+      if (s != null) projectile.getWorld().playSound(projectile.getLocation(), s, 0.25f, 1.2f);
+      projectile.getWorld().playEffect(projectile.getLocation(), Effect.SMOKE, 0);
    }
    
    /**
@@ -246,12 +248,14 @@ public class ProjectileSpecialItem {
     * @param target the target
     */
    private void applySpecialHitEffects(Projectile projectile, org.bukkit.entity.Entity target) {
-      if (projectile == null || target == null) {
-         return;
+      if (projectile == null || target == null) return;
+      Sound s = XSound.ENTITY_ARROW_HIT.parseSound();
+      if (s != null) target.getWorld().playSound(target.getLocation(), s, 0.4f, 1.0f);
+      target.getWorld().playEffect(target.getLocation(), Effect.CRIT, 0);
+      if (target instanceof org.bukkit.entity.LivingEntity) {
+         Vector knockback = target.getLocation().toVector().subtract(projectile.getLocation().toVector()).normalize().multiply(0.15);
+         target.setVelocity(target.getVelocity().add(knockback));
       }
-      
-      // TODO: Implement special hit effects
-      // This could include damage, knockback, etc.
    }
    
    /**

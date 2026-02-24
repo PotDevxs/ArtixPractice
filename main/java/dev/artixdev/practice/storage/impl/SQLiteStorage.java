@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.storage.impl;
+package dev.artixdev.practice.storage.impl;
 
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.PlayerProfile;
@@ -8,8 +8,12 @@ import dev.artixdev.practice.models.Queue;
 import dev.artixdev.practice.models.Bot;
 import dev.artixdev.practice.storage.StorageProvider;
 import dev.artixdev.practice.utils.JsonUtils;
+import dev.artixdev.practice.utils.LocationUtils;
 import dev.artixdev.practice.utils.cuboid.Cuboid;
 import dev.artixdev.practice.enums.KitType;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import dev.artixdev.practice.enums.PlayerState;
 import com.google.gson.reflect.TypeToken;
 
@@ -653,8 +657,11 @@ public class SQLiteStorage implements StorageProvider {
             profile.setSelectedKit(KitType.valueOf(selectedKit));
         }
         
-        // TODO: Map inventory, armor, statistics, settings from JSON
-        
+        String invJson = rs.getString("inventory");
+        String armorJson = rs.getString("armor");
+        if (invJson != null && !invJson.isEmpty() || armorJson != null && !armorJson.isEmpty()) {
+            // PlayerProfile does not expose setInventory/setArmor; map when API is added
+        }
         profile.setLevel(rs.getInt("level"));
         profile.setExperience(rs.getInt("experience"));
         profile.setWins(rs.getInt("wins"));
@@ -671,9 +678,26 @@ public class SQLiteStorage implements StorageProvider {
     
     private Arena mapResultSetToArena(ResultSet rs) throws SQLException {
         Arena arena = new Arena(UUID.fromString(rs.getString("id")), rs.getString("name"));
-        
-        // TODO: Map spawns, locations from JSON
-        
+        String spawn1Str = rs.getString("spawn1");
+        if (spawn1Str != null && !spawn1Str.isEmpty()) {
+            Location loc = LocationUtils.deserializeLocation(spawn1Str);
+            if (loc != null) arena.setSpawn1(loc);
+        }
+        String spawn2Str = rs.getString("spawn2");
+        if (spawn2Str != null && !spawn2Str.isEmpty()) {
+            Location loc = LocationUtils.deserializeLocation(spawn2Str);
+            if (loc != null) arena.setSpawn2(loc);
+        }
+        String minStr = rs.getString("min_location");
+        if (minStr != null && !minStr.isEmpty()) {
+            Location loc = LocationUtils.deserializeLocation(minStr);
+            if (loc != null) arena.setMin(loc);
+        }
+        String maxStr = rs.getString("max_location");
+        if (maxStr != null && !maxStr.isEmpty()) {
+            Location loc = LocationUtils.deserializeLocation(maxStr);
+            if (loc != null) arena.setMax(loc);
+        }
         String kitType = rs.getString("kit_type");
         if (kitType != null) {
             arena.setKitType(KitType.valueOf(kitType));
@@ -686,17 +710,40 @@ public class SQLiteStorage implements StorageProvider {
     }
     
     private Match mapResultSetToMatch(ResultSet rs) throws SQLException {
-        // TODO: Implement match mapping
-        return null;
+        UUID id = UUID.fromString(rs.getString("id"));
+        String kitTypeStr = rs.getString("kit_type");
+        KitType kitType = kitTypeStr != null ? KitType.valueOf(kitTypeStr) : KitType.DIAMOND;
+        Player p1 = null;
+        Player p2 = null;
+        String u1 = rs.getString("player1");
+        if (u1 != null && !u1.isEmpty()) p1 = Bukkit.getPlayer(UUID.fromString(u1));
+        String u2 = rs.getString("player2");
+        if (u2 != null && !u2.isEmpty()) p2 = Bukkit.getPlayer(UUID.fromString(u2));
+        Match match = new Match(id, p1, p2, kitType);
+        match.setStartTime(rs.getLong("start_time"));
+        match.setEndTime(rs.getLong("end_time"));
+        match.setEnded(rs.getBoolean("ended"));
+        return match;
     }
-    
+
     private Queue mapResultSetToQueue(ResultSet rs) throws SQLException {
-        // TODO: Implement queue mapping
-        return null;
+        UUID id = UUID.fromString(rs.getString("id"));
+        String kitTypeStr = rs.getString("kit_type");
+        KitType kitType = kitTypeStr != null ? KitType.valueOf(kitTypeStr) : KitType.DIAMOND;
+        boolean ranked = rs.getBoolean("ranked");
+        Queue queue = new Queue(id, kitType, ranked);
+        queue.setCreatedTime(rs.getLong("created_time"));
+        return queue;
     }
-    
+
     private Bot mapResultSetToBot(ResultSet rs) throws SQLException {
-        // TODO: Implement bot mapping
-        return null;
+        UUID id = UUID.fromString(rs.getString("id"));
+        String name = rs.getString("name");
+        String kitTypeStr = rs.getString("kit_type");
+        KitType kitType = kitTypeStr != null ? KitType.valueOf(kitTypeStr) : KitType.DIAMOND;
+        int difficulty = rs.getInt("difficulty");
+        Bot bot = new Bot(id, name != null ? name : "Bot", kitType, difficulty);
+        bot.setActive(rs.getBoolean("active"));
+        return bot;
     }
 }

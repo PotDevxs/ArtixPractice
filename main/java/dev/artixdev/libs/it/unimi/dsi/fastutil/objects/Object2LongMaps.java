@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -177,8 +177,9 @@ public final class Object2LongMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<K, Long>> entrySet() {
-         return this.object2LongEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<java.util.Map.Entry<K, Long>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<K, Long>>)(ObjectSet<?>)this.object2LongEntrySet();
       }
 
       public ObjectSet<K> keySet() {
@@ -270,8 +271,9 @@ public final class Object2LongMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<K, Long>> entrySet() {
-         return this.object2LongEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<java.util.Map.Entry<K, Long>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<K, Long>>)(ObjectSet<?>)this.object2LongEntrySet();
       }
 
       public ObjectSet<K> keySet() {
@@ -487,9 +489,10 @@ public final class Object2LongMaps {
          throw new UnsupportedOperationException();
       }
 
+      @SuppressWarnings("unchecked")
       public ObjectSet<Object2LongMap.Entry<K>> object2LongEntrySet() {
          if (this.entries == null) {
-            this.entries = ObjectSets.unmodifiable(this.map.object2LongEntrySet());
+            this.entries = (ObjectSet<Object2LongMap.Entry<K>>)(ObjectSet<?>)ObjectSets.unmodifiable(this.map.object2LongEntrySet());
          }
 
          return this.entries;
@@ -497,8 +500,9 @@ public final class Object2LongMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<K, Long>> entrySet() {
-         return this.object2LongEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<java.util.Map.Entry<K, Long>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<K, Long>>)(ObjectSet<?>)this.object2LongEntrySet();
       }
 
       public ObjectSet<K> keySet() {

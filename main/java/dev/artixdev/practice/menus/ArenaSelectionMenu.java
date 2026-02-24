@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.menus;
+package dev.artixdev.practice.menus;
 
 import com.google.common.base.Preconditions;
 import org.bukkit.entity.Player;
@@ -7,11 +7,12 @@ import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
 import dev.artixdev.api.practice.menu.pagination.PaginatedMenu;
 import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
-import dev.artixdev.practice.Practice;
+import dev.artixdev.practice.Main;
 import dev.artixdev.practice.configs.menus.GeneralMenus;
 import dev.artixdev.practice.models.Arena;
 import dev.artixdev.practice.utils.ChatUtils;
 import dev.artixdev.practice.utils.ItemBuilder;
+import dev.artixdev.practice.utils.Messages;
 import dev.artixdev.practice.utils.other.Callback;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class ArenaSelectionMenu extends PaginatedMenu {
         Map<Integer, Button> buttons = new HashMap<>();
         
         List<Arena> arenas = new ArrayList<>();
-        Practice.getPlugin().getArenaManager().getArenas().values().forEach(arena -> {
+        Main.getInstance().getArenaManager().getArenas().values().forEach(arena -> {
             if (arena.isEnabled()) {
                 if (filter == null || filter.test(arena)) {
                     arenas.add(arena);
@@ -101,13 +102,13 @@ public class ArenaSelectionMenu extends PaginatedMenu {
         public ItemStack getButtonItem(Player player) {
             ItemBuilder itemBuilder = new ItemBuilder(arena.getDisplayIcon());
             itemBuilder.name(ChatUtils.translate("&a" + arena.getName()));
-            
             List<String> lore = new ArrayList<>();
-            lore.add(ChatUtils.translate("&7Tipo: &f" + arena.getType().toString()));
-            lore.add(ChatUtils.translate("&7Status: " + (arena.isEnabled() ? "&aAtivado" : "&cDesativado")));
-            lore.add(ChatUtils.translate("&7Kits: &f" + arena.getKits().size()));
+            lore.add(Messages.get("ARENA_MENU.LORE_TYPE", "type", arena.getType().toString()));
+            String status = arena.isEnabled() ? Messages.get("ARENA_MENU.LORE_STATUS_ENABLED") : Messages.get("ARENA_MENU.LORE_STATUS_DISABLED");
+            lore.add(Messages.get("ARENA_MENU.LORE_STATUS", "status", status));
+            lore.add(Messages.get("ARENA_MENU.LORE_KITS", "count", String.valueOf(arena.getKits().size())));
             lore.add("");
-            lore.add(ChatUtils.translate("&eClique para selecionar esta arena."));
+            lore.add(Messages.get("ARENA_MENU.LORE_CLICK_SELECT"));
             
             itemBuilder.lore(lore);
             return itemBuilder.build();
@@ -143,7 +144,7 @@ public class ArenaSelectionMenu extends PaginatedMenu {
         public void clicked(Player player, ClickType clickType) {
             List<Arena> availableArenas = new ArrayList<>();
             
-            Practice.getPlugin().getArenaManager().getArenas().values().forEach(arena -> {
+            Main.getInstance().getArenaManager().getArenas().values().forEach(arena -> {
                 if (arena.isEnabled()) {
                     if (filter == null || filter.test(arena)) {
                         availableArenas.add(arena);
@@ -152,7 +153,7 @@ public class ArenaSelectionMenu extends PaginatedMenu {
             });
 
             if (availableArenas.isEmpty()) {
-                player.sendMessage(ChatUtils.translate("&cNenhuma arena disponível encontrada."));
+                player.sendMessage(Messages.get("ARENA_MENU.NO_ARENAS_AVAILABLE"));
                 return;
             }
 

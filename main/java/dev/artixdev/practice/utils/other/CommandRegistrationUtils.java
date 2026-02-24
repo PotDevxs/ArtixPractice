@@ -31,7 +31,7 @@ public final class CommandRegistrationUtils {
     public static void registerCommands(String packageName) {
         Main plugin = Main.getInstance();
         if (plugin == null) {
-            throw new IllegalStateException("BoltPlugin instance is not available. Make sure the plugin is initialized.");
+            throw new IllegalStateException("ArtixPractice instance is not available. Make sure the plugin is initialized.");
         }
         
         CommandHandler commandHandler = new CommandHandler(plugin);

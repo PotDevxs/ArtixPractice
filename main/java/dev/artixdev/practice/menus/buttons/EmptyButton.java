@@ -1,5 +1,6 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,7 @@ public class EmptyButton extends Button {
    
    @Override
    public ItemStack getButtonItem(Player player) {
-      return null;
+      return new ItemStack(Material.AIR);
    }
    
    @Override

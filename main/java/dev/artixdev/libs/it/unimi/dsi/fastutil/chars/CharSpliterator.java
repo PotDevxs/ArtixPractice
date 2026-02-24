@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
 
 import java.util.Objects;
 import java.util.Spliterator.OfPrimitive;
@@ -8,29 +8,15 @@ public interface CharSpliterator extends OfPrimitive<Character, CharConsumer, Ch
    /** @deprecated */
    @Deprecated
    default boolean tryAdvance(Consumer<? super Character> action) {
-      CharConsumer var10001;
-      if (action instanceof CharConsumer) {
-         var10001 = (CharConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      return this.tryAdvance(var10001);
+      Objects.requireNonNull(action);
+      return this.tryAdvance((char x) -> action.accept(x));
    }
 
    /** @deprecated */
    @Deprecated
    default void forEachRemaining(Consumer<? super Character> action) {
-      CharConsumer var10001;
-      if (action instanceof CharConsumer) {
-         var10001 = (CharConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEachRemaining(var10001);
+      Objects.requireNonNull(action);
+      this.forEachRemaining((char x) -> action.accept(x));
    }
 
    default long skip(long n) {

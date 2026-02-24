@@ -1,9 +1,11 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
+import dev.artixdev.api.practice.menu.MenuHandler;
+import dev.artixdev.practice.menus.CosmeticsMenu;
 import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
 import dev.artixdev.practice.configs.menus.GeneralMenus;
 import dev.artixdev.practice.utils.ItemBuilder;
@@ -27,7 +29,6 @@ public class CosmeticButton extends Button {
 
     @Override
     public void clicked(Player player, ClickType clickType) {
-        // Implementation for cosmetic button click
-        // This would typically open a cosmetic menu
+        MenuHandler.getInstance().openMenu(new CosmeticsMenu(), player);
     }
 }

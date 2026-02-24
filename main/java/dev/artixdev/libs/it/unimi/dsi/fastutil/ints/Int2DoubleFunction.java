@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.function.IntToDoubleFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -32,6 +32,10 @@ public interface Int2DoubleFunction extends IntToDoubleFunction, Function<Intege
       return this.get(operand);
    }
 
+   default Double apply(Integer k) {
+      return k == null ? null : get(k);
+   }
+
    default double put(int key, double value) {
       throw new UnsupportedOperationException();
    }
@@ -52,7 +56,7 @@ public interface Int2DoubleFunction extends IntToDoubleFunction, Function<Intege
    default Double put(Integer key, Double value) {
       int k = key;
       boolean containsKey = this.containsKey(k);
-      double v = this.put(k, value);
+      double v = this.put(k, value.doubleValue());
       return containsKey ? v : null;
    }
 

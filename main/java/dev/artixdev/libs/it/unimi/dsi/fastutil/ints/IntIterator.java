@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.Objects;
 import java.util.PrimitiveIterator.OfInt;
@@ -20,15 +20,8 @@ public interface IntIterator extends OfInt {
    /** @deprecated */
    @Deprecated
    default void forEachRemaining(Consumer<? super Integer> action) {
-      java.util.function.IntConsumer var10001;
-      if (action instanceof java.util.function.IntConsumer) {
-         var10001 = (java.util.function.IntConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEachRemaining((java.util.function.IntConsumer)var10001);
+      Objects.requireNonNull(action);
+      this.forEachRemaining((int x) -> action.accept(x));
    }
 
    default int skip(int n) {

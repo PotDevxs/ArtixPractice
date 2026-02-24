@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,7 +44,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
             this.minN = this.n = HashCommon.arraySize(expected, f);
             this.mask = this.n - 1;
             this.maxFill = HashCommon.maxFill(this.n, f);
-            this.key = new Object[this.n + 1];
+            this.key = (K[]) new Object[this.n + 1];
             this.value = new long[this.n + 1];
          }
       } else {
@@ -633,7 +633,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
       K[] key = this.key;
       long[] value = this.value;
       int mask = newN - 1;
-      K[] newKey = new Object[newN + 1];
+      K[] newKey = (K[]) new Object[newN + 1];
       long[] newValue = new long[newN + 1];
       int i = this.n;
 
@@ -721,13 +721,13 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
       this.n = HashCommon.arraySize(this.size, this.f);
       this.maxFill = HashCommon.maxFill(this.n, this.f);
       this.mask = this.n - 1;
-      K[] key = this.key = new Object[this.n + 1];
+      K[] key = this.key = (K[]) new Object[this.n + 1];
       long[] value = this.value = new long[this.n + 1];
 
       long v;
       int pos;
       for(int var7 = this.size; var7-- != 0; value[pos] = v) {
-         K k = s.readObject();
+         K k = (K) s.readObject();
          v = s.readLong();
          if (k == null) {
             pos = this.n;
@@ -767,7 +767,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
          } else {
             java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
             if (e.getValue() != null && e.getValue() instanceof Long) {
-               K k = e.getKey();
+               K k = (K) e.getKey();
                long v = (Long)e.getValue();
                if (k == null) {
                   return Object2LongOpenHashMap.this.containsNullKey && Object2LongOpenHashMap.this.value[Object2LongOpenHashMap.this.n] == v;
@@ -801,7 +801,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
          } else {
             java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
             if (e.getValue() != null && e.getValue() instanceof Long) {
-               K k = e.getKey();
+               K k = (K) e.getKey();
                long v = (Long)e.getValue();
                if (k == null) {
                   if (Object2LongOpenHashMap.this.containsNullKey && Object2LongOpenHashMap.this.value[Object2LongOpenHashMap.this.n] == v) {
@@ -939,7 +939,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
       }
    }
 
-   private final class EntryIterator extends Object2LongOpenHashMap.MapIterator implements ObjectIterator {
+   private final class EntryIterator extends Object2LongOpenHashMap<K>.MapIterator<Consumer<? super Object2LongMap.Entry<K>>> implements ObjectIterator<Object2LongMap.Entry<K>> {
       private Object2LongOpenHashMap<K>.MapEntry entry;
 
       private EntryIterator() {
@@ -965,7 +965,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
       }
    }
 
-   private final class ValueSpliterator extends Object2LongOpenHashMap.MapSpliterator implements LongSpliterator {
+   private final class ValueSpliterator extends Object2LongOpenHashMap<K>.MapSpliterator<LongConsumer, ValueSpliterator> implements LongSpliterator {
       private static final int POST_SPLIT_CHARACTERISTICS = 256;
 
       ValueSpliterator() {
@@ -989,7 +989,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
       }
    }
 
-   private final class ValueIterator extends Object2LongOpenHashMap.MapIterator implements LongIterator {
+   private final class ValueIterator extends Object2LongOpenHashMap<K>.MapIterator<LongConsumer> implements LongIterator {
       public ValueIterator() {
          super(null);
       }
@@ -1003,7 +1003,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
       }
    }
 
-   private final class KeySpliterator extends Object2LongOpenHashMap.MapSpliterator implements ObjectSpliterator {
+   private final class KeySpliterator extends Object2LongOpenHashMap<K>.MapSpliterator<Consumer<? super K>, KeySpliterator> implements ObjectSpliterator<K> {
       private static final int POST_SPLIT_CHARACTERISTICS = 1;
 
       KeySpliterator() {
@@ -1027,7 +1027,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
       }
    }
 
-   private final class KeyIterator extends Object2LongOpenHashMap.MapIterator implements ObjectIterator {
+   private final class KeyIterator extends Object2LongOpenHashMap<K>.MapIterator<Consumer<? super K>> implements ObjectIterator<K> {
       public KeyIterator() {
          super(null);
       }
@@ -1041,7 +1041,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
       }
    }
 
-   private final class EntrySpliterator extends Object2LongOpenHashMap.MapSpliterator implements ObjectSpliterator {
+   private final class EntrySpliterator extends Object2LongOpenHashMap<K>.MapSpliterator<Consumer<? super Object2LongMap.Entry<K>>, EntrySpliterator> implements ObjectSpliterator<Object2LongMap.Entry<K>> {
       private static final int POST_SPLIT_CHARACTERISTICS = 1;
 
       EntrySpliterator() {
@@ -1179,7 +1179,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
       }
    }
 
-   private final class FastEntryIterator extends Object2LongOpenHashMap.MapIterator implements ObjectIterator {
+   private final class FastEntryIterator extends Object2LongOpenHashMap<K>.MapIterator<Consumer<? super Object2LongMap.Entry<K>>> implements ObjectIterator<Object2LongMap.Entry<K>> {
       private final Object2LongOpenHashMap<K>.MapEntry entry;
 
       private FastEntryIterator() {
@@ -1314,7 +1314,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
                   this.wrapped = new ObjectArrayList(2);
                }
 
-               this.wrapped.add(key[pos]);
+               this.wrapped.add((K) key[pos]);
             }
 
             key[last] = curr;
@@ -1331,7 +1331,7 @@ public class Object2LongOpenHashMap<K> extends AbstractObject2LongMap<K> impleme
                Object2LongOpenHashMap.this.key[Object2LongOpenHashMap.this.n] = null;
             } else {
                if (this.pos < 0) {
-                  Object2LongOpenHashMap.this.removeLong(this.wrapped.set(-this.pos - 1, (Object)null));
+                  Object2LongOpenHashMap.this.removeLong(this.wrapped.set(-this.pos - 1, null));
                   this.last = -1;
                   return;
                }

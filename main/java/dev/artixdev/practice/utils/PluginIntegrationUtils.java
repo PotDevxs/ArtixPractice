@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
 import java.lang.reflect.Method;
 import java.util.UUID;
@@ -129,7 +129,7 @@ public class PluginIntegrationUtils implements PluginIntegrationInterface {
 
     public boolean isPluginEnabled() {
         PluginManager pluginManager = Bukkit.getPluginManager();
-        return pluginManager.isPluginEnabled("Practice");
+        return pluginManager.isPluginEnabled("ArtixPractice");
     }
 
     public String getPlayerDisguiseName(Player player) {
@@ -168,7 +168,7 @@ public class PluginIntegrationUtils implements PluginIntegrationInterface {
     }
 
     public Skin getPlayerSkin(Player player) {
-        // Get player skin
-        return null; // Placeholder
+        if (player == null) return null;
+        return Skin.DEFAULT_SKIN;
     }
 }

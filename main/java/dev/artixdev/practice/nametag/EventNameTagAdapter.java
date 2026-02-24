@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.nametag;
+package dev.artixdev.practice.nametag;
 
 import org.bukkit.entity.Player;
 import dev.artixdev.api.practice.nametag.adapter.NameTagAdapter;
@@ -57,8 +57,6 @@ public class EventNameTagAdapter extends NameTagAdapter {
     * @return true if in event
     */
    private boolean isPlayerInEvent(Player player) {
-      // Check if player is in an event
-      // This would typically check the player's state or event manager
       return plugin.getPlayerManager().getPlayerProfile(player.getUniqueId()) != null;
    }
    

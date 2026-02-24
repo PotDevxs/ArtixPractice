@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
 
 import java.util.Objects;
 import java.util.PrimitiveIterator;
@@ -25,29 +25,14 @@ public interface ShortIterator extends PrimitiveIterator<Short, ShortConsumer> {
 
    default void forEachRemaining(IntConsumer action) {
       Objects.requireNonNull(action);
-      ShortConsumer var10001;
-      if (action instanceof ShortConsumer) {
-         var10001 = (ShortConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEachRemaining(var10001);
+      this.forEachRemaining((short x) -> action.accept(x));
    }
 
    /** @deprecated */
    @Deprecated
    default void forEachRemaining(Consumer<? super Short> action) {
-      ShortConsumer var10001;
-      if (action instanceof ShortConsumer) {
-         var10001 = (ShortConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEachRemaining(var10001);
+      Objects.requireNonNull(action);
+      this.forEachRemaining((short x) -> action.accept(x));
    }
 
    default int skip(int n) {

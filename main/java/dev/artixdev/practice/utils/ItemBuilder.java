@@ -1,11 +1,10 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
@@ -386,37 +385,46 @@ public class ItemBuilder {
    }
 
    public void setAmount(int displayAmount) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setAmount'");
+    if (displayAmount > 0) this.itemStack.setAmount(Math.min(displayAmount, this.itemStack.getType().getMaxStackSize()));
    }
 
    public void setName(String name) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setName'");
+    name(name);
    }
 
-   public void setDurability(int mATCH_INVENTORY_POTIONS_DURABILITY) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setDurability'");
+   public void setDurability(int durability) {
+    this.itemStack.setDurability((short) durability);
    }
 
    public void addLore(String processedLore) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'addLore'");
+    if (processedLore == null) return;
+    ItemMeta m = this.itemStack.getItemMeta();
+    if (m == null) return;
+    List<String> lore = m.getLore();
+    if (lore == null) lore = new ArrayList<>();
+    lore.add(org.bukkit.ChatColor.translateAlternateColorCodes('&', processedLore));
+    m.setLore(lore);
+    this.itemStack.setItemMeta(m);
    }
 
-   public void setLore(List<String> mATCH_INVENTORY_HEALTH_LORE) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setLore'");
+   public void setLore(List<String> loreList) {
+    lore(loreList);
    }
 
-   public void setGlow(boolean b) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setGlow'");
+   public void setGlow(boolean glow) {
+    if (!glow) return;
+    ItemMeta m = this.itemStack.getItemMeta();
+    if (m != null) {
+       m.addEnchant(org.bukkit.enchantments.Enchantment.LUCK, 1, true);
+       m.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
+       this.itemStack.setItemMeta(m);
+    }
    }
 
    public static ItemMeta setSkullMeta(ItemMeta meta, String username, String skinValue, String skinSignature) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setSkullMeta'");
+    if (meta instanceof org.bukkit.inventory.meta.SkullMeta && username != null) {
+       ((org.bukkit.inventory.meta.SkullMeta) meta).setOwner(username);
+    }
+    return meta;
    }
 }

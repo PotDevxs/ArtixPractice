@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.util.function.ToLongFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -35,6 +35,10 @@ public interface Reference2LongFunction<K> extends ToLongFunction<K>, Function<K
    }
 
    long getLong(Object var1);
+
+   default boolean containsKey(Object key) {
+      return this.getLong(key) != this.defaultReturnValue();
+   }
 
    default long getOrDefault(Object key, long defaultValue) {
       long v;

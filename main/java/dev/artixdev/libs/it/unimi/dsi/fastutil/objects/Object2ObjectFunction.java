@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.bytes.Byte2ObjectFunction;
@@ -17,8 +17,12 @@ public interface Object2ObjectFunction<K, V> extends Function<K, V> {
 
    V get(Object var1);
 
+   default boolean containsKey(Object key) {
+      return this.get(key) != this.defaultReturnValue();
+   }
+
    default V getOrDefault(Object key, V defaultValue) {
-      Object v;
+      V v;
       return (v = this.get(key)) == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
    }
 

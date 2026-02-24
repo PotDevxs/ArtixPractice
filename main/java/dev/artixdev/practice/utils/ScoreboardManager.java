@@ -1,14 +1,17 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.configs.ScoreboardConfig;
 import dev.artixdev.practice.models.PlayerProfile;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,18 +26,58 @@ public class ScoreboardManager {
     private final Main plugin;
     private final Map<UUID, Scoreboard> playerScoreboards;
     private final Map<UUID, String> playerStates;
-    
+    private BukkitTask titleAnimationTask;
+
+    /** 1.8 protocol: each of prefix/suffix in scoreboard team packet is max 16 chars. */
+    private static final int TEAM_PREFIX_SUFFIX_MAX = 16;
+
     public ScoreboardManager(Main plugin) {
         this.plugin = plugin;
         this.playerScoreboards = new HashMap<>();
         this.playerStates = new HashMap<>();
     }
-    
+
     /**
-     * Initialize scoreboard manager
+     * Initialize scoreboard manager and start title animation task.
      */
     public void initialize() {
+        startTitleAnimationTask();
         plugin.getLogger().info("ScoreboardManager initialized successfully!");
+    }
+
+    /**
+     * Start repeating task to update animated scoreboard title for all players.
+     */
+    private void startTitleAnimationTask() {
+        if (titleAnimationTask != null) {
+            titleAnimationTask.cancel();
+        }
+        titleAnimationTask = Bukkit.getScheduler().runTaskTimer(plugin.getPlugin(), () -> {
+            ScoreboardConfig.updateAnimationFrame();
+            String title = buildTitleForPacket();
+            for (Map.Entry<UUID, Scoreboard> entry : new HashMap<>(playerScoreboards).entrySet()) {
+                Player p = Bukkit.getPlayer(entry.getKey());
+                if (p == null || !p.isOnline()) continue;
+                Scoreboard sb = entry.getValue();
+                Objective obj = sb.getObjective("main");
+                if (obj != null) {
+                    obj.setDisplayName(title);
+                }
+            }
+        }, 20L, 1L);
+    }
+
+    /** Build title string for packet (max 32 chars for 1.8 objective). */
+    private String buildTitleForPacket() {
+        String title = ScoreboardConfig.isAnimationEnabled()
+            ? ScoreboardConfig.getAnimatedTitle()
+            : ScoreboardConfig.TITLE;
+        title = title.replace("%splitter%", "|");
+        title = ChatUtils.colorize(title);
+        if (title.length() > 32) {
+            title = title.substring(0, 32);
+        }
+        return title;
     }
     
     /**
@@ -82,33 +125,43 @@ public class ScoreboardManager {
         Objective objective = scoreboard.registerNewObjective("main", "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         
-        // Set title
-        String title = getScoreboardTitle();
-        objective.setDisplayName(ChatUtils.colorize(title));
-        
+        // Set title (1.8 limit: 32 chars); animation is updated by titleAnimationTask
+        objective.setDisplayName(buildTitleForPacket());
+
         // Get scoreboard lines based on state
         List<String> lines = getScoreboardLines(state);
         if (lines == null || lines.isEmpty()) {
             return null;
         }
-        
-        // Add lines to scoreboard
+
+        // Use Teams: prefix (16) + suffix (16) = up to 32 chars per line (1.8 protocol limit per field = 16)
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
             line = replacePlaceholders(line, player, state);
             line = ChatUtils.colorize(line);
-            
-            // Truncate if too long
             if (line.length() > 40) {
                 line = line.substring(0, 37) + "...";
             }
-            
-            objective.getScore(line).setScore(lines.size() - i);
+            String prefix = line.length() <= TEAM_PREFIX_SUFFIX_MAX ? line : line.substring(0, TEAM_PREFIX_SUFFIX_MAX);
+            String suffix = line.length() <= TEAM_PREFIX_SUFFIX_MAX ? "" : line.substring(TEAM_PREFIX_SUFFIX_MAX, Math.min(line.length(), TEAM_PREFIX_SUFFIX_MAX * 2));
+            String entry = uniqueEntry(i);
+            Team team = scoreboard.getTeam("line_" + i);
+            if (team == null) {
+                team = scoreboard.registerNewTeam("line_" + i);
+            }
+            team.addEntry(entry);
+            team.setPrefix(prefix);
+            team.setSuffix(suffix);
+            objective.getScore(entry).setScore(lines.size() - i);
         }
-        
         return scoreboard;
     }
     
+    /** Unique scoreboard entry per line (invisible char) so duplicate text doesn't overwrite. */
+    private static String uniqueEntry(int index) {
+        return String.valueOf((char) (0xE000 + (index % 0x1000)));
+    }
+
     /**
      * Get scoreboard lines based on state
      */
@@ -225,17 +278,37 @@ public class ScoreboardManager {
         text = text.replace("{world}", player.getWorld().getName());
         text = text.replace("{ping}", String.valueOf(getPlayerPing(player)));
         
-        // Profile placeholders
+        // Profile placeholders (level, xp, progress bar) - level/bar podem vir de levels.yml
         if (profile != null) {
-            text = text.replace("{level}", String.valueOf(profile.getLevel()));
+            int displayLevel = profile.getLevel();
+            dev.artixdev.practice.configs.LevelsConfig levelsConfig = plugin.getConfigManager() != null
+                ? plugin.getConfigManager().getLevelsConfig() : null;
+            if (levelsConfig != null && levelsConfig.isUseXpForLevel()) {
+                displayLevel = levelsConfig.getLevelFromXp(profile.getExperience());
+            }
+            text = text.replace("{level}", String.valueOf(displayLevel));
+            text = text.replace("{level_color}", getLevelColor(displayLevel));
+            text = text.replace("{xp}", String.valueOf(profile.getExperience()));
+            text = text.replace("{progress_bar}", buildLevelProgressBar(profile));
+            text = text.replace("{progress_bar_10}", buildLevelProgressBar10(profile));
+            text = text.replace("{level_percentage}", formatLevelPercentage(profile));
+            text = text.replace("{coins}", String.valueOf(profile.getCoins()));
+            text = text.replace("{tokens}", String.valueOf(profile.getEventTokens()));
             text = text.replace("{wins}", String.valueOf(profile.getWins()));
             text = text.replace("{losses}", String.valueOf(profile.getLosses()));
             text = text.replace("{kills}", String.valueOf(profile.getKills()));
             text = text.replace("{deaths}", String.valueOf(profile.getDeaths()));
-            text = text.replace("{winrate}", "0%"); // Placeholder for winrate
-            text = text.replace("{kdr}", "0.0"); // Placeholder for KDR
+            text = text.replace("{winrate}", dev.artixdev.practice.utils.StatisticsUtils.formatWinrate(profile.getWins(), profile.getLosses()));
+            text = text.replace("{kdr}", dev.artixdev.practice.utils.StatisticsUtils.formatKdr(profile.getKills(), profile.getDeaths()));
         } else {
             text = text.replace("{level}", "0");
+            text = text.replace("{level_color}", "&7");
+            text = text.replace("{xp}", "0");
+            text = text.replace("{progress_bar}", buildLevelProgressBar(null));
+            text = text.replace("{progress_bar_10}", buildLevelProgressBar10(null));
+            text = text.replace("{level_percentage}", "0.00%");
+            text = text.replace("{coins}", "0");
+            text = text.replace("{tokens}", "0");
             text = text.replace("{wins}", "0");
             text = text.replace("{losses}", "0");
             text = text.replace("{kills}", "0");
@@ -251,12 +324,14 @@ public class ScoreboardManager {
         
         // Queue placeholders
         text = text.replace("{in_queues}", "0");
+        text = text.replace("{queuing}", "0");
         text = text.replace("{unranked_queue}", "0");
         text = text.replace("{ranked_queue}", "0");
         
-        // Match placeholders
-        text = text.replace("{in_fights}", "0");
-        text = text.replace("{fighting}", "0");
+        // Match placeholders (fighting = players in active matches)
+        int fightingCount = getFightingCount();
+        text = text.replace("{in_fights}", String.valueOf(fightingCount));
+        text = text.replace("{fighting}", String.valueOf(fightingCount));
         
         // Party placeholders
         text = text.replace("{party_leader}", "None");
@@ -266,11 +341,104 @@ public class ScoreboardManager {
         // Time placeholders
         text = text.replace("{time}", getCurrentTime());
         text = text.replace("{date}", getCurrentDate());
-        
+        if (Main.getInstance().getSeasonManager() != null) {
+            text = text.replace("{season}", Main.getInstance().getSeasonManager().getCurrentSeasonName());
+            int rank = Main.getInstance().getSeasonManager().getSeasonRank(player.getUniqueId());
+            text = text.replace("{season_rank}", rank > 0 ? String.valueOf(rank) : "-");
+        }
         // State-specific placeholders
         text = replaceStatePlaceholders(text, player, state);
         
         return text;
+    }
+
+    /**
+     * Build level/XP progress bar for scoreboard (e.g. "&a||||&7||||||").
+     * Usa levels.yml para progresso 0-100 dentro do nível atual, se disponível.
+     */
+    private String buildLevelProgressBar(PlayerProfile profile) {
+        final int barLength = 12;
+        final int max = 100;
+        int current = 0;
+        if (profile != null) {
+            dev.artixdev.practice.configs.LevelsConfig levelsConfig = plugin.getConfigManager() != null
+                ? plugin.getConfigManager().getLevelsConfig() : null;
+            if (levelsConfig != null && levelsConfig.isUseXpForLevel()) {
+                current = levelsConfig.getXpProgressInLevel(profile.getExperience());
+            } else {
+                int xp = profile.getExperience();
+                current = Math.min(max, xp % max);
+                if (current == 0 && xp > 0) current = max;
+            }
+        }
+        return ProgressBar.createProgressBar(current, max, barLength, '|', ChatColor.GREEN, ChatColor.GRAY);
+    }
+
+    /**
+     * Build 10-block level progress bar for Refine-style LOBBY (█ filled, ░ empty).
+     */
+    private String buildLevelProgressBar10(PlayerProfile profile) {
+        final int barLength = 10;
+        final int max = 100;
+        int current = 0;
+        if (profile != null) {
+            dev.artixdev.practice.configs.LevelsConfig levelsConfig = plugin.getConfigManager() != null
+                ? plugin.getConfigManager().getLevelsConfig() : null;
+            if (levelsConfig != null && levelsConfig.isUseXpForLevel()) {
+                current = levelsConfig.getXpProgressInLevel(profile.getExperience());
+            } else {
+                int xp = profile.getExperience();
+                current = Math.min(max, xp % max);
+                if (current == 0 && xp > 0) current = max;
+            }
+        }
+        int filled = (current * barLength) / max;
+        StringBuilder sb = new StringBuilder();
+        sb.append(ChatColor.GREEN);
+        for (int i = 0; i < filled; i++) sb.append('\u2588');
+        sb.append(ChatColor.GRAY);
+        for (int i = filled; i < barLength; i++) sb.append('\u2591');
+        return sb.toString();
+    }
+
+    /**
+     * Format level progress as percentage string (e.g. "89.46%").
+     */
+    private String formatLevelPercentage(PlayerProfile profile) {
+        if (profile == null) return "0.00%";
+        dev.artixdev.practice.configs.LevelsConfig levelsConfig = plugin.getConfigManager() != null
+            ? plugin.getConfigManager().getLevelsConfig() : null;
+        if (levelsConfig == null || !levelsConfig.isUseXpForLevel()) {
+            int xp = profile.getExperience();
+            int pct = (xp % 100);
+            if (xp > 0 && pct == 0) pct = 100;
+            return String.format("%.2f%%", (double) pct);
+        }
+        int totalXp = profile.getExperience();
+        int level = levelsConfig.getLevelFromXp(totalXp);
+        int xpCurrent = levelsConfig.getXpRequiredForLevel(level);
+        int xpNext = levelsConfig.getXpRequiredForLevel(level + 1);
+        int range = xpNext - xpCurrent;
+        if (range <= 0) return "100.00%";
+        double pct = ((totalXp - xpCurrent) * 100.0) / range;
+        pct = Math.min(100.0, Math.max(0.0, pct));
+        return String.format("%.2f%%", pct);
+    }
+
+    private String getLevelColor(int level) {
+        if (plugin.getConfigManager() == null || plugin.getConfigManager().getLevelsConfig() == null) {
+            return "&7";
+        }
+        return plugin.getConfigManager().getLevelsConfig().getColorForLevel(level);
+    }
+
+    private int getFightingCount() {
+        if (plugin.getMatchManager() == null) return 0;
+        try {
+            return plugin.getMatchManager().getActiveMatchCount() * 2;
+        } catch (Exception e) {
+            return 0;
+        }
     }
     
     /**
@@ -279,6 +447,9 @@ public class ScoreboardManager {
     private String replaceStatePlaceholders(String text, Player player, String state) {
         // Match placeholders
         if (state.startsWith("match_")) {
+            dev.artixdev.practice.models.Match match = Main.getInstance().getMatchManager().getMatchByPlayer(player);
+            int warmupSec = (match != null && match.isInWarmup()) ? match.getWarmupSecondsRemaining() : 0;
+            text = text.replace("{warmup_seconds}", String.valueOf(warmupSec));
             text = text.replace("{match_duration}", "00:00");
             text = text.replace("{match_kit}", "Unknown");
             text = text.replace("{match_arena}", "Unknown");
@@ -350,25 +521,20 @@ public class ScoreboardManager {
     }
     
     /**
-     * Get scoreboard title (with animation support)
+     * Cancel title animation task and cleanup. Call on plugin disable.
      */
-    private String getScoreboardTitle() {
-        // Update animation frame
-        ScoreboardConfig.updateAnimationFrame();
-        
-        // Get animated title if enabled
-        if (ScoreboardConfig.isAnimationEnabled()) {
-            return ScoreboardConfig.getAnimatedTitle();
+    public void shutdown() {
+        if (titleAnimationTask != null) {
+            titleAnimationTask.cancel();
+            titleAnimationTask = null;
         }
-        
-        return ScoreboardConfig.TITLE;
     }
-    
+
     /**
-     * Check if scoreboard is enabled
+     * Check if scoreboard is enabled (lobby/global scoreboard)
      */
     private boolean isScoreboardEnabled() {
-        return ScoreboardConfig.ENDING_SCOREBOARD_ENABLED;
+        return true;
     }
     
     /**
@@ -424,5 +590,17 @@ public class ScoreboardManager {
      */
     public boolean hasScoreboard(Player player) {
         return playerScoreboards.containsKey(player.getUniqueId());
+    }
+
+    /**
+     * Refresh scoreboard for all online players that have one (e.g. after config reload).
+     */
+    public void refreshAllScoreboards() {
+        for (Map.Entry<UUID, Scoreboard> entry : new HashMap<>(playerScoreboards).entrySet()) {
+            Player p = Bukkit.getPlayer(entry.getKey());
+            if (p != null && p.isOnline()) {
+                updateScoreboard(p);
+            }
+        }
     }
 }

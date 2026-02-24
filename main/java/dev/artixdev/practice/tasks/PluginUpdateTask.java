@@ -1,4 +1,7 @@
-﻿package dev.artixdev.practice.tasks;
+package dev.artixdev.practice.tasks;
+
+import dev.artixdev.practice.Main;
+import dev.artixdev.practice.utils.UpdateChecker;
 
 public class PluginUpdateTask implements Runnable {
 
@@ -8,7 +11,9 @@ public class PluginUpdateTask implements Runnable {
 
     @Override
     public void run() {
-        // Implementation for plugin update task
-        // This would typically handle plugin updates, maintenance, etc.
+        Main plugin = Main.getInstance();
+        if (plugin != null) {
+            new UpdateChecker(plugin).checkForUpdates();
+        }
     }
 }

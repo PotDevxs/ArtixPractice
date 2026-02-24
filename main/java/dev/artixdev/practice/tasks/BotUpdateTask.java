@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.tasks;
+package dev.artixdev.practice.tasks;
 
 import dev.artixdev.practice.models.PlayerProfile;
 
@@ -12,14 +12,7 @@ public class BotUpdateTask implements Runnable {
 
     @Override
     public void run() {
-        // Update bot behavior based on player profile
-        // This would typically involve updating bot AI, difficulty, etc.
-        
-        if (playerProfile == null) {
-            return;
-        }
-        
-        // Update bot settings based on player's skill level
-        // This is a placeholder implementation
+        if (playerProfile == null) return;
+        // Bot AI/difficulty updates can be added here (e.g. based on playerProfile.getElo()).
     }
 }

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -864,15 +864,15 @@ public final class DoubleArrays {
       if (to - from < 1024) {
          quickSort(a, from, to);
       } else {
-         int maxLevel = true;
-         int stackSize = true;
+         int maxLevel = 7;
+         int stackSize = 1786;
          int stackPos = 0;
          int[] offsetStack = new int[1786];
          int[] lengthStack = new int[1786];
          int[] levelStack = new int[1786];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -905,7 +905,7 @@ public final class DoubleArrays {
             i = first;
 
             int c;
-            for(boolean var19 = true; i <= end; count[c] = 0) {
+            for(; i <= end; count[c] = 0) {
                double t = a[i];
                c = (int)(fixDouble(t) >>> shift & 255L ^ (long)signMask);
                if (i < end) {
@@ -940,7 +940,7 @@ public final class DoubleArrays {
    public static void parallelRadixSort(double[] a, int from, int to) {
       ForkJoinPool pool = getPool();
       if (to - from >= 1024 && pool.getParallelism() != 1) {
-         int maxLevel = true;
+         int maxLevel = 7;
          LinkedBlockingQueue<DoubleArrays.Segment> queue = new LinkedBlockingQueue();
          queue.add(new DoubleArrays.Segment(from, to - from, 0));
          AtomicInteger queueSize = new AtomicInteger(1);
@@ -993,7 +993,7 @@ public final class DoubleArrays {
                   i = first;
 
                   int c;
-                  for(boolean var15 = true; i <= end; count[c] = 0) {
+                  for(; i <= end; count[c] = 0) {
                      double t = a[i];
                      c = (int)(fixDouble(t) >>> shift & 255L ^ (long)signMask);
                      if (i < end) {
@@ -1060,15 +1060,15 @@ public final class DoubleArrays {
          }
 
       } else {
-         int maxLevel = true;
-         int stackSize = true;
+         int maxLevel = 7;
+         int stackSize = 1786;
          int stackPos = 0;
          int[] offsetStack = new int[1786];
          int[] lengthStack = new int[1786];
          int[] levelStack = new int[1786];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -1088,7 +1088,6 @@ public final class DoubleArrays {
                }
 
                lastUsed = -1;
-               int i = 0;
 
                int i;
                for(i = stable ? 0 : first; i < 256; ++i) {
@@ -1129,7 +1128,7 @@ public final class DoubleArrays {
                   i = first;
 
                   int c;
-                  for(boolean var22 = true; i <= i; count[c] = 0) {
+                  for(; i <= i; count[c] = 0) {
                      int t = perm[i];
                      c = (int)(fixDouble(a[t]) >>> shift & 255L ^ (long)signMask);
                      if (i < i) {
@@ -1170,7 +1169,7 @@ public final class DoubleArrays {
    public static void parallelRadixSortIndirect(int[] perm, double[] a, int from, int to, boolean stable) {
       ForkJoinPool pool = getPool();
       if (to - from >= 1024 && pool.getParallelism() != 1) {
-         int maxLevel = true;
+         int maxLevel = 7;
          LinkedBlockingQueue<DoubleArrays.Segment> queue = new LinkedBlockingQueue();
          queue.add(new DoubleArrays.Segment(from, to - from, 0));
          AtomicInteger queueSize = new AtomicInteger(1);
@@ -1246,7 +1245,7 @@ public final class DoubleArrays {
                      ix = first;
 
                      int c;
-                     for(boolean var18 = true; ix <= i; count[c] = 0) {
+                     for(; ix <= i; count[c] = 0) {
                         int t = perm[ix];
                         c = (int)(fixDouble(a[t]) >>> shift & 255L ^ (long)signMask);
                         if (ix < i) {
@@ -1311,16 +1310,16 @@ public final class DoubleArrays {
       if (to - from < 1024) {
          quickSort(a, b, from, to);
       } else {
-         int layers = true;
-         int maxLevel = true;
-         int stackSize = true;
+         int layers = 2;
+         int maxLevel = 15;
+         int stackSize = 3826;
          int stackPos = 0;
          int[] offsetStack = new int[3826];
          int[] lengthStack = new int[3826];
          int[] levelStack = new int[3826];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -1354,7 +1353,7 @@ public final class DoubleArrays {
             i = first;
 
             int c;
-            for(boolean var22 = true; i <= end; count[c] = 0) {
+            for(; i <= end; count[c] = 0) {
                double t = a[i];
                double u = b[i];
                c = (int)(fixDouble(k[i]) >>> shift & 255L ^ (long)signMask);
@@ -1394,11 +1393,11 @@ public final class DoubleArrays {
    public static void parallelRadixSort(double[] a, double[] b, int from, int to) {
       ForkJoinPool pool = getPool();
       if (to - from >= 1024 && pool.getParallelism() != 1) {
-         int layers = true;
+         int layers = 2;
          if (a.length != b.length) {
             throw new IllegalArgumentException("Array size mismatch.");
          } else {
-            int maxLevel = true;
+            int maxLevel = 15;
             LinkedBlockingQueue<DoubleArrays.Segment> queue = new LinkedBlockingQueue();
             queue.add(new DoubleArrays.Segment(from, to - from, 0));
             AtomicInteger queueSize = new AtomicInteger(1);
@@ -1452,7 +1451,7 @@ public final class DoubleArrays {
                      i = first;
 
                      int c;
-                     for(boolean var17 = true; i <= end; count[c] = 0) {
+                     for(; i <= end; count[c] = 0) {
                         double t = a[i];
                         double u = b[i];
                         c = (int)(fixDouble(k[i]) >>> shift & 255L ^ (long)signMask);
@@ -1549,16 +1548,16 @@ public final class DoubleArrays {
       if (to - from < 64) {
          insertionSortIndirect(perm, a, b, from, to);
       } else {
-         int layers = true;
-         int maxLevel = true;
-         int stackSize = true;
+         int layers = 2;
+         int maxLevel = 15;
+         int stackSize = 3826;
          int stackPos = 0;
          int[] offsetStack = new int[3826];
          int[] lengthStack = new int[3826];
          int[] levelStack = new int[3826];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -1579,7 +1578,6 @@ public final class DoubleArrays {
                }
 
                lastUsed = -1;
-               int i = 0;
 
                int i;
                for(i = stable ? 0 : first; i < 256; ++i) {
@@ -1617,7 +1615,7 @@ public final class DoubleArrays {
                   i = first;
 
                   int c;
-                  for(boolean var25 = true; i <= i; count[c] = 0) {
+                  for(; i <= i; count[c] = 0) {
                      int t = perm[i];
                      c = (int)(fixDouble(k[t]) >>> shift & 255L ^ (long)signMask);
                      if (i < i) {
@@ -1661,13 +1659,13 @@ public final class DoubleArrays {
 
          int p;
          for(p = i + 1; p < to; ++p) {
-            for(int p = firstLayer; p < layers; ++p) {
-               if (a[p][p] < a[p][m]) {
+            for(int layer = firstLayer; layer < layers; ++layer) {
+               if (a[layer][p] < a[layer][m]) {
                   m = p;
                   break;
                }
 
-               if (a[p][p] > a[p][m]) {
+               if (a[layer][p] > a[layer][m]) {
                   break;
                }
             }
@@ -1695,10 +1693,10 @@ public final class DoubleArrays {
          int layers = a.length;
          int maxLevel = 8 * layers - 1;
          int p = layers;
-         int stackPos = a[0].length;
+         int arrayLength = a[0].length;
 
          while(p-- != 0) {
-            if (a[p].length != stackPos) {
+            if (a[p].length != arrayLength) {
                throw new IllegalArgumentException("The array of index " + p + " has not the same length of the array of index 0.");
             }
          }
@@ -1745,9 +1743,8 @@ public final class DoubleArrays {
             i = first;
 
             int c;
-            for(boolean var22 = true; i <= end; count[c] = 0) {
-               int p;
-               for(p = layers; p-- != 0; t[p] = a[p][i]) {
+            for(; i <= end; count[c] = 0) {
+               for(int layer = layers; layer-- != 0; t[layer] = a[layer][i]) {
                }
 
                c = (int)(fixDouble(k[i]) >>> shift & 255L ^ (long)signMask);
@@ -1756,23 +1753,23 @@ public final class DoubleArrays {
                   while(true) {
                      int d;
                      if ((d = --pos[c]) <= i) {
-                        p = layers;
+                        int layer = layers;
 
                         while(true) {
-                           if (p-- == 0) {
+                           if (layer-- == 0) {
                               break label92;
                            }
 
-                           a[p][i] = t[p];
+                           a[layer][i] = t[layer];
                         }
                      }
 
                      c = (int)(fixDouble(k[d]) >>> shift & 255L ^ (long)signMask);
 
                      double u;
-                     for(p = layers; p-- != 0; a[p][d] = u) {
-                        u = t[p];
-                        t[p] = a[p][d];
+                     for(int layer = layers; layer-- != 0; a[layer][d] = u) {
+                        u = t[layer];
+                        t[layer] = a[layer][d];
                      }
                   }
                }
@@ -2099,7 +2096,6 @@ public final class DoubleArrays {
             int d = c;
 
             while(true) {
-               int t;
                int t;
                while(b > c || (t = (t = Double.compare(x[b], v)) == 0 ? Double.compare(y[b], w) : t) > 0) {
                   for(; c >= b && (t = (t = Double.compare(x[c], v)) == 0 ? Double.compare(y[c], w) : t) >= 0; --c) {

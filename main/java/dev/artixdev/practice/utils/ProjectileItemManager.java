@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
@@ -261,9 +261,16 @@ public class ProjectileItemManager {
          return getDefaultProjectileItem();
       }
       
-      // TODO: Implement custom item creation with name and lore
-      // This would require ItemBuilder or similar utility
-      
+      if (name != null || (lore != null && lore.length > 0)) {
+         dev.artixdev.practice.utils.ItemBuilder builder = new dev.artixdev.practice.utils.ItemBuilder(item);
+         if (name != null) builder.name(name);
+         if (lore != null && lore.length > 0) {
+            java.util.List<String> loreList = new java.util.ArrayList<>();
+            for (String line : lore) loreList.add(org.bukkit.ChatColor.translateAlternateColorCodes('&', line != null ? line : ""));
+            builder.lore(loreList);
+         }
+         return builder.build();
+      }
       return item;
    }
    

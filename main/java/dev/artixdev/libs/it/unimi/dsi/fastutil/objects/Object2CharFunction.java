@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.util.function.ToIntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -35,6 +35,10 @@ public interface Object2CharFunction<K> extends ToIntFunction<K>, Function<K, Ch
    }
 
    char getChar(Object var1);
+
+   default boolean containsKey(Object key) {
+      return this.getChar(key) != this.defaultReturnValue();
+   }
 
    default char getOrDefault(Object key, char defaultValue) {
       char v;

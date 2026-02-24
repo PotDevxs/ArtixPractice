@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 
 /**
  * Configuration Usage Example
- * Demonstrates how to use all configuration systems in Bolt
+ * Demonstrates how to use all configuration systems in Artix
  */
 public class ConfigUsageExample {
     

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.util.function.ToIntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -35,6 +35,10 @@ public interface Object2ByteFunction<K> extends ToIntFunction<K>, Function<K, By
    }
 
    byte getByte(Object var1);
+
+   default boolean containsKey(Object key) {
+      return this.getByte(key) != this.defaultReturnValue();
+   }
 
    default byte getOrDefault(Object key, byte defaultValue) {
       byte v;

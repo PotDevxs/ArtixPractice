@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.function.IntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -32,6 +32,10 @@ public interface Int2ReferenceFunction<V> extends IntFunction<V>, Function<Integ
       return this.get(operand);
    }
 
+   default V apply(Integer k) {
+      return k == null ? null : get(k);
+   }
+
    default V put(int key, V value) {
       throw new UnsupportedOperationException();
    }
@@ -39,8 +43,8 @@ public interface Int2ReferenceFunction<V> extends IntFunction<V>, Function<Integ
    V get(int var1);
 
    default V getOrDefault(int key, V defaultValue) {
-      Object v;
-      return (v = this.get(key)) == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
+      V v = this.get(key);
+      return v == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
    }
 
    default V remove(int key) {
@@ -63,8 +67,8 @@ public interface Int2ReferenceFunction<V> extends IntFunction<V>, Function<Integ
          return null;
       } else {
          int k = (Integer)key;
-         Object v;
-         return (v = this.get(k)) == this.defaultReturnValue() && !this.containsKey(k) ? null : v;
+         V v = this.get(k);
+         return v == this.defaultReturnValue() && !this.containsKey(k) ? null : v;
       }
    }
 

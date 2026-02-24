@@ -1,9 +1,9 @@
-﻿package dev.artixdev.practice.inventory;
+package dev.artixdev.practice.inventory;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import dev.artixdev.practice.Practice;
+import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.Match;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public class InventoryManager implements InventoryManagerInterface {
         this.chestplateSlot = -1;
         this.leggingsSlot = -1;
         this.helmetSlot = -1;
-        this.match = Practice.getPlugin().getMatchManager().getCurrentMatch();
+        this.match = Main.getInstance().getMatchManager().getCurrentMatch();
     }
 
     @Override

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.util.Collection;
 import java.util.Set;
@@ -54,7 +54,7 @@ public interface ObjectSet<K> extends Set<K>, ObjectCollection<K> {
          return of(a[0], a[1], a[2]);
       default:
          ObjectSet<K> innerSet = a.length <= 4 ? new ObjectArraySet(a.length) : new ObjectOpenHashSet(a.length);
-         Object[] var2 = a;
+         K[] var2 = a;
          int var3 = a.length;
 
          for(int var4 = 0; var4 < var3; ++var4) {

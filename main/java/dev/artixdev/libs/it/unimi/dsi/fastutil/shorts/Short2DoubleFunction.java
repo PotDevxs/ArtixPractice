@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
 
 import java.util.function.IntToDoubleFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -55,7 +55,7 @@ public interface Short2DoubleFunction extends IntToDoubleFunction, Function<Shor
    default Double put(Short key, Double value) {
       short k = key;
       boolean containsKey = this.containsKey(k);
-      double v = this.put(k, value);
+      double v = this.put(k, value.doubleValue());
       return containsKey ? v : null;
    }
 

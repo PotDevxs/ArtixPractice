@@ -61,7 +61,7 @@ public final class QueueCommand {
       }
    }
    
-   @Require("bolt.queue.admin")
+   @Require("artix.queue.admin")
    @Command(
       name = "forceQueue",
       usage = "<target> <type> <kit>",
@@ -146,7 +146,7 @@ public final class QueueCommand {
       }
    }
    
-   @Require("bolt.queue.admin")
+   @Require("artix.queue.admin")
    @Command(
       name = "clear",
       desc = "Clear all queues"
@@ -160,7 +160,7 @@ public final class QueueCommand {
       player.sendMessage(ChatUtils.colorize("&aCleared " + cleared + " queues!"));
    }
    
-   @Require("bolt.queue.admin")
+   @Require("artix.queue.admin")
    @Command(
       name = "info",
       usage = "<type> <kit>",

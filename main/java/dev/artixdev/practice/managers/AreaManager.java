@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.managers;
+package dev.artixdev.practice.managers;
 
 import java.io.File;
 import java.util.Iterator;
@@ -78,16 +78,17 @@ public class AreaManager {
     }
 
     public Area createArea(Cuboid cuboid) {
-        // This method was obfuscated and its exact logic needs to be inferred or provided.
-        // It seems to create a new area with the given cuboid.
-        // For now, it's a placeholder.
-        return null;
+        if (cuboid == null) return null;
+        Area area = new Area(UUID.randomUUID(), cuboid);
+        areas.add(area);
+        return area;
     }
 
     public Area getArea(UUID areaId) {
-        // This method was obfuscated and its exact logic needs to be inferred or provided.
-        // It seems to get an area by its UUID.
-        // For now, it's a placeholder.
+        if (areaId == null) return null;
+        for (Area area : areas) {
+            if (areaId.equals(area.getId())) return area;
+        }
         return null;
     }
 

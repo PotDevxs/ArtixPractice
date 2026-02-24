@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
 
 import java.util.function.IntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -42,7 +42,7 @@ public interface Char2ObjectFunction<V> extends IntFunction<V>, Function<Charact
    V get(char var1);
 
    default V getOrDefault(char key, V defaultValue) {
-      Object v;
+      V v;
       return (v = this.get(key)) == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
    }
 
@@ -66,7 +66,7 @@ public interface Char2ObjectFunction<V> extends IntFunction<V>, Function<Charact
          return null;
       } else {
          char k = (Character)key;
-         Object v;
+         V v;
          return (v = this.get(k)) == this.defaultReturnValue() && !this.containsKey(k) ? null : v;
       }
    }

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.inventory;
+package dev.artixdev.practice.inventory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
-import dev.artixdev.practice.Practice;
+import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.Match;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class EnderPearlHandler implements EnderPearlHandlerInterface {
             
             EnderPearl enderPearl = player.launchProjectile(EnderPearl.class);
             String metadataKey = getEnderPearlMetadata();
-            FixedMetadataValue metadata = new FixedMetadataValue(Practice.getPlugin(), match.getMatchId());
+            FixedMetadataValue metadata = new FixedMetadataValue(Main.getInstance(), match.getMatchId());
             enderPearl.setMetadata(metadataKey, metadata);
             enderPearl.setShooter(player);
             match.setEnderPearl(enderPearl);

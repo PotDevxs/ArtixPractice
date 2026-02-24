@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -448,16 +448,7 @@ public final class LongIterators {
 
       public void forEachRemaining(java.util.function.LongConsumer action) {
          Objects.requireNonNull(action);
-         Iterator var10000 = this.i;
-         Consumer var10001;
-         if (action instanceof Consumer) {
-            var10001 = (Consumer)action;
-         } else {
-            Objects.requireNonNull(action);
-            var10001 = action::accept;
-         }
-
-         var10000.forEachRemaining(var10001);
+         this.i.forEachRemaining((Long x) -> action.accept(x));
       }
 
       /** @deprecated */
@@ -516,16 +507,7 @@ public final class LongIterators {
 
       public void forEachRemaining(java.util.function.LongConsumer action) {
          Objects.requireNonNull(action);
-         ListIterator var10000 = this.i;
-         Consumer var10001;
-         if (action instanceof Consumer) {
-            var10001 = (Consumer)action;
-         } else {
-            Objects.requireNonNull(action);
-            var10001 = action::accept;
-         }
-
-         var10000.forEachRemaining(var10001);
+         this.i.forEachRemaining((Long x) -> action.accept(x));
       }
 
       /** @deprecated */

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.util.function.ToIntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -35,6 +35,10 @@ public interface Reference2ShortFunction<K> extends ToIntFunction<K>, Function<K
    }
 
    short getShort(Object var1);
+
+   default boolean containsKey(Object key) {
+      return this.getShort(key) != this.defaultReturnValue();
+   }
 
    default short getOrDefault(Object key, short defaultValue) {
       short v;

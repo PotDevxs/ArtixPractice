@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.bytes.Byte2IntFunction;
@@ -14,6 +14,10 @@ import dev.artixdev.libs.it.unimi.dsi.fastutil.shorts.Short2IntFunction;
 public interface Int2IntFunction extends java.util.function.IntUnaryOperator, Function<Integer, Integer> {
    default int applyAsInt(int operand) {
       return this.get(operand);
+   }
+
+   default Integer apply(Integer k) {
+      return k == null ? null : get(k);
    }
 
    default int put(int key, int value) {
@@ -36,7 +40,7 @@ public interface Int2IntFunction extends java.util.function.IntUnaryOperator, Fu
    default Integer put(Integer key, Integer value) {
       int k = key;
       boolean containsKey = this.containsKey(k);
-      int v = this.put(k, value);
+      int v = this.put(k, value.intValue());
       return containsKey ? v : null;
    }
 

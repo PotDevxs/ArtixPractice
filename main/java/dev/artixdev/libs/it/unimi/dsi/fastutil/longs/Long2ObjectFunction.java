@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.util.function.LongFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -39,7 +39,7 @@ public interface Long2ObjectFunction<V> extends LongFunction<V>, Function<Long, 
    V get(long var1);
 
    default V getOrDefault(long key, V defaultValue) {
-      Object v;
+      V v;
       return (v = this.get(key)) == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
    }
 
@@ -63,7 +63,7 @@ public interface Long2ObjectFunction<V> extends LongFunction<V>, Function<Long, 
          return null;
       } else {
          long k = (Long)key;
-         Object v;
+         V v;
          return (v = this.get(k)) == this.defaultReturnValue() && !this.containsKey(k) ? null : v;
       }
    }

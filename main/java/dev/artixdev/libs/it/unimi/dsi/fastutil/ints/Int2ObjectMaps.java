@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -169,8 +169,9 @@ public final class Int2ObjectMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<Integer, V>> entrySet() {
-         return this.int2ObjectEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<java.util.Map.Entry<Integer, V>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<Integer, V>>) (ObjectSet<?>) this.int2ObjectEntrySet();
       }
 
       public IntSet keySet() {
@@ -204,7 +205,7 @@ public final class Int2ObjectMaps {
             return false;
          } else {
             Map<?, ?> m = (Map)o;
-            return m.size() != 1 ? false : ((Entry)m.entrySet().iterator().next()).equals(this.entrySet().iterator().next());
+            return m.size() != 1 ? false : ((java.util.Map.Entry<?, ?>) m.entrySet().iterator().next()).equals(this.entrySet().iterator().next());
          }
       }
 
@@ -254,8 +255,9 @@ public final class Int2ObjectMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<Integer, V>> entrySet() {
-         return this.int2ObjectEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<java.util.Map.Entry<Integer, V>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<Integer, V>>) (ObjectSet<?>) this.int2ObjectEntrySet();
       }
 
       public IntSet keySet() {
@@ -473,7 +475,9 @@ public final class Int2ObjectMaps {
 
       public ObjectSet<Int2ObjectMap.Entry<V>> int2ObjectEntrySet() {
          if (this.entries == null) {
-            this.entries = ObjectSets.unmodifiable(this.map.int2ObjectEntrySet());
+            @SuppressWarnings("unchecked")
+            ObjectSet<Int2ObjectMap.Entry<V>> unmodifiable = (ObjectSet<Int2ObjectMap.Entry<V>>) (ObjectSet<?>) ObjectSets.unmodifiable(this.map.int2ObjectEntrySet());
+            this.entries = unmodifiable;
          }
 
          return this.entries;
@@ -481,8 +485,9 @@ public final class Int2ObjectMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<Integer, V>> entrySet() {
-         return this.int2ObjectEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<java.util.Map.Entry<Integer, V>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<Integer, V>>) (ObjectSet<?>) this.int2ObjectEntrySet();
       }
 
       public IntSet keySet() {
@@ -513,8 +518,9 @@ public final class Int2ObjectMaps {
          return o == this ? true : this.map.equals(o);
       }
 
+      @SuppressWarnings("unchecked")
       public V getOrDefault(int key, V defaultValue) {
-         return this.map.getOrDefault(key, defaultValue);
+         return ((Int2ObjectMap<V>) this.map).getOrDefault(key, defaultValue);
       }
 
       public void forEach(BiConsumer<? super Integer, ? super V> action) {
@@ -563,8 +569,9 @@ public final class Int2ObjectMaps {
 
       /** @deprecated */
       @Deprecated
+      @SuppressWarnings("unchecked")
       public V getOrDefault(Object key, V defaultValue) {
-         return this.map.getOrDefault(key, defaultValue);
+         return ((Int2ObjectMap<V>) this.map).getOrDefault(key, defaultValue);
       }
 
       /** @deprecated */

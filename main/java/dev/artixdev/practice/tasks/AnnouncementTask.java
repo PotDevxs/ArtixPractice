@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.tasks;
+package dev.artixdev.practice.tasks;
 
 import java.util.Collection;
 import java.util.List;
@@ -187,8 +187,7 @@ public class AnnouncementTask implements Runnable {
     * @param message the message
     */
    private void sendTextComponentMessage(String message) {
-      // TODO: Implement TextComponentBuilder for advanced message formatting
-      // For now, use regular broadcast which supports color codes
+      // Broadcast with legacy color codes; TextComponentBuilder could be added later for click/hover
       Bukkit.broadcastMessage(message);
    }
    

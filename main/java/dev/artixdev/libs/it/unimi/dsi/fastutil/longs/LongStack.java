@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Stack;
 
@@ -14,7 +14,7 @@ public interface LongStack extends Stack<Long> {
    /** @deprecated */
    @Deprecated
    default void push(Long o) {
-      this.push(o);
+      this.push(o.longValue());
    }
 
    /** @deprecated */

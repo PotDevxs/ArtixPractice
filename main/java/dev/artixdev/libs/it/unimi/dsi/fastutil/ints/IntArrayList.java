@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -152,9 +152,7 @@ public class IntArrayList extends AbstractIntList implements Serializable, Clone
    }
 
    public static IntArrayList toListWithExpectedSize(IntStream stream, int expectedSize) {
-      return expectedSize <= 10 ? toList(stream) : (IntArrayList)stream.collect(new IntCollections.SizeDecreasingSupplier(expectedSize, (size) -> {
-         return size <= 10 ? new IntArrayList() : new IntArrayList(size);
-      }), IntArrayList::add, IntList::addAll);
+      return expectedSize <= 10 ? toList(stream) : stream.collect(() -> new IntCollections.SizeDecreasingSupplier<>(expectedSize, size -> size <= 10 ? new IntArrayList() : new IntArrayList(size)).get(), (list, value) -> list.add(value), (a, b) -> a.addAll(b));
    }
 
    public void ensureCapacity(int capacity) {

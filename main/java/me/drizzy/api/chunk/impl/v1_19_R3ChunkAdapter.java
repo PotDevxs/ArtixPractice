@@ -1,107 +1,144 @@
-﻿package me.drizzy.api.chunk.impl;
+package me.drizzy.api.chunk.impl;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
 import me.drizzy.api.chunk.IChunkAdapter;
-import net.minecraft.world.level.chunk.ChunkSection;
-import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.chunk.DataPaletteBlock;
-import net.minecraft.world.level.chunk.IChunkAccess;
 import org.bukkit.Chunk;
-import org.bukkit.craftbukkit.v1_19_R3.CraftChunk;
-import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import dev.artixdev.practice.llIllIlIIlIIlII.IIlllIlIIlIIlII;
+import dev.artixdev.practice.utils.ReflectionUtils;
 
+/**
+ * Chunk adapter implementation for Minecraft version 1.19 R3.
+ * Handles caching and restoring chunk sections using NMS reflection.
+ */
 public class v1_19_R3ChunkAdapter implements IChunkAdapter {
-   private final Map<Long, ChunkSection[]> chunkSectionMap = new Long2ObjectOpenHashMap();
-   private static MethodHandle FIELD_E_GETTER;
-   private static MethodHandle FIELD_E_SETTER;
-   private static MethodHandle FIELD_F_GETTER;
-   private static MethodHandle FIELD_F_SETTER;
-   private static MethodHandle FIELD_G_GETTER;
-   private static MethodHandle FIELD_G_SETTER;
-   private static MethodHandle sectionsSetter;
 
-   public void cacheChunk(Chunk chunk) {
-      if (!chunk.isLoaded()) {
-         chunk.load();
-      }
+    private static final String NMS_CHUNK = "net.minecraft.world.level.chunk";
 
-      IChunkAccess nmsChunk = ((CraftChunk)chunk).getHandle(ChunkStatus.o);
-      this.chunkSectionMap.put(nmsChunk.f().a(), this.cloneSections(nmsChunk.d()));
-   }
+    private final Map<Long, Object[]> chunkSectionMap = new Long2ObjectOpenHashMap<>();
 
-   public void restoreChunk(Chunk chunk) {
-      try {
-         if (!chunk.isLoaded()) {
+    private static Class<?> chunkSectionClass;
+    private static Class<?> chunkAccessClass;
+    private static Object chunkStatusO;
+    private static MethodHandle fieldEGetter;
+    private static MethodHandle fieldESetter;
+    private static MethodHandle fieldFGetter;
+    private static MethodHandle fieldFSetter;
+    private static MethodHandle fieldGGetter;
+    private static MethodHandle fieldGSetter;
+    private static MethodHandle sectionsSetter;
+
+    @Override
+    public void cacheChunk(Chunk chunk) {
+        if (!chunk.isLoaded()) {
             chunk.load();
-         }
+        }
+        try {
+            Method getHandle = chunk.getClass().getMethod("getHandle", Class.forName(NMS_CHUNK + ".ChunkStatus"));
+            Object nmsChunk = getHandle.invoke(chunk, chunkStatusO);
+            Object pos = nmsChunk.getClass().getMethod("f").invoke(nmsChunk);
+            long key = (Long) pos.getClass().getMethod("a").invoke(pos);
+            Object[] sections = (Object[]) nmsChunk.getClass().getMethod("d").invoke(nmsChunk);
+            chunkSectionMap.put(key, cloneSections(sections));
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to cache chunk", e);
+        }
+    }
 
-         IChunkAccess nmsChunk = ((CraftChunk)chunk).getHandle(ChunkStatus.o);
-         long key = nmsChunk.f().a();
-         if (!this.chunkSectionMap.containsKey(key)) {
-            throw new UnsupportedOperationException("Chunk invoked but not saved!");
-         } else {
-            ChunkSection[] sections = (ChunkSection[])this.chunkSectionMap.get(key);
-            sectionsSetter.invoke(nmsChunk, sections);
-            CraftWorld world = ((CraftChunk)chunk).getCraftWorld();
-            world.refreshChunk(chunk.getX(), chunk.getZ());
-         }
-      } catch (Throwable e) {
-         throw e;
-      }
-   }
+    @Override
+    public void restoreChunk(Chunk chunk) {
+        if (!chunk.isLoaded()) {
+            chunk.load();
+        }
+        try {
+            Method getHandle = chunk.getClass().getMethod("getHandle", Class.forName(NMS_CHUNK + ".ChunkStatus"));
+            Object nmsChunk = getHandle.invoke(chunk, chunkStatusO);
+            Object pos = nmsChunk.getClass().getMethod("f").invoke(nmsChunk);
+            long key = (Long) pos.getClass().getMethod("a").invoke(pos);
+            Object[] cachedSections = chunkSectionMap.get(key);
+            if (cachedSections == null) {
+                throw new UnsupportedOperationException("Chunk invoked but not saved!");
+            }
+            sectionsSetter.invoke(nmsChunk, cachedSections);
+            Object craftWorld = chunk.getClass().getMethod("getCraftWorld").invoke(chunk);
+            craftWorld.getClass().getMethod("refreshChunk", int.class, int.class).invoke(craftWorld, chunk.getX(), chunk.getZ());
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to restore chunk", e);
+        }
+    }
 
-   public ChunkSection[] cloneSections(ChunkSection[] sections) {
-      ChunkSection[] newSections = new ChunkSection[sections.length];
+    private Object[] cloneSections(Object[] sections) {
+        Object[] cloned = (Object[]) java.lang.reflect.Array.newInstance(chunkSectionClass, sections.length);
+        for (int i = 0; i < sections.length; i++) {
+            if (sections[i] != null) {
+                cloned[i] = cloneSection(sections[i]);
+            }
+        }
+        return cloned;
+    }
 
-      for(int i = 0; i < sections.length; ++i) {
-         if (sections[i] != null) {
-            newSections[i] = this.cloneSection(sections[i]);
-         }
-      }
+    private Object cloneSection(Object original) {
+        try {
+            Method g = original.getClass().getMethod("g");
+            Method i = original.getClass().getMethod("i");
+            Method j = original.getClass().getMethod("j");
+            int y = (Integer) g.invoke(original) >> 4;
+            Object argI = i.invoke(original);
+            Object argJ = j.invoke(original);
+            Constructor<?> ctor = null;
+            for (Constructor<?> c : chunkSectionClass.getDeclaredConstructors()) {
+                if (c.getParameterCount() == 3) {
+                    ctor = c;
+                    break;
+                }
+            }
+            if (ctor == null) {
+                throw new RuntimeException("ChunkSection 3-arg constructor not found");
+            }
+            ctor.setAccessible(true);
+            Object newSection = ctor.newInstance(y, argI, argJ);
+            fieldESetter.invoke(newSection, fieldEGetter.invoke(original));
+            fieldFSetter.invoke(newSection, fieldFGetter.invoke(original));
+            fieldGSetter.invoke(newSection, fieldGGetter.invoke(original));
+            return newSection;
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to clone chunk section", e);
+        }
+    }
 
-      return newSections;
-   }
+    static {
+        Lookup lookup = MethodHandles.lookup();
+        try {
+            chunkSectionClass = Class.forName(NMS_CHUNK + ".ChunkSection");
+            chunkAccessClass = Class.forName(NMS_CHUNK + ".IChunkAccess");
+            Class<?> chunkStatusClass = Class.forName(NMS_CHUNK + ".ChunkStatus");
+            chunkStatusO = chunkStatusClass.getField("o").get(null);
 
-   public ChunkSection cloneSection(ChunkSection chunkSection) {
-      try {
-         ChunkSection newSection = new ChunkSection(chunkSection.g() >> 4, chunkSection.i(), (DataPaletteBlock)chunkSection.j());
-         FIELD_E_SETTER.invoke(newSection, FIELD_E_GETTER.invoke(chunkSection));
-         FIELD_F_SETTER.invoke(newSection, FIELD_F_GETTER.invoke(chunkSection));
-         FIELD_G_SETTER.invoke(newSection, FIELD_G_GETTER.invoke(chunkSection));
-         return newSection;
-      } catch (Throwable e) {
-         throw e;
-      }
-   }
+            Field fieldE = chunkSectionClass.getDeclaredField("f");
+            ReflectionUtils.makeFieldAccessible(fieldE);
+            fieldEGetter = lookup.unreflectGetter(fieldE);
+            fieldESetter = lookup.unreflectSetter(fieldE);
 
-   static {
-      Lookup lookup = MethodHandles.lookup();
+            Field fieldF = chunkSectionClass.getDeclaredField("g");
+            ReflectionUtils.makeFieldAccessible(fieldF);
+            fieldFGetter = lookup.unreflectGetter(fieldF);
+            fieldFSetter = lookup.unreflectSetter(fieldF);
 
-      try {
-         Field fieldE = ChunkSection.class.getDeclaredField("f");
-         IIlllIlIIlIIlII.lIIIIllIIlIIlII(fieldE);
-         FIELD_E_GETTER = lookup.unreflectGetter(fieldE);
-         FIELD_E_SETTER = lookup.unreflectSetter(fieldE);
-         Field fieldF = ChunkSection.class.getDeclaredField("g");
-         IIlllIlIIlIIlII.lIIIIllIIlIIlII(fieldF);
-         FIELD_F_GETTER = lookup.unreflectGetter(fieldF);
-         FIELD_F_SETTER = lookup.unreflectSetter(fieldF);
-         Field fieldG = ChunkSection.class.getDeclaredField("h");
-         IIlllIlIIlIIlII.lIIIIllIIlIIlII(fieldG);
-         FIELD_G_GETTER = lookup.unreflectGetter(fieldG);
-         FIELD_G_SETTER = lookup.unreflectSetter(fieldG);
-         Field sections = IChunkAccess.class.getDeclaredField("k");
-         IIlllIlIIlIIlII.lIIIIllIIlIIlII(sections);
-         sectionsSetter = lookup.unreflectSetter(sections);
-      } catch (Throwable e) {
-         e.printStackTrace();
-      }
+            Field fieldG = chunkSectionClass.getDeclaredField("h");
+            ReflectionUtils.makeFieldAccessible(fieldG);
+            fieldGGetter = lookup.unreflectGetter(fieldG);
+            fieldGSetter = lookup.unreflectSetter(fieldG);
 
-   }
+            Field sectionsField = chunkAccessClass.getDeclaredField("k");
+            ReflectionUtils.makeFieldAccessible(sectionsField);
+            sectionsSetter = lookup.unreflectSetter(sectionsField);
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to initialize chunk adapter", e);
+        }
+    }
 }

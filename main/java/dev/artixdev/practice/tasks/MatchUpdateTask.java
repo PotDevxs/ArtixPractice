@@ -1,10 +1,10 @@
-﻿package dev.artixdev.practice.tasks;
+package dev.artixdev.practice.tasks;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
-import dev.artixdev.practice.Practice;
+import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.Match;
 
 public class MatchUpdateTask implements Runnable {
@@ -24,7 +24,7 @@ public class MatchUpdateTask implements Runnable {
     public MatchUpdateTask(Match match) {
         this.match = match;
         BukkitScheduler scheduler = Bukkit.getScheduler();
-        BukkitTask task = scheduler.runTaskTimer(Practice.getPlugin(), this, 0L, 1L);
+        BukkitTask task = scheduler.runTaskTimer(Main.getInstance(), this, 0L, 1L);
         this.task = task;
     }
 
@@ -36,7 +36,7 @@ public class MatchUpdateTask implements Runnable {
                         // Handle match end
                         if (this.match.getTimeLeft() == 0) {
                             this.match.endMatch();
-                            Bukkit.getScheduler().runTaskLater(Practice.getPlugin(), () -> {
+                            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                                 // Handle match end logic
                             }, 1L);
                         }
@@ -44,7 +44,7 @@ public class MatchUpdateTask implements Runnable {
                         this.match.decrementTimeLeft();
                         if (this.match.getTimeLeft() == 0) {
                             this.match.endMatch();
-                            Bukkit.getScheduler().runTaskLater(Practice.getPlugin(), () -> {
+                            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                                 // Handle match end logic
                             }, 1L);
                         }

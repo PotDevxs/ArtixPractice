@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils.serialize;
+package dev.artixdev.practice.utils.serialize;
 
 import java.lang.reflect.Type;
 import java.util.Iterator;
@@ -18,7 +18,7 @@ import dev.artixdev.practice.models.StatsProfile;
 import dev.artixdev.practice.models.KitStats;
 import dev.artixdev.practice.models.MatchHistory;
 import dev.artixdev.practice.models.Division;
-import dev.artixdev.practice.Practice;
+import dev.artixdev.practice.Main;
 import dev.artixdev.practice.utils.PlayerUtils;
 
 public class StatsProfileSerializer implements JsonDeserializer<StatsProfile>, JsonSerializer<StatsProfile> {
@@ -39,9 +39,9 @@ public class StatsProfileSerializer implements JsonDeserializer<StatsProfile>, J
         jsonObject.addProperty("name", statsProfile.getName() == null ? 
             PlayerUtils.getName(statsProfile.getUuid()) : statsProfile.getName());
         
-        Division division = Practice.getPlugin().getRankManager().getDivision(statsProfile.getGlobalElo());
+        Division division = Main.getInstance().getRankManager().getDivision(statsProfile.getGlobalElo());
         if (division != null) {
-            jsonObject.addProperty("division", Practice.getPlugin().getGson().toJson(division));
+            jsonObject.addProperty("division", Main.getInstance().getGson().toJson(division));
         }
 
         jsonObject.addProperty("globalElo", statsProfile.getGlobalElo());
@@ -50,9 +50,9 @@ public class StatsProfileSerializer implements JsonDeserializer<StatsProfile>, J
         jsonObject.addProperty("winstreak", statsProfile.getWinstreak());
         jsonObject.addProperty("highestWinstreak", statsProfile.getHighestWinstreak());
         jsonObject.addProperty("unrankedMatchHistory", 
-            Practice.getPlugin().getGson().toJson(statsProfile.getUnrankedMatchHistory(), MATCH_HISTORY_TYPE));
+            Main.getInstance().getGson().toJson(statsProfile.getUnrankedMatchHistory(), MATCH_HISTORY_TYPE));
         jsonObject.addProperty("rankedMatchHistory", 
-            Practice.getPlugin().getGson().toJson(statsProfile.getRankedMatchHistory(), MATCH_HISTORY_TYPE));
+            Main.getInstance().getGson().toJson(statsProfile.getRankedMatchHistory(), MATCH_HISTORY_TYPE));
         
         JsonObject kitStats = new JsonObject();
         Iterator<Entry<String, KitStats>> iterator = statsProfile.getKitStats().entrySet().iterator();
@@ -105,13 +105,13 @@ public class StatsProfileSerializer implements JsonDeserializer<StatsProfile>, J
             
             List<MatchHistory> unrankedMatchHistory;
             if (json.has("unrankedMatchHistory")) {
-                unrankedMatchHistory = Practice.getPlugin().getGson().fromJson(
+                unrankedMatchHistory = Main.getInstance().getGson().fromJson(
                     json.get("unrankedMatchHistory").getAsString(), MATCH_HISTORY_TYPE);
                 statsProfile.getUnrankedMatchHistory().addAll(unrankedMatchHistory);
             }
 
             if (json.has("rankedMatchHistory")) {
-                unrankedMatchHistory = Practice.getPlugin().getGson().fromJson(
+                unrankedMatchHistory = Main.getInstance().getGson().fromJson(
                     json.get("rankedMatchHistory").getAsString(), MATCH_HISTORY_TYPE);
                 statsProfile.getRankedMatchHistory().addAll(unrankedMatchHistory);
             }

@@ -54,7 +54,7 @@ public final class PostMatchCommand {
       }
       
       // Check if player has permission
-      if (!player.hasPermission("bolt.command.postmatch")) {
+      if (!player.hasPermission("artix.command.postmatch")) {
          notificationManager.sendError(player, "You don't have permission to use this command.");
          return;
       }

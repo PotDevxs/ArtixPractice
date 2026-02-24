@@ -1,9 +1,11 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
+import dev.artixdev.api.practice.menu.MenuHandler;
+import dev.artixdev.practice.menus.CosmeticsMenu;
 import dev.artixdev.practice.utils.ItemBuilder;
 import dev.artixdev.practice.utils.ChatUtils;
 import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
@@ -60,8 +62,10 @@ public class CosmeticsButton extends Button {
    
    @Override
    public void clicked(Player player, ClickType clickType) {
-      // Handle click based on action
-      // TODO: Implement action handling (open appropriate menu)
-      player.sendMessage(ChatUtils.colorize("&7Opening " + name + " menu..."));
+      if ("kill_messages".equalsIgnoreCase(action) || "kill_effects".equalsIgnoreCase(action) || "trails".equalsIgnoreCase(action)) {
+         MenuHandler.getInstance().openMenu(new CosmeticsMenu(), player);
+      } else {
+         player.sendMessage(ChatUtils.colorize("&7Opening " + name + " menu..."));
+      }
    }
 }

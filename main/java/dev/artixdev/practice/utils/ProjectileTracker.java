@@ -1,8 +1,10 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
+import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.enums.ProjectileType;
 
@@ -173,13 +175,20 @@ public class ProjectileTracker {
     * @return projectile type or null
     */
    public ProjectileType getProjectileType(ItemStack item) {
-      if (item == null) {
-         return null;
-      }
-      
-      // TODO: Implement item to projectile type mapping
-      // This would depend on the specific items used in the practice server
-      return ProjectileType.ARROW; // Default
+      if (item == null || item.getType() == Material.AIR) return null;
+      Material mat = item.getType();
+      if (mat == Material.ARROW) return ProjectileType.ARROW;
+      if (XMaterial.SNOWBALL.parseMaterial() != null && mat == XMaterial.SNOWBALL.parseMaterial()) return ProjectileType.SNOWBALL;
+      if (mat == Material.EGG) return ProjectileType.EGG;
+      if (mat == Material.FIREWORK_CHARGE || mat == Material.FIREWORK || mat.name().equals("FIREWORK_ROCKET")) return ProjectileType.FIREWORK_ROCKET;
+      if (mat == Material.BLAZE_POWDER) return ProjectileType.BLAZE_POWDER;
+      if (XMaterial.TRIDENT.parseMaterial() != null && mat == XMaterial.TRIDENT.parseMaterial()) return ProjectileType.TRIDENT;
+      if (XMaterial.SPECTRAL_ARROW.parseMaterial() != null && mat == XMaterial.SPECTRAL_ARROW.parseMaterial()) return ProjectileType.SPECTRAL_ARROW;
+      if (XMaterial.TIPPED_ARROW.parseMaterial() != null && mat == XMaterial.TIPPED_ARROW.parseMaterial()) return ProjectileType.TIPPED_ARROW;
+      if (mat == Material.ENDER_PEARL) return ProjectileType.ENDER_PEARL;
+      if (XMaterial.SPLASH_POTION.parseMaterial() != null && mat == XMaterial.SPLASH_POTION.parseMaterial()) return ProjectileType.SPLASH_POTION;
+      if (XMaterial.LINGERING_POTION.parseMaterial() != null && mat == XMaterial.LINGERING_POTION.parseMaterial()) return ProjectileType.LINGERING_POTION;
+      return ProjectileType.ARROW;
    }
    
    /**
@@ -298,16 +307,25 @@ public class ProjectileTracker {
             }
             break;
          case TIPPED_ARROW:
-            // Apply potion effects
-            // TODO: Implement potion effect application
+            if (target instanceof org.bukkit.entity.Player) {
+               org.bukkit.entity.Player p = (org.bukkit.entity.Player) target;
+               PotionEffectType weak = PotionEffectType.WEAKNESS;
+               if (weak != null) p.addPotionEffect(new org.bukkit.potion.PotionEffect(weak, 80, 0, false, false));
+            }
             break;
          case FIREWORK_ROCKET:
-            // Apply explosion effect
-            // TODO: Implement explosion effect
+            try {
+               target.getWorld().createExplosion(target.getLocation(), 0.2f, false);
+            } catch (IllegalArgumentException e) {
+               target.getWorld().createExplosion(target.getLocation().getX(), target.getLocation().getY(), target.getLocation().getZ(), 0.2f, false, false);
+            }
             break;
          case TRIDENT:
-            // Apply trident effects
-            // TODO: Implement trident effects
+            if (target instanceof org.bukkit.entity.Player) {
+               org.bukkit.entity.Player p = (org.bukkit.entity.Player) target;
+               PotionEffectType slow = PotionEffectType.SLOW;
+               if (slow != null) p.addPotionEffect(new org.bukkit.potion.PotionEffect(slow, 60, 0, false, false));
+            }
             break;
          default:
             // No special effects

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -486,7 +486,7 @@ public final class IntCollections {
             expectedNeededNextSize = 8;
          }
 
-         return (IntCollection)this.builder.apply(expectedNeededNextSize);
+         return this.builder.apply(expectedNeededNextSize);
       }
    }
 

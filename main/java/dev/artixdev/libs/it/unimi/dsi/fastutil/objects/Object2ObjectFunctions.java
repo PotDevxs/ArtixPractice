@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -84,14 +84,12 @@ public final class Object2ObjectFunctions {
 
       public V apply(K key) {
          synchronized(this.sync) {
-            return this.function.apply(key);
+            return this.function.get(key);
          }
       }
 
       public int size() {
-         synchronized(this.sync) {
-            return this.function.size();
-         }
+         throw new UnsupportedOperationException();
       }
 
       public V defaultReturnValue() {
@@ -137,9 +135,7 @@ public final class Object2ObjectFunctions {
       }
 
       public void clear() {
-         synchronized(this.sync) {
-            this.function.clear();
-         }
+         throw new UnsupportedOperationException();
       }
 
       public int hashCode() {
@@ -184,7 +180,7 @@ public final class Object2ObjectFunctions {
       }
 
       public int size() {
-         return this.function.size();
+         throw new UnsupportedOperationException();
       }
 
       public V defaultReturnValue() {
@@ -207,8 +203,9 @@ public final class Object2ObjectFunctions {
          return this.function.get(k);
       }
 
+      @SuppressWarnings("unchecked")
       public V getOrDefault(Object k, V defaultValue) {
-         return this.function.getOrDefault(k, defaultValue);
+         return ((Object2ObjectFunction<K, V>) this.function).getOrDefault(k, defaultValue);
       }
 
       public V remove(Object k) {
@@ -274,11 +271,7 @@ public final class Object2ObjectFunctions {
       }
 
       public boolean equals(Object o) {
-         if (!(o instanceof Function)) {
-            return false;
-         } else {
-            return ((Function)o).size() == 0;
-         }
+         return o == this || o instanceof EmptyFunction;
       }
 
       public String toString() {

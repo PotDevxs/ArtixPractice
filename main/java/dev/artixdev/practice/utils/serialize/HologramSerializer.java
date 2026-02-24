@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils.serialize;
+package dev.artixdev.practice.utils.serialize;
 
 import java.lang.reflect.Type;
 import java.util.UUID;
@@ -11,7 +11,7 @@ import dev.artixdev.libs.com.google.gson.JsonParseException;
 import dev.artixdev.libs.com.google.gson.JsonSerializationContext;
 import dev.artixdev.libs.com.google.gson.JsonSerializer;
 import dev.artixdev.libs.com.google.gson.reflect.TypeToken;
-import dev.artixdev.practice.Practice;
+import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.HologramData;
 import dev.artixdev.practice.enums.HologramType;
 import dev.artixdev.practice.enums.LeaderboardType;
@@ -52,7 +52,7 @@ public class HologramSerializer implements JsonDeserializer<AbstractHologram>, J
                 hologram = new KitHologram(leaderboardType);
                 break;
             default:
-                Kit kit = Practice.getPlugin().getKitManager().getKitByName(jsonObject.get("kit").getAsString());
+                Kit kit = Main.getInstance().getKitManager().getKitByName(jsonObject.get("kit").getAsString());
                 if (kit == null) {
                     return null;
                 }
@@ -66,7 +66,7 @@ public class HologramSerializer implements JsonDeserializer<AbstractHologram>, J
             
             Type locationAdapter = (new TypeToken<Location>() {
             }).getType();
-            Location location = Practice.getPlugin().getGson().fromJson(jsonObject.get("location").getAsString(), locationAdapter);
+            Location location = Main.getInstance().getGson().fromJson(jsonObject.get("location").getAsString(), locationAdapter);
             data.setLocation(location);
             
             hologram.setData(data);
@@ -81,7 +81,7 @@ public class HologramSerializer implements JsonDeserializer<AbstractHologram>, J
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("_id", data.getUniqueId().toString());
         jsonObject.addProperty("name", data.getName());
-        jsonObject.addProperty("location", Practice.getPlugin().getGson().toJson(data.getLocation()));
+        jsonObject.addProperty("location", Main.getInstance().getGson().toJson(data.getLocation()));
         jsonObject.addProperty("type", src.getHologramType().name());
         jsonObject.addProperty("leaderboardType", src.getLeaderboardType().name());
         jsonObject.addProperty("updateIndex", src.getUpdateIndex());

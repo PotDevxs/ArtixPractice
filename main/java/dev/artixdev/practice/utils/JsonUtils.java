@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -156,9 +156,22 @@ public class JsonUtils {
         
         @Override
         public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            Map<String, Object> map = gson.fromJson(json, Map.class);
-            // TODO: Implement ItemStack deserialization
-            return null;
+            if (json == null || !json.isJsonObject()) return null;
+            Map<String, Object> map = gson.fromJson(json, new TypeToken<Map<String, Object>>(){}.getType());
+            if (map == null) return null;
+            String typeStr = map.get("type") != null ? map.get("type").toString() : null;
+            if (typeStr == null || typeStr.isEmpty()) return null;
+            try {
+                org.bukkit.Material material = org.bukkit.Material.valueOf(typeStr);
+                if (material == null || material == org.bukkit.Material.AIR) return null;
+                int amount = map.get("amount") != null ? ((Number) map.get("amount")).intValue() : 1;
+                amount = Math.max(1, Math.min(amount, material.getMaxStackSize()));
+                short durability = map.get("durability") != null ? ((Number) map.get("durability")).shortValue() : 0;
+                ItemStack stack = new ItemStack(material, amount, durability);
+                return stack;
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
         }
     }
 }

@@ -1,19 +1,16 @@
-﻿package dev.artixdev.practice.managers;
+package dev.artixdev.practice.managers;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 import dev.artixdev.api.practice.storage.MongoStorage;
-import dev.artixdev.libs.com.google.gson.Gson;
-import dev.artixdev.libs.com.google.gson.reflect.TypeToken;
 import dev.artixdev.libs.com.mongodb.client.MongoClient;
 import dev.artixdev.libs.com.mongodb.client.MongoClients;
 import dev.artixdev.libs.com.mongodb.client.MongoCollection;
@@ -21,76 +18,56 @@ import dev.artixdev.libs.com.mongodb.client.MongoDatabase;
 import dev.artixdev.libs.org.bson.Document;
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.PlayerProfile;
-import dev.artixdev.practice.configs.SettingsConfig;
 
 /**
  * Player Manager
- * Manages player profiles and data
+ * Manages player profiles and data (MongoDB or StorageManager/FLATFILE)
  */
 public class PlayerManager {
-   
+
    private static final Logger logger = LogManager.getLogger(PlayerManager.class);
-   
+
    private final Main plugin;
    private final MongoStorage<PlayerProfile> playerStorage;
    private final Map<UUID, PlayerProfile> playerProfiles;
-   private final SettingsConfig settings;
    private Location spawnLocation;
-   
+   private final boolean useStorageManager;
+
    /**
     * Constructor
-    * @param plugin the plugin instance
     */
    public PlayerManager(Main plugin) {
       this.plugin = plugin;
-      
-      // Get MongoDB collection for players
-      MongoCollection<Document> playersCollection = getPlayersCollection();
-      Gson gson = Main.GSON;
-      
-      // Initialize MongoStorage with explicit type parameter
-      this.playerStorage = new MongoStorage<PlayerProfile>(playersCollection, gson);
       this.playerProfiles = new ConcurrentHashMap<>();
-      this.settings = plugin.getSettingsConfig();
-      
+      String dbType = plugin.getConfigManager().getDatabaseConfig().getDatabaseType().toUpperCase();
+
+      if ("MONGODB".equals(dbType)) {
+         MongoCollection<Document> coll = getPlayersCollection();
+         this.playerStorage = coll != null ? new MongoStorage<>(coll, Main.GSON) : null;
+         this.useStorageManager = (this.playerStorage == null);
+      } else {
+         this.playerStorage = null;
+         this.useStorageManager = true;
+      }
+
       initializePlayerManager();
    }
-   
-   /**
-    * Get MongoDB players collection
-    * @return MongoCollection for players
-    */
+
    private MongoCollection<Document> getPlayersCollection() {
       try {
-         // Get database and create collection
          MongoDatabase database = getMongoDatabase();
-         if (database != null) {
-            return database.getCollection("players");
-         }
+         return database != null ? database.getCollection("players") : null;
       } catch (Exception e) {
          logger.error("Failed to get MongoDB players collection", e);
+         return null;
       }
-      
-      // If database is not available, throw exception as playerStorage is required
-      throw new IllegalStateException("MongoDB database not available. Cannot initialize PlayerManager.");
    }
-   
-   /**
-    * Get MongoDB database instance
-    * @return MongoDatabase or null if not available
-    */
+
    private MongoDatabase getMongoDatabase() {
       try {
-         // Get database configuration
          String connectionString = plugin.getConfigManager().getDatabaseConfig().getMongoConnectionString();
          String databaseName = plugin.getConfigManager().getDatabaseConfig().getMongoDatabase();
-         
-         if (connectionString == null || databaseName == null) {
-            logger.warn("MongoDB configuration not available");
-            return null;
-         }
-         
-         // Create MongoDB client and get database
+         if (connectionString == null || databaseName == null) return null;
          MongoClient mongoClient = MongoClients.create(connectionString);
          return mongoClient.getDatabase(databaseName);
       } catch (Exception e) {
@@ -117,29 +94,38 @@ public class PlayerManager {
    }
    
    /**
-    * Load spawn location
+    * Load spawn location from config.yml (spawn section) or use first world spawn
     */
    private void loadSpawnLocation() {
       try {
-         // Load spawn location from config
-         String worldName = settings.getStringOrDefault("spawn.world", "world");
-         double x = settings.contains("spawn.x") ? settings.getDouble("spawn.x") : 0.0;
-         double y = settings.contains("spawn.y") ? settings.getDouble("spawn.y") : 100.0;
-         double z = settings.contains("spawn.z") ? settings.getDouble("spawn.z") : 0.0;
-         float yaw = (float) (settings.contains("spawn.yaw") ? settings.getDouble("spawn.yaw") : 0.0);
-         float pitch = (float) (settings.contains("spawn.pitch") ? settings.getDouble("spawn.pitch") : 0.0);
-         
+         FileConfiguration config = plugin.getConfig();
+         if (config == null || config.get("spawn") == null) {
+            spawnLocation = getDefaultSpawn();
+            logger.info("Spawn: using default world spawn (no spawn in config)");
+            return;
+         }
+         String worldName = config.getString("spawn.world", "world");
+         double x = config.getDouble("spawn.x", 0.5);
+         double y = config.getDouble("spawn.y", 100.0);
+         double z = config.getDouble("spawn.z", 0.5);
+         float yaw = (float) config.getDouble("spawn.yaw", 0.0);
+         float pitch = (float) config.getDouble("spawn.pitch", 0.0);
+
          if (Bukkit.getWorld(worldName) != null) {
             spawnLocation = new Location(Bukkit.getWorld(worldName), x, y, z, yaw, pitch);
          } else {
-            spawnLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
+            spawnLocation = getDefaultSpawn();
          }
-         
-         logger.info("Spawn location loaded: " + spawnLocation.toString());
+         logger.info("Spawn location loaded: " + spawnLocation);
       } catch (Exception e) {
          logger.error("Failed to load spawn location", e);
-         spawnLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
+         spawnLocation = getDefaultSpawn();
       }
+   }
+
+   private Location getDefaultSpawn() {
+      if (Bukkit.getWorlds().isEmpty()) return null;
+      return Bukkit.getWorlds().get(0).getSpawnLocation().clone();
    }
    
    /**
@@ -181,30 +167,24 @@ public class PlayerManager {
    }
    
    /**
-    * Load player profile
-    * @param playerId the player ID
-    * @return player profile or null
+    * Load player profile (from cache, MongoDB or StorageManager/FLATFILE)
     */
    public PlayerProfile loadPlayerProfile(UUID playerId) {
-      if (playerId == null) {
-         return null;
-      }
-      
+      if (playerId == null) return null;
       try {
-         // Check cache first
          PlayerProfile cached = playerProfiles.get(playerId);
-         if (cached != null) {
-            return cached;
-         }
-         
-         // Load from storage
-         PlayerProfile profile = playerStorage.load(playerId);
-         if (profile != null) {
-            // Cache the profile
-            playerProfiles.put(playerId, profile);
+         if (cached != null) return cached;
+
+         if (useStorageManager && plugin.getStorageManager() != null) {
+            PlayerProfile profile = plugin.getStorageManager().loadPlayerProfile(playerId).join();
+            if (profile != null) playerProfiles.put(playerId, profile);
             return profile;
          }
-         
+         if (playerStorage != null) {
+            PlayerProfile profile = playerStorage.load(playerId);
+            if (profile != null) playerProfiles.put(playerId, profile);
+            return profile;
+         }
          return null;
       } catch (Exception e) {
          logger.error("Failed to load player profile: " + playerId, e);
@@ -245,22 +225,21 @@ public class PlayerManager {
    
    /**
     * Save player profile
-    * @param profile the player profile
-    * @return true if successful
     */
    public boolean savePlayerProfile(PlayerProfile profile) {
-      if (profile == null) {
-         return false;
-      }
-      
+      if (profile == null) return false;
       try {
-         // Save to storage
-         boolean success = playerStorage.save(profile);
-         if (success) {
-            // Update cache
+         if (useStorageManager && plugin.getStorageManager() != null) {
+            plugin.getStorageManager().savePlayerProfile(profile).join();
             playerProfiles.put(profile.getUniqueId(), profile);
+            return true;
          }
-         return success;
+         if (playerStorage != null) {
+            boolean ok = playerStorage.save(profile);
+            if (ok) playerProfiles.put(profile.getUniqueId(), profile);
+            return ok;
+         }
+         return false;
       } catch (Exception e) {
          logger.error("Failed to save player profile: " + profile.getUniqueId(), e);
          return false;
@@ -318,20 +297,16 @@ public class PlayerManager {
    
    /**
     * Delete player profile
-    * @param playerId the player ID
-    * @return true if successful
     */
    public boolean deletePlayerProfile(UUID playerId) {
-      if (playerId == null) {
-         return false;
-      }
-      
+      if (playerId == null) return false;
       try {
-         // Remove from cache
          playerProfiles.remove(playerId);
-         
-         // Delete from storage
-         return playerStorage.delete(playerId);
+         if (useStorageManager && plugin.getStorageManager() != null) {
+            plugin.getStorageManager().deletePlayerProfile(playerId).join();
+            return true;
+         }
+         return playerStorage != null && playerStorage.delete(playerId);
       } catch (Exception e) {
          logger.error("Failed to delete player profile: " + playerId, e);
          return false;
@@ -449,29 +424,30 @@ public class PlayerManager {
    }
    
    /**
-    * Get spawn location
-    * @return spawn location
+    * Get spawn location (never null if any world is loaded)
     */
    public Location getSpawnLocation() {
+      if (spawnLocation != null) return spawnLocation;
+      spawnLocation = getDefaultSpawn();
       return spawnLocation;
    }
    
    /**
-    * Set spawn location
-    * @param location the spawn location
+    * Set spawn location and save to config.yml
     */
    public void setSpawnLocation(Location location) {
-      if (location != null) {
-         this.spawnLocation = location;
-         
-         // Save to config
-         settings.set("spawn.world", location.getWorld().getName());
-         settings.set("spawn.x", location.getX());
-         settings.set("spawn.y", location.getY());
-         settings.set("spawn.z", location.getZ());
-         settings.set("spawn.yaw", location.getYaw());
-         settings.set("spawn.pitch", location.getPitch());
-         settings.save();
+      if (location == null) return;
+      this.spawnLocation = location;
+      try {
+         plugin.getConfig().set("spawn.world", location.getWorld().getName());
+         plugin.getConfig().set("spawn.x", location.getX());
+         plugin.getConfig().set("spawn.y", location.getY());
+         plugin.getConfig().set("spawn.z", location.getZ());
+         plugin.getConfig().set("spawn.yaw", (double) location.getYaw());
+         plugin.getConfig().set("spawn.pitch", (double) location.getPitch());
+         plugin.saveConfig();
+      } catch (Exception e) {
+         logger.error("Failed to save spawn to config", e);
       }
    }
    
@@ -481,12 +457,11 @@ public class PlayerManager {
     * @return true if successful
     */
    public boolean teleportToSpawn(Player player) {
-      if (player == null || spawnLocation == null) {
-         return false;
-      }
-      
+      if (player == null) return false;
+      Location loc = getSpawnLocation();
+      if (loc == null) return false;
       try {
-         player.teleport(spawnLocation);
+         player.teleport(loc);
          return true;
       } catch (Exception e) {
          logger.error("Failed to teleport player to spawn: " + player.getName(), e);
@@ -538,8 +513,7 @@ public class PlayerManager {
       }
    }
 
-   public PlayerProfile getPlayerProfile(Player player1) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getPlayerProfile'");
+   public PlayerProfile getPlayerProfile(Player player) {
+      return player == null ? null : getPlayerProfile(player.getUniqueId());
    }
 }

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -859,15 +859,15 @@ public final class LongArrays {
       if (to - from < 1024) {
          quickSort(a, from, to);
       } else {
-         int maxLevel = true;
-         int stackSize = true;
+         int maxLevel = 7;
+         int stackSize = 1786;
          int stackPos = 0;
          int[] offsetStack = new int[1786];
          int[] lengthStack = new int[1786];
          int[] levelStack = new int[1786];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -935,8 +935,8 @@ public final class LongArrays {
    public static void parallelRadixSort(long[] a, int from, int to) {
       ForkJoinPool pool = getPool();
       if (to - from >= 1024 && pool.getParallelism() != 1) {
-         int maxLevel = true;
-         LinkedBlockingQueue<LongArrays.Segment> queue = new LinkedBlockingQueue();
+         int maxLevel = 7;
+         LinkedBlockingQueue<LongArrays.Segment> queue = new LinkedBlockingQueue<>();
          queue.add(new LongArrays.Segment(from, to - from, 0));
          AtomicInteger queueSize = new AtomicInteger(1);
          int numberOfThreads = pool.getParallelism();
@@ -1055,15 +1055,15 @@ public final class LongArrays {
          }
 
       } else {
-         int maxLevel = true;
-         int stackSize = true;
+         int maxLevel = 7;
+         int stackSize = 1786;
          int stackPos = 0;
          int[] offsetStack = new int[1786];
          int[] lengthStack = new int[1786];
          int[] levelStack = new int[1786];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -1085,7 +1085,6 @@ public final class LongArrays {
                lastUsed = -1;
                int i = 0;
 
-               int i;
                for(i = stable ? 0 : first; i < 256; ++i) {
                   if (count[i] != 0) {
                      lastUsed = i;
@@ -1165,8 +1164,8 @@ public final class LongArrays {
    public static void parallelRadixSortIndirect(int[] perm, long[] a, int from, int to, boolean stable) {
       ForkJoinPool pool = getPool();
       if (to - from >= 1024 && pool.getParallelism() != 1) {
-         int maxLevel = true;
-         LinkedBlockingQueue<LongArrays.Segment> queue = new LinkedBlockingQueue();
+         int maxLevel = 7;
+         LinkedBlockingQueue<LongArrays.Segment> queue = new LinkedBlockingQueue<>();
          queue.add(new LongArrays.Segment(from, to - from, 0));
          AtomicInteger queueSize = new AtomicInteger(1);
          int numberOfThreads = pool.getParallelism();
@@ -1306,16 +1305,16 @@ public final class LongArrays {
       if (to - from < 1024) {
          quickSort(a, b, from, to);
       } else {
-         int layers = true;
-         int maxLevel = true;
-         int stackSize = true;
+         int layers = 2;
+         int maxLevel = 15;
+         int stackSize = 3826;
          int stackPos = 0;
          int[] offsetStack = new int[3826];
          int[] lengthStack = new int[3826];
          int[] levelStack = new int[3826];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -1389,12 +1388,12 @@ public final class LongArrays {
    public static void parallelRadixSort(long[] a, long[] b, int from, int to) {
       ForkJoinPool pool = getPool();
       if (to - from >= 1024 && pool.getParallelism() != 1) {
-         int layers = true;
+         int layers = 2;
          if (a.length != b.length) {
             throw new IllegalArgumentException("Array size mismatch.");
          } else {
-            int maxLevel = true;
-            LinkedBlockingQueue<LongArrays.Segment> queue = new LinkedBlockingQueue();
+            int maxLevel = 15;
+            LinkedBlockingQueue<LongArrays.Segment> queue = new LinkedBlockingQueue<>();
             queue.add(new LongArrays.Segment(from, to - from, 0));
             AtomicInteger queueSize = new AtomicInteger(1);
             int numberOfThreads = pool.getParallelism();
@@ -1544,16 +1543,16 @@ public final class LongArrays {
       if (to - from < 64) {
          insertionSortIndirect(perm, a, b, from, to);
       } else {
-         int layers = true;
-         int maxLevel = true;
-         int stackSize = true;
+         int layers = 2;
+         int maxLevel = 15;
+         int stackSize = 3826;
          int stackPos = 0;
          int[] offsetStack = new int[3826];
          int[] lengthStack = new int[3826];
          int[] levelStack = new int[3826];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -1576,7 +1575,6 @@ public final class LongArrays {
                lastUsed = -1;
                int i = 0;
 
-               int i;
                for(i = stable ? 0 : first; i < 256; ++i) {
                   if (count[i] != 0) {
                      lastUsed = i;
@@ -1656,13 +1654,13 @@ public final class LongArrays {
 
          int p;
          for(p = i + 1; p < to; ++p) {
-            for(int p = firstLayer; p < layers; ++p) {
-               if (a[p][p] < a[p][m]) {
+            for(int layer = firstLayer; layer < layers; ++layer) {
+               if (a[layer][p] < a[layer][m]) {
                   m = p;
                   break;
                }
 
-               if (a[p][p] > a[p][m]) {
+               if (a[layer][p] > a[layer][m]) {
                   break;
                }
             }
@@ -1690,10 +1688,10 @@ public final class LongArrays {
          int layers = a.length;
          int maxLevel = 8 * layers - 1;
          int p = layers;
-         int stackPos = a[0].length;
+         int arrayLength = a[0].length;
 
          while(p-- != 0) {
-            if (a[p].length != stackPos) {
+            if (a[p].length != arrayLength) {
                throw new IllegalArgumentException("The array of index " + p + " has not the same length of the array of index 0.");
             }
          }
@@ -1741,7 +1739,6 @@ public final class LongArrays {
 
             int c;
             for(boolean var22 = true; i <= end; count[c] = 0) {
-               int p;
                for(p = layers; p-- != 0; t[p] = a[p][i]) {
                }
 
@@ -2094,7 +2091,6 @@ public final class LongArrays {
             int d = c;
 
             while(true) {
-               int t;
                int t;
                while(b > c || (t = (t = Long.compare(x[b], v)) == 0 ? Long.compare(y[b], w) : t) > 0) {
                   for(; c >= b && (t = (t = Long.compare(x[c], v)) == 0 ? Long.compare(y[c], w) : t) >= 0; --c) {

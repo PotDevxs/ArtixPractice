@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.bytes;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.bytes;
 
 import java.util.function.IntUnaryOperator;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -13,11 +13,16 @@ import dev.artixdev.libs.it.unimi.dsi.fastutil.objects.Reference2ByteFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.shorts.Short2ByteFunction;
 
 @FunctionalInterface
-public interface Byte2ByteFunction extends IntUnaryOperator, Function<Byte, Byte> {
+public interface Byte2ByteFunction extends IntUnaryOperator, Function<Byte, Byte>, java.util.function.Function<Byte, Byte> {
    /** @deprecated */
    @Deprecated
    default int applyAsInt(int operand) {
       return this.get(SafeMath.safeIntToByte(operand));
+   }
+
+   @Override
+   default Byte apply(Byte k) {
+      return k == null ? null : get(k);
    }
 
    default byte put(byte key, byte value) {

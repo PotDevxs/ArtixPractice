@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -48,16 +48,22 @@ public class PartyPlayerButton extends Button {
 
     @Override
     public void clicked(Player player, ClickType clickType) {
-        player.closeInventory();
-        
+        dev.artixdev.practice.Main main = dev.artixdev.practice.Main.getInstance();
+        dev.artixdev.practice.managers.PartyManager pm = main != null ? main.getPartyManager() : null;
+        dev.artixdev.practice.models.Team team = pm != null ? pm.getPlayerParty(player.getUniqueId()) : null;
+
         if (clickType.isLeftClick()) {
-            // Handle left click - typically invite to party
-            // Implementation would go here
-            Button.playSuccess(player);
+            if (team != null && pm.sendInvitation(team, targetPlayer)) {
+                Button.playSuccess(player);
+            }
+            player.closeInventory();
         } else if (clickType.isRightClick()) {
-            // Handle right click - typically kick from party
-            // Implementation would go here
-            Button.playSuccess(player);
+            if (team != null && team.isLeader(player.getUniqueId()) && team.hasMember(targetPlayer.getUniqueId())) {
+                pm.removePlayerFromParty(targetPlayer.getUniqueId());
+                player.sendMessage(dev.artixdev.practice.utils.ChatUtils.translate("&aMember removed from the party."));
+                Button.playSuccess(player);
+            }
+            player.closeInventory();
         }
     }
 

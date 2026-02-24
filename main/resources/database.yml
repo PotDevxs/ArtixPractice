@@ -1,11 +1,11 @@
 #############################################################
 #                                                           #
-#  Articos Revamped | Versão exclusiva do Plugin conhecido  #
+#    ArtixPractice | Versão exclusiva do Plugin conhecido   #
 #  Recuse imitações, Adquira o melhor de todos em nosso...  #
-#  Discord logo abaixo, está versão é exclusiva do Yulgar   #
+#  Discord logo abaixo, está versão é exclusiva do Artix    #
 #                                                           #
-#       YULGAR | COMPETITIVE NETWORK [1.7x - 1.8.9]         #
-#      IP: yulgar.com.br | LOJA: loja.yulgar.com.br         #
+#        ARTIXPRACTICE | PRACTICE CORE [1.7x - 1.21x]       #
+#                LOJA: artixdevelopment.com                 #
 #                                                           #
 #        ArtixDevelopment • Melhor Loja de Plugins          #
 #                                                           #
@@ -13,14 +13,12 @@
 #                                                           #
 #############################################################
 
-Faastyzin:
-  Link: "FaastyzinTheBestDEV"
-
 # Database Configuration
 # ======================
 
-# Database Type: MONGODB, MYSQL, SQLITE
-DATABASE_TYPE: "MONGODB"
+# Database Type: MONGODB, MYSQL, SQLITE, FLATFILE
+# FLATFILE = arquivos JSON locais (ideal para uso local, sem servidor de DB)
+DATABASE_TYPE: "FLATFILE"
 
 # MongoDB Configuration
 MONGODB:
@@ -31,7 +29,7 @@ MONGODB:
   NORMAL:
     HOST: "127.0.0.1"
     PORT: 27017
-    DATABASE: "bolt_practice"
+    DATABASE: "artixpractice"
     AUTHENTICATION:
       ENABLED: false
       USERNAME: ""
@@ -40,8 +38,8 @@ MONGODB:
   
   # URI Connection String
   URI:
-    DATABASE: "bolt_practice"
-    CONNECTION_STRING: "mongodb://127.0.0.1:27017/bolt_practice"
+    DATABASE: "artixpractice"
+    CONNECTION_STRING: "mongodb://127.0.0.1:27017/artixpractice"
   
   # Connection Pool Settings
   CONNECTION_POOL:
@@ -54,7 +52,7 @@ MONGODB:
 MYSQL:
   HOST: "127.0.0.1"
   PORT: 3306
-  DATABASE: "bolt_practice"
+  DATABASE: "artixpractice"
   USERNAME: "root"
   PASSWORD: ""
   SSL_ENABLED: false
@@ -63,9 +61,14 @@ MYSQL:
 
 # SQLite Configuration (Alternative)
 SQLITE:
-  FILE_PATH: "plugins/Bolt/database.db"
+  FILE_PATH: "plugins/Artix/database.db"
   BACKUP_ENABLED: true
   BACKUP_INTERVAL: 3600 # seconds
+
+# Flatfile Configuration (local JSON files - no database server needed)
+FLATFILE:
+  FOLDER: "data"
+  # Path relative to plugin data folder: plugins/ArtixPractice/data/
 
 # General Database Settings
 SETTINGS:

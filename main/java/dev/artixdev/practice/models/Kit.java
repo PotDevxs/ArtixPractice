@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.models;
+package dev.artixdev.practice.models;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -88,6 +88,34 @@ public final class Kit {
     private boolean allowPlayers = true;
     private boolean allowNPCs = true;
     private boolean enderPearlEnabled = true;
+
+    private String knockbackProfile;
+    private String botKnockbackProfile;
+    private boolean ranked = false;
+    private int bestOf = 1;
+    private int sortPriority = 0;
+    private int noDamageTicks = 20;
+    private int respawnTicks = 20;
+    private int countdownTicks = 5;
+    private boolean disclaimerEnabled = false;
+    private List<String> disclaimer = new ArrayList<>();
+    private List<String> startCommands = new ArrayList<>();
+    private List<String> endCommands = new ArrayList<>();
+    private boolean editable = true;
+    private boolean stickSpawn = false;
+    private boolean showHP = true;
+    private boolean spleef = false;
+    private boolean battleRush = false;
+    private boolean fireballFight = false;
+    private boolean bedFight = false;
+    private boolean topFight = false;
+    private boolean stickFight = false;
+    private boolean pearlFight = false;
+    private boolean bridges = false;
+    private boolean boxing = false;
+    private boolean combo = false;
+    private boolean sumo = false;
+    private boolean mlgRush = false;
 
     public Kit() {
         this.displayName = "Default Kit";
@@ -263,388 +291,267 @@ public final class Kit {
         return KitType.CUSTOM;
     }
 
-    public Object getDisplayIcon() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDisplayIcon'");
+    public ItemStack getDisplayIcon() {
+        return icon != null ? icon : new ItemStack(XMaterial.DIAMOND_SWORD.parseMaterial());
     }
 
     public String getKnockbackProfile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getKnockbackProfile'");
+        return knockbackProfile;
     }
 
     public String getBotKnockbackProfile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBotKnockbackProfile'");
+        return botKnockbackProfile;
     }
 
-    public String getBestOf() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBestOf'");
+    public int getBestOf() {
+        return bestOf;
     }
 
-    public String getSortPriority() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSortPriority'");
+    public int getSortPriority() {
+        return sortPriority;
     }
 
-    public String getNoDamageTicks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getNoDamageTicks'");
+    public int getNoDamageTicks() {
+        return noDamageTicks;
     }
 
-    public String getRespawnTicks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRespawnTicks'");
+    public int getRespawnTicks() {
+        return respawnTicks;
     }
 
-    public String getCountdownTicks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCountdownTicks'");
+    public int getCountdownTicks() {
+        return countdownTicks;
     }
 
-    public String isDisclaimerEnabled() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isDisclaimerEnabled'");
+    public boolean isDisclaimerEnabled() {
+        return disclaimerEnabled;
     }
 
-    public Object getContents() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getContents'");
+    public ItemStack[] getContents() {
+        return inventoryContents != null ? inventoryContents : new ItemStack[36];
     }
 
-    public Object getEditItems() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEditItems'");
+    public ItemStack[] getEditItems() {
+        return inventoryContents != null ? inventoryContents : new ItemStack[36];
     }
 
     public JsonArray getEffects() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEffects'");
+        JsonArray arr = new JsonArray();
+        if (potionEffects != null) {
+            for (PotionEffect e : potionEffects) {
+                arr.add(e.getType().getName() + ":" + e.getDuration() + ":" + e.getAmplifier());
+            }
+        }
+        return arr;
     }
 
     public List<String> getDisclaimer() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDisclaimer'");
+        return disclaimer != null ? disclaimer : new ArrayList<>();
     }
 
     public List<String> getStartCommands() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getStartCommands'");
+        return startCommands != null ? startCommands : new ArrayList<>();
     }
 
     public List<String> getEndCommands() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEndCommands'");
+        return endCommands != null ? endCommands : new ArrayList<>();
     }
 
-    public String isEditable() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isEditable'");
+    public boolean isEditable() {
+        return editable;
     }
 
-    public String isRanked() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isRanked'");
+    public boolean isRanked() {
+        return ranked;
     }
 
-    public String isBuild() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isBuild'");
+    public boolean isBuild() {
+        return allowBuild;
     }
 
-    public String isStickSpawn() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isStickSpawn'");
+    public boolean isStickSpawn() {
+        return stickSpawn;
     }
 
-    public String isShowHP() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isShowHP'");
+    public boolean isShowHP() {
+        return showHP;
     }
 
-    public String isNoRegen() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isNoRegen'");
+    public boolean isNoRegen() {
+        return !allowRegen;
     }
 
-    public String isNoFall() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isNoFall'");
+    public boolean isNoFall() {
+        return !allowFall;
     }
 
-    public String isNoHunger() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isNoHunger'");
+    public boolean isNoHunger() {
+        return !allowHunger;
     }
 
-    public String isSpleef() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isSpleef'");
+    public boolean isSpleef() {
+        return spleef;
     }
 
-    public String isBattleRush() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isBattleRush'");
+    public boolean isBattleRush() {
+        return battleRush;
     }
 
-    public String isFireballFight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isFireballFight'");
+    public boolean isFireballFight() {
+        return fireballFight;
     }
 
-    public String isBedFight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isBedFight'");
+    public boolean isBedFight() {
+        return bedFight;
     }
 
-    public String isTopFight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isTopFight'");
+    public boolean isTopFight() {
+        return topFight;
     }
 
-    public String isStickFight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isStickFight'");
+    public boolean isStickFight() {
+        return stickFight;
     }
 
-    public String isPearlFight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isPearlFight'");
+    public boolean isPearlFight() {
+        return pearlFight;
     }
 
-    public String isBridges() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isBridges'");
+    public boolean isBridges() {
+        return bridges;
     }
 
-    public String isBoxing() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isBoxing'");
+    public boolean isBoxing() {
+        return boxing;
     }
 
-    public String isCombo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isCombo'");
+    public boolean isCombo() {
+        return combo;
     }
 
-    public String isSumo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isSumo'");
+    public boolean isSumo() {
+        return sumo;
     }
 
-    public String isLiquidKill() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isLiquidKill'");
+    public boolean isLiquidKill() {
+        return false;
     }
 
-    public String isPartyFFA() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isPartyFFA'");
+    public boolean isPartyFFA() {
+        return false;
     }
 
-    public String isPartySplit() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isPartySplit'");
+    public boolean isPartySplit() {
+        return false;
     }
 
-    public String isPearlDamage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isPearlDamage'");
+    public boolean isPearlDamage() {
+        return false;
     }
 
-    public String isMlgRush() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isMlgRush'");
+    public boolean isMlgRush() {
+        return mlgRush;
     }
 
-    public String isBuildHeightDamage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isBuildHeightDamage'");
+    public boolean isBuildHeightDamage() {
+        return false;
     }
 
     public void setDisplayIcon(ItemStack itemStack) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDisplayIcon'");
+        this.icon = itemStack;
     }
 
     public void setKnockbackProfile(String knockbackProfile) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setKnockbackProfile'");
+        this.knockbackProfile = knockbackProfile;
     }
 
     public void setBotKnockbackProfile(String botKnockbackProfile) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBotKnockbackProfile'");
+        this.botKnockbackProfile = botKnockbackProfile;
     }
 
     public void setBestOf(int bestOf) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBestOf'");
+        this.bestOf = bestOf;
     }
 
     public void setSortPriority(int sortPriority) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSortPriority'");
+        this.sortPriority = sortPriority;
     }
 
     public void setNoDamageTicks(int noDamageTicks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setNoDamageTicks'");
+        this.noDamageTicks = noDamageTicks;
     }
 
     public void setRespawnTicks(int respawnTicks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setRespawnTicks'");
+        this.respawnTicks = respawnTicks;
     }
 
     public void setCountdownTicks(int countdownTicks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCountdownTicks'");
+        this.countdownTicks = countdownTicks;
     }
 
     public void setDisclaimerEnabled(boolean disclaimerEnabled) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDisclaimerEnabled'");
+        this.disclaimerEnabled = disclaimerEnabled;
     }
 
     public void setContents(ItemStack[] contents) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setContents'");
+        if (contents != null) this.inventoryContents = contents;
     }
 
     public void setArmor(ItemStack[] armor) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setArmor'");
+        if (armor != null) this.armorContents = armor;
     }
 
     public void setEditItems(ItemStack[] editItems) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setEditItems'");
+        if (editItems != null) this.inventoryContents = editItems;
     }
 
     public void setEditable(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setEditable'");
+        this.editable = asBoolean;
     }
 
     public void setRanked(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setRanked'");
+        this.ranked = asBoolean;
     }
 
     public void setBuild(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBuild'");
+        this.allowBuild = asBoolean;
     }
 
     public void setStickSpawn(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setStickSpawn'");
+        this.stickSpawn = asBoolean;
     }
 
     public void setShowHP(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setShowHP'");
+        this.showHP = asBoolean;
     }
 
     public void setNoRegen(boolean b) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setNoRegen'");
+        this.allowRegen = !b;
     }
 
     public void setNoFall(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setNoFall'");
+        this.allowFall = !asBoolean;
     }
 
     public void setNoHunger(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setNoHunger'");
+        this.allowHunger = !asBoolean;
     }
 
-    public void setLiquidKill(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setLiquidKill'");
-    }
-
-    public void setSpleef(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSpleef'");
-    }
-
-    public void setBattleRush(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBattleRush'");
-    }
-
-    public void setFireballFight(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFireballFight'");
-    }
-
-    public void setStickFight(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setStickFight'");
-    }
-
-    public void setPearlFight(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPearlFight'");
-    }
-
-    public void setBridges(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBridges'");
-    }
-
-    public void setBoxing(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBoxing'");
-    }
-
-    public void setCombo(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCombo'");
-    }
-
-    public void setSumo(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSumo'");
-    }
-
-    public void setMlgRush(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setMlgRush'");
-    }
-
-    public void setBedFight(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBedFight'");
-    }
-
-    public void setTopFight(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setTopFight'");
-    }
-
-    public void setPartyFFA(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPartyFFA'");
-    }
-
-    public void setPartySplit(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPartySplit'");
-    }
-
-    public void setPearlDamage(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPearlDamage'");
-    }
-
-    public void setBuildHeightDamage(boolean asBoolean) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBuildHeightDamage'");
-    }
+    public void setLiquidKill(boolean asBoolean) { }
+    public void setSpleef(boolean asBoolean) { this.spleef = asBoolean; }
+    public void setBattleRush(boolean asBoolean) { this.battleRush = asBoolean; }
+    public void setFireballFight(boolean asBoolean) { this.fireballFight = asBoolean; }
+    public void setStickFight(boolean asBoolean) { this.stickFight = asBoolean; }
+    public void setPearlFight(boolean asBoolean) { this.pearlFight = asBoolean; }
+    public void setBridges(boolean asBoolean) { this.bridges = asBoolean; }
+    public void setBoxing(boolean asBoolean) { this.boxing = asBoolean; }
+    public void setCombo(boolean asBoolean) { this.combo = asBoolean; }
+    public void setSumo(boolean asBoolean) { this.sumo = asBoolean; }
+    public void setMlgRush(boolean asBoolean) { this.mlgRush = asBoolean; }
+    public void setBedFight(boolean asBoolean) { this.bedFight = asBoolean; }
+    public void setTopFight(boolean asBoolean) { this.topFight = asBoolean; }
+    public void setPartyFFA(boolean asBoolean) { }
+    public void setPartySplit(boolean asBoolean) { }
+    public void setPearlDamage(boolean asBoolean) { }
+    public void setBuildHeightDamage(boolean asBoolean) { }
 }

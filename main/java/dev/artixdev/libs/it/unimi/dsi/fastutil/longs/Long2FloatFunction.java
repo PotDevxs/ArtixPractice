@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.util.function.LongToDoubleFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -52,7 +52,7 @@ public interface Long2FloatFunction extends LongToDoubleFunction, Function<Long,
    default Float put(Long key, Float value) {
       long k = key;
       boolean containsKey = this.containsKey(k);
-      float v = this.put(k, value);
+      float v = this.put(k, value.floatValue());
       return containsKey ? v : null;
    }
 

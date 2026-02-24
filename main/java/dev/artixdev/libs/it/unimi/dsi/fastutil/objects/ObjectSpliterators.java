@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -465,23 +465,23 @@ public final class ObjectSpliterators {
 
       public Comparator<? super K> getComparator() {
          if (this.length == 1 && (this.characteristics & 4) != 0) {
-            return this.a[this.offset].getComparator();
+            return (Comparator<? super K>)this.a[this.offset].getComparator();
          } else {
             throw new IllegalStateException();
          }
       }
 
       public ObjectSpliterator<K> trySplit() {
-         ObjectSpliterator split;
+         ObjectSpliterator<K> split;
          switch(this.length) {
          case 0:
             return null;
          case 1:
-            split = this.a[this.offset].trySplit();
+            split = (ObjectSpliterator<K>)this.a[this.offset].trySplit();
             this.characteristics = this.a[this.offset].characteristics();
             return split;
          case 2:
-            split = this.a[this.offset++];
+            split = (ObjectSpliterator<K>)this.a[this.offset++];
             --this.length;
             this.characteristics = this.a[this.offset].characteristics();
             this.remainingEstimatedExceptCurrent = 0L;
@@ -495,7 +495,7 @@ public final class ObjectSpliterators {
             this.length = new_length;
             this.remainingEstimatedExceptCurrent = this.recomputeRemaining();
             this.characteristics = this.computeCharacteristics();
-            return new ObjectSpliterators.SpliteratorConcatenator(this.a, ret_offset, mid);
+            return (ObjectSpliterator<K>)new ObjectSpliterators.SpliteratorConcatenator(this.a, ret_offset, mid);
          }
       }
 
@@ -595,7 +595,8 @@ public final class ObjectSpliterators {
             return null;
          } else {
             int batchSizeEst = this.knownSize && this.size > 0L ? (int)Math.min((long)this.nextBatchSize, this.size) : this.nextBatchSize;
-            K[] batch = new Object[batchSizeEst];
+            @SuppressWarnings("unchecked")
+            K[] batch = (K[])new Object[batchSizeEst];
 
             int actualSeen;
             for(actualSeen = 0; actualSeen < batchSizeEst && this.iter.hasNext(); --this.size) {
@@ -603,7 +604,7 @@ public final class ObjectSpliterators {
             }
 
             if (batchSizeEst < this.nextBatchSize && this.iter.hasNext()) {
-               for(batch = Arrays.copyOf(batch, this.nextBatchSize); this.iter.hasNext() && actualSeen < this.nextBatchSize; --this.size) {
+               for(batch = (K[])Arrays.copyOf(batch, this.nextBatchSize); this.iter.hasNext() && actualSeen < this.nextBatchSize; --this.size) {
                   batch[actualSeen++] = this.iter.next();
                }
             }

@@ -1,10 +1,12 @@
-﻿package dev.artixdev.practice.commands;
+package dev.artixdev.practice.commands;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import org.bukkit.entity.Player;
 import dev.artixdev.api.practice.command.annotation.Command;
+import dev.artixdev.practice.enums.KitType;
+import dev.artixdev.practice.models.Arena;
+import dev.artixdev.practice.models.Match;
 import dev.artixdev.api.practice.command.annotation.Register;
 import dev.artixdev.api.practice.command.annotation.Sender;
 import dev.artixdev.practice.Main;
@@ -125,8 +127,6 @@ public final class AcceptCommand {
     * @return true if has pending request
     */
    private boolean hasPendingRequest(Player requester, Player target) {
-      // Check if there's a pending duel request
-      // This would typically check a duel manager or request system
       return pendingRequests.contains(requester.getUniqueId());
    }
    
@@ -153,8 +153,22 @@ public final class AcceptCommand {
     * @param player2 the second player
     */
    private void startDuel(Player player1, Player player2) {
-      // Start the duel
-      // This would typically create a match and teleport players to an arena
+      KitType kitType = KitType.DIAMOND;
+      Match match = plugin.getMatchManager().createMatch(player1, player2, kitType);
+      Arena arena = plugin.getArenaManager().getRandomArena(kitType);
+      if (arena != null && arena.getSpawn1() != null && arena.getSpawn2() != null) {
+         match.setArena(arena);
+         if (arena.getSpectatorSpawn() != null) {
+            match.setLocation(arena.getSpectatorSpawn());
+         } else {
+            match.setLocation(arena.getSpawn1());
+         }
+         player1.teleport(arena.getSpawn1());
+         player2.teleport(arena.getSpawn2());
+      } else {
+         plugin.getPlayerManager().teleportToSpawn(player1);
+         plugin.getPlayerManager().teleportToSpawn(player2);
+      }
       plugin.getLogger().info("Starting duel between " + player1.getName() + " and " + player2.getName());
    }
    

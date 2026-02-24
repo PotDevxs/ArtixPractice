@@ -1,0 +1,92 @@
+# Shop – produtos vendidos por coins
+# Tipos: TITLE (desbloqueia título), RESET_KDR, RESET_ELO, RESET_WINS_LOSSES, RESET_WINSTREAK, RESET_STATS
+
+SETTINGS:
+  DEFAULT_ELO_ON_RESET: 1000
+  MENU_TITLE: "&b&lShop &8>> &fCoins"
+
+# Produtos. id único usado internamente; type define o efeito; price em coins.
+PRODUCTS:
+  # Títulos (id = PlayerTitle.getId(), ex: rookie, killer, champion)
+  - id: "shop_title_rookie"
+    type: "TITLE"
+    title_id: "rookie"
+    price: 500
+    display_name: "&c&l[Rookie] &7Title"
+    material: "PAPER"
+    description:
+      - "&7| Unlock the &7[Rookie] &7title"
+      - "&7| to use in your nametag."
+  - id: "shop_title_killer"
+    type: "TITLE"
+    title_id: "killer"
+    price: 1500
+    display_name: "&6&l[Killer] &7Title"
+    material: "IRON_SWORD"
+    description:
+      - "&7| Unlock the &6[Killer] &7title."
+  - id: "shop_title_champion"
+    type: "TITLE"
+    title_id: "champion"
+    price: 3000
+    display_name: "&e&l[Champion] &7Title"
+    material: "GOLDEN_APPLE"
+    description:
+      - "&7| Unlock the &e[Champion] &7title."
+  - id: "shop_title_assassin"
+    type: "TITLE"
+    title_id: "assassin"
+    price: 5000
+    display_name: "&c&l[Assassin] &7Title"
+    material: "DIAMOND_SWORD"
+    description:
+      - "&7| Unlock the &c[Assassin] &7title."
+  - id: "shop_title_legend"
+    type: "TITLE"
+    title_id: "legend"
+    price: 10000
+    display_name: "&5&l[Legend] &7Title"
+    material: "NETHER_STAR"
+    description:
+      - "&7| Unlock the &5&l[Legend] &7title."
+
+  # Resets
+  - id: "shop_reset_kdr"
+    type: "RESET_KDR"
+    price: 2000
+    display_name: "&c&lReset K/D"
+    material: "REDSTONE"
+    description:
+      - "&7| Set your Kills and Deaths to 0."
+      - "&7| Does not affect Wins/Losses or ELO."
+  - id: "shop_reset_elo"
+    type: "RESET_ELO"
+    price: 3500
+    display_name: "&e&lReset ELO"
+    material: "GOLD_INGOT"
+    description:
+      - "&7| Reset your ELO to the default value."
+      - "&7| Does not affect K/D or Wins/Losses."
+  - id: "shop_reset_wins_losses"
+    type: "RESET_WINS_LOSSES"
+    price: 2500
+    display_name: "&b&lReset W/L"
+    material: "BOOK"
+    description:
+      - "&7| Set Wins and Losses to 0."
+      - "&7| Does not affect ELO or K/D."
+  - id: "shop_reset_winstreak"
+    type: "RESET_WINSTREAK"
+    price: 1000
+    display_name: "&d&lReset Winstreak"
+    material: "BLAZE_POWDER"
+    description:
+      - "&7| Reset current and best winstreak to 0."
+  - id: "shop_reset_stats"
+    type: "RESET_STATS"
+    price: 8000
+    display_name: "&4&lFull Stats Reset"
+    material: "BARRIER"
+    description:
+      - "&7| Reset K/D, ELO, W/L and Winstreak."
+      - "&c| This cannot be undone."

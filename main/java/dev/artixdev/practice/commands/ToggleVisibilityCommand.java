@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.commands;
+package dev.artixdev.practice.commands;
 
 import org.bukkit.entity.Player;
 import dev.artixdev.api.practice.command.annotation.Command;
@@ -31,19 +31,13 @@ public class ToggleVisibilityCommand {
         
         if (profile.isVisibilityEnabled()) {
             player.sendMessage(ChatUtils.translate("&aVisibilidade ativada. Outros jogadores podem te ver."));
-            // Show all players
             for (Player other : Main.getInstance().getServer().getOnlinePlayers()) {
-                if (!other.equals(player)) {
-                    player.showPlayer(other);
-                }
+                if (!other.equals(player)) other.showPlayer(player);
             }
         } else {
             player.sendMessage(ChatUtils.translate("&cVisibilidade desativada. Outros jogadores não podem te ver."));
-            // Hide all players
             for (Player other : Main.getInstance().getServer().getOnlinePlayers()) {
-                if (!other.equals(player)) {
-                    player.hidePlayer(other);
-                }
+                if (!other.equals(player)) other.hidePlayer(player);
             }
         }
     }

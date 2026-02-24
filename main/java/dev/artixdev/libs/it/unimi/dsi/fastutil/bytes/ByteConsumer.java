@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.bytes;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.bytes;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -18,7 +18,7 @@ public interface ByteConsumer extends Consumer<Byte>, IntConsumer {
    /** @deprecated */
    @Deprecated
    default void accept(Byte t) {
-      this.accept(t);
+      this.accept(t.byteValue());
    }
 
    default ByteConsumer andThen(ByteConsumer after) {
@@ -35,7 +35,7 @@ public interface ByteConsumer extends Consumer<Byte>, IntConsumer {
          var10001 = (ByteConsumer)after;
       } else {
          Objects.requireNonNull(after);
-         var10001 = after::accept;
+         var10001 = t -> after.accept(t);
       }
 
       return this.andThen(var10001);
@@ -44,6 +44,6 @@ public interface ByteConsumer extends Consumer<Byte>, IntConsumer {
    /** @deprecated */
    @Deprecated
    default Consumer<Byte> andThen(Consumer<? super Byte> after) {
-      return super.andThen(after);
+      return Consumer.super.andThen(after);
    }
 }

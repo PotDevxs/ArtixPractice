@@ -130,13 +130,13 @@ public enum KitCategory {
          // Check permissions based on category
          switch (category) {
             case RANKED:
-               return player.hasPermission("bolt.kit.ranked");
+               return player.hasPermission("artix.kit.ranked");
             case TOURNAMENT:
-               return player.hasPermission("bolt.kit.tournament");
+               return player.hasPermission("artix.kit.tournament");
             case CUSTOM:
-               return player.hasPermission("bolt.kit.custom");
+               return player.hasPermission("artix.kit.custom");
             case EVENT:
-               return player.hasPermission("bolt.kit.event");
+               return player.hasPermission("artix.kit.event");
             default:
                return true; // Default categories are available to all
          }

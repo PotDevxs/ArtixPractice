@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,8 +25,9 @@ public class ObjectArrayList<K> extends AbstractObjectList<K> implements Seriali
    protected int size;
    private static final Collector<Object, ?, ObjectArrayList<Object>> TO_LIST_COLLECTOR = Collector.of(ObjectArrayList::new, ObjectArrayList::add, ObjectArrayList::combine);
 
+   @SuppressWarnings("unchecked")
    private static final <K> K[] copyArraySafe(K[] a, int length) {
-      return length == 0 ? ObjectArrays.EMPTY_ARRAY : Arrays.copyOf(a, length, Object[].class);
+      return (K[]) (length == 0 ? ObjectArrays.EMPTY_ARRAY : Arrays.copyOf(a, length, Object[].class));
    }
 
    private static final <K> K[] copyArrayFromSafe(ObjectArrayList<K> l) {
@@ -38,14 +39,15 @@ public class ObjectArrayList<K> extends AbstractObjectList<K> implements Seriali
       this.wrapped = wrapped;
    }
 
+   @SuppressWarnings("unchecked")
    private void initArrayFromCapacity(int capacity) {
       if (capacity < 0) {
          throw new IllegalArgumentException("Initial capacity (" + capacity + ") is negative");
       } else {
          if (capacity == 0) {
-            this.a = ObjectArrays.EMPTY_ARRAY;
+            this.a = (K[]) ObjectArrays.EMPTY_ARRAY;
          } else {
-            this.a = new Object[capacity];
+            this.a = (K[]) new Object[capacity];
          }
 
       }
@@ -57,13 +59,13 @@ public class ObjectArrayList<K> extends AbstractObjectList<K> implements Seriali
    }
 
    public ObjectArrayList() {
-      this.a = ObjectArrays.DEFAULT_EMPTY_ARRAY;
+      this.a = (K[]) ObjectArrays.DEFAULT_EMPTY_ARRAY;
       this.wrapped = false;
    }
 
    public ObjectArrayList(Collection<? extends K> c) {
       if (c instanceof ObjectArrayList) {
-         this.a = copyArrayFromSafe((ObjectArrayList)c);
+         this.a = (K[]) copyArrayFromSafe((ObjectArrayList)c);
          this.size = this.a.length;
       } else {
          this.initArrayFromCapacity(c.size());
@@ -79,7 +81,7 @@ public class ObjectArrayList<K> extends AbstractObjectList<K> implements Seriali
 
    public ObjectArrayList(ObjectCollection<? extends K> c) {
       if (c instanceof ObjectArrayList) {
-         this.a = copyArrayFromSafe((ObjectArrayList)c);
+         this.a = (K[]) copyArrayFromSafe((ObjectArrayList)c);
          this.size = this.a.length;
       } else {
          this.initArrayFromCapacity(c.size());
@@ -95,7 +97,7 @@ public class ObjectArrayList<K> extends AbstractObjectList<K> implements Seriali
 
    public ObjectArrayList(ObjectList<? extends K> l) {
       if (l instanceof ObjectArrayList) {
-         this.a = copyArrayFromSafe((ObjectArrayList)l);
+         this.a = (K[]) copyArrayFromSafe((ObjectArrayList)l);
          this.size = this.a.length;
       } else {
          this.initArrayFromCapacity(l.size());
@@ -165,14 +167,16 @@ public class ObjectArrayList<K> extends AbstractObjectList<K> implements Seriali
       return this;
    }
 
+   @SuppressWarnings("unchecked")
    public static <K> Collector<K, ?, ObjectArrayList<K>> toList() {
-      return TO_LIST_COLLECTOR;
+      return (Collector<K, ?, ObjectArrayList<K>>) (Collector<?, ?, ?>) TO_LIST_COLLECTOR;
    }
 
    public static <K> Collector<K, ?, ObjectArrayList<K>> toListWithExpectedSize(int expectedSize) {
-      return expectedSize <= 10 ? toList() : Collector.of(new ObjectCollections.SizeDecreasingSupplier(expectedSize, (size) -> {
-         return size <= 10 ? new ObjectArrayList() : new ObjectArrayList(size);
-      }), ObjectArrayList::add, ObjectArrayList::combine);
+      return expectedSize <= 10 ? toList() : Collector.<K, ObjectArrayList<K>>of(
+         new ObjectCollections.SizeDecreasingSupplier<K, ObjectArrayList<K>>(expectedSize, size -> size <= 10 ? new ObjectArrayList<>() : new ObjectArrayList<>(size)),
+         ObjectArrayList::add,
+         ObjectArrayList::combine);
    }
 
    public void ensureCapacity(int capacity) {
@@ -182,7 +186,7 @@ public class ObjectArrayList<K> extends AbstractObjectList<K> implements Seriali
          } else if (capacity > this.a.length) {
             Object[] t = new Object[capacity];
             System.arraycopy(this.a, 0, t, 0, this.size);
-            this.a = t;
+            this.a = (K[]) t;
          }
 
          assert this.size <= this.a.length;
@@ -203,7 +207,7 @@ public class ObjectArrayList<K> extends AbstractObjectList<K> implements Seriali
          } else {
             Object[] t = new Object[capacity];
             System.arraycopy(this.a, 0, t, 0, this.size);
-            this.a = t;
+            this.a = (K[]) t;
          }
 
          assert this.size <= this.a.length;
@@ -341,9 +345,9 @@ public class ObjectArrayList<K> extends AbstractObjectList<K> implements Seriali
 
    public void trim(int n) {
       if (n < this.a.length && this.size != this.a.length) {
-         K[] t = new Object[Math.max(n, this.size)];
+         Object[] t = new Object[Math.max(n, this.size)];
          System.arraycopy(this.a, 0, t, 0, this.size);
-         this.a = t;
+         this.a = (K[]) t;
 
          assert this.size <= this.a.length;
 
@@ -466,11 +470,12 @@ public class ObjectArrayList<K> extends AbstractObjectList<K> implements Seriali
       return size == 0 ? ObjectArrays.EMPTY_ARRAY : Arrays.copyOf(this.a, size, Object[].class);
    }
 
+   @SuppressWarnings("unchecked")
    public <T> T[] toArray(T[] a) {
       if (a == null) {
-         a = new Object[this.size()];
+         a = (T[]) new Object[this.size()];
       } else if (a.length < this.size()) {
-         a = (Object[])Array.newInstance(a.getClass().getComponentType(), this.size());
+         a = (T[]) Array.newInstance(a.getClass().getComponentType(), this.size());
       }
 
       System.arraycopy(this.a, 0, a, 0, this.size());
@@ -705,10 +710,10 @@ public class ObjectArrayList<K> extends AbstractObjectList<K> implements Seriali
 
    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
       s.defaultReadObject();
-      this.a = new Object[this.size];
+      this.a = (K[]) new Object[this.size];
 
       for(int i = 0; i < this.size; ++i) {
-         this.a[i] = s.readObject();
+         this.a[i] = (K) s.readObject();
       }
 
    }

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.managers;
+package dev.artixdev.practice.managers;
 
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.configs.BotsConfig;
@@ -278,10 +278,9 @@ public class BotManager {
      * Update specific bot
      */
     private void updateBot(BotProfile bot) {
-        // Update bot AI, movement, combat, etc.
-        // This would contain the actual bot logic
-        
-        // Example: Update bot position if it's moving
+        // Bot logic: movement and combat implemented below (updateBotCombat, findNearestTarget).
+
+        // Update bot position if it's moving
         if (bot.isMoving() && bot.getLocation() != null && bot.getVelocity() != null) {
             Location newLocation = bot.getLocation().add(bot.getVelocity());
             bot.setLocation(newLocation);

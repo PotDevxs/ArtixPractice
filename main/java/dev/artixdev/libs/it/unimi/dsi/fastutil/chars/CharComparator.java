@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
@@ -19,18 +19,18 @@ public interface CharComparator extends Comparator<Character> {
    }
 
    default CharComparator thenComparing(CharComparator second) {
-      return (CharComparator)((Serializable)((k1, k2) -> {
+      return (CharComparator & Serializable)((k1, k2) -> {
          int comp = this.compare(k1, k2);
          return comp == 0 ? second.compare(k1, k2) : comp;
-      }));
+      });
    }
 
    default Comparator<Character> thenComparing(Comparator<? super Character> second) {
-      return (Comparator)(second instanceof CharComparator ? this.thenComparing((CharComparator)second) : super.thenComparing(second));
+      return second instanceof CharComparator ? this.thenComparing((CharComparator)second) : Comparator.super.thenComparing(second);
    }
 
    // $FF: synthetic method
-   private static Object $deserializeLambda$(SerializedLambda lambda) {
+   static Object $deserializeLambda$(SerializedLambda lambda) {
       String var1 = lambda.getImplMethodName();
       byte var2 = -1;
       switch(var1.hashCode()) {
@@ -41,12 +41,13 @@ public interface CharComparator extends Comparator<Character> {
       default:
          switch(var2) {
          case 0:
-            if (lambda.getImplMethodKind() == 7 && lambda.getFunctionalInterfaceClass().equals("xyz/refinedev/libs/it/unimi/dsi/fastutil/chars/CharComparator") && lambda.getFunctionalInterfaceMethodName().equals("compare") && lambda.getFunctionalInterfaceMethodSignature().equals("(CC)I") && lambda.getImplClass().equals("xyz/refinedev/libs/it/unimi/dsi/fastutil/chars/CharComparator") && lambda.getImplMethodSignature().equals("(Lit/unimi/dsi/fastutil/chars/CharComparator;CC)I")) {
+            if (lambda.getImplMethodKind() == 7 && lambda.getFunctionalInterfaceClass().equals("dev/artixdev/libs/it/unimi/dsi/fastutil/chars/CharComparator") && lambda.getFunctionalInterfaceMethodName().equals("compare") && lambda.getFunctionalInterfaceMethodSignature().equals("(CC)I") && lambda.getImplClass().equals("dev/artixdev/libs/it/unimi/dsi/fastutil/chars/CharComparator") && lambda.getImplMethodSignature().equals("(Lit/unimi/dsi/fastutil/chars/CharComparator;CC)I")) {
                CharComparator var10000 = (CharComparator)lambda.getCapturedArg(0);
-               return (k1, k2) -> {
-                  int comp = this.compare(k1, k2);
+               CharComparator second = (CharComparator)lambda.getCapturedArg(1);
+               return (CharComparator & Serializable)((k1, k2) -> {
+                  int comp = var10000.compare(k1, k2);
                   return comp == 0 ? second.compare(k1, k2) : comp;
-               };
+               });
             }
          default:
             throw new IllegalArgumentException("Invalid lambda deserialization");

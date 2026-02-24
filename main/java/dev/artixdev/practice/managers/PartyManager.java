@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.managers;
+package dev.artixdev.practice.managers;
 
 import java.util.Map;
 import java.util.UUID;
@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.entity.Player;
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.Team;
+import dev.artixdev.practice.utils.ChatUtils;
 
 /**
  * Party Manager
@@ -16,11 +17,24 @@ public class PartyManager {
     private final Main plugin;
     private final Map<UUID, Team> playerTeams;
     private final Map<UUID, Team> teams;
+    /** Pending invites: invitee UUID -> leader UUID who sent the invite */
+    private final Map<UUID, UUID> pendingInvites;
     
     public PartyManager(Main plugin) {
         this.plugin = plugin;
         this.playerTeams = new ConcurrentHashMap<>();
         this.teams = new ConcurrentHashMap<>();
+        this.pendingInvites = new ConcurrentHashMap<>();
+    }
+    
+    /** Get the UUID of the leader who invited this player, or null. */
+    public UUID getPendingInviteFrom(Player player) {
+        return player == null ? null : pendingInvites.get(player.getUniqueId());
+    }
+    
+    /** Remove any pending invite for this player. */
+    public void removePendingInvite(Player player) {
+        if (player != null) pendingInvites.remove(player.getUniqueId());
     }
     
     /**
@@ -109,7 +123,10 @@ public class PartyManager {
         if (player == null || leader == null) {
             return false;
         }
-        
+        UUID from = pendingInvites.remove(player.getUniqueId());
+        if (from == null || !from.equals(leader.getUniqueId())) {
+            return false;
+        }
         Team team = getPlayerParty(leader.getUniqueId());
         if (team != null && team.isLeader(leader.getUniqueId())) {
             addPlayerToTeam(team, player);
@@ -119,18 +136,24 @@ public class PartyManager {
     }
     
     /**
-     * Send party invitation
+     * Send party invitation (adds to pending; target must use /party accept &lt;leader&gt; to join)
      * @param team the team
      * @param target the target player
-     * @return true if successful
+     * @return true if invitation was sent
      */
     public boolean sendInvitation(Team team, Player target) {
         if (team == null || target == null) {
             return false;
         }
-        // For now, just add the player directly
-        // In a full implementation, this would manage an invitation system
-        addPlayerToTeam(team, target);
+        if (getPlayerParty(target.getUniqueId()) != null) {
+            return false;
+        }
+        UUID leaderId = team.getLeaderId();
+        if (leaderId == null) return false;
+        pendingInvites.put(target.getUniqueId(), leaderId);
+        Player leader = team.getLeader();
+        String leaderName = leader != null ? leader.getName() : "Unknown";
+        target.sendMessage(ChatUtils.translate("&aYou have been invited to join &f" + leaderName + "'s &aparty. Use &f/party accept " + leaderName + " &ato join."));
         return true;
     }
     
@@ -163,5 +186,6 @@ public class PartyManager {
         }
         teams.clear();
         playerTeams.clear();
+        pendingInvites.clear();
     }
 }

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.util.Map;
 import java.util.Objects;
@@ -25,8 +25,9 @@ public interface Long2ObjectMap<V> extends Map<Long, V>, Long2ObjectFunction<V> 
 
    /** @deprecated */
    @Deprecated
+   @SuppressWarnings("unchecked")
    default ObjectSet<java.util.Map.Entry<Long, V>> entrySet() {
-      return this.long2ObjectEntrySet();
+      return (ObjectSet<java.util.Map.Entry<Long, V>>) (ObjectSet<?>) this.long2ObjectEntrySet();
    }
 
    /** @deprecated */
@@ -73,14 +74,14 @@ public interface Long2ObjectMap<V> extends Map<Long, V>, Long2ObjectFunction<V> 
    }
 
    default V getOrDefault(long key, V defaultValue) {
-      Object v;
+      V v;
       return (v = this.get(key)) == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
    }
 
    /** @deprecated */
    @Deprecated
    default V getOrDefault(Object key, V defaultValue) {
-      return super.getOrDefault(key, defaultValue);
+      return Map.super.getOrDefault(key, defaultValue);
    }
 
    default V putIfAbsent(long key, V value) {
@@ -194,7 +195,7 @@ public interface Long2ObjectMap<V> extends Map<Long, V>, Long2ObjectFunction<V> 
       Objects.requireNonNull(value);
       V oldValue = this.get(key);
       V drv = this.defaultReturnValue();
-      Object newValue;
+      V newValue;
       if (oldValue == drv && !this.containsKey(key)) {
          newValue = value;
       } else {

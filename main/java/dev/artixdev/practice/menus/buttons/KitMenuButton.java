@@ -1,10 +1,16 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
 import dev.artixdev.practice.models.Kit;
+import dev.artixdev.practice.utils.ChatUtils;
+import dev.artixdev.practice.utils.ItemBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Kit Menu Button
@@ -24,8 +30,13 @@ public class KitMenuButton extends Button {
    
    @Override
    public ItemStack getButtonItem(Player player) {
-      // Return null for now - this would be implemented based on kit needs
-      return null;
+      if (kit == null) return new ItemStack(Material.BARRIER);
+      ItemStack icon = kit.getDisplayIcon() != null ? kit.getDisplayIcon().clone() : new ItemStack(Material.DIAMOND_SWORD);
+      String name = kit.getDisplayName() != null ? kit.getDisplayName() : kit.getName();
+      List<String> lore = new ArrayList<>();
+      lore.add(ChatUtils.translate("&7" + kit.getName()));
+      lore.add(ChatUtils.translate("&eClick to open kit menu."));
+      return new ItemBuilder(icon).name(ChatUtils.translate("&a" + name)).lore(lore).build();
    }
    
    @Override

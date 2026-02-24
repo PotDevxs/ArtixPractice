@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice;
+package dev.artixdev.practice;
 
 import dev.artixdev.practice.configs.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Config Manager
- * Centralized configuration management for Bolt plugin
+ * Centralized configuration management for Artix plugin
  */
 public class ConfigManager {
     
@@ -22,7 +22,10 @@ public class ConfigManager {
     private ScoreboardConfig scoreboardConfig;
     private MenuConfig menuConfig;
     private HotbarConfig hotbarConfig;
-    
+    private LevelsConfig levelsConfig;
+    private ShopConfig shopConfig;
+    private MessagesConfig messagesConfig;
+
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
     }
@@ -31,7 +34,7 @@ public class ConfigManager {
      * Initialize all configurations
      */
     public void initializeConfigs() {
-        logger.info("Initializing Bolt Practice configurations...");
+        logger.info("Initializing ArtixPractice configurations...");
         
         try {
             // Load main settings
@@ -59,6 +62,18 @@ public class ConfigManager {
             this.hotbarConfig = new HotbarConfig(plugin, "hotbar");
             logger.info("Hotbar configuration loaded successfully!");
             
+            // Load levels configuration
+            this.levelsConfig = new LevelsConfig(plugin);
+            logger.info("Levels configuration loaded successfully!");
+
+            // Load shop configuration
+            this.shopConfig = new ShopConfig(plugin);
+            logger.info("Shop configuration loaded successfully!");
+
+            // Load messages
+            this.messagesConfig = new MessagesConfig(plugin);
+            logger.info("Messages configuration loaded successfully!");
+            
             logger.info("All configurations loaded successfully!");
             
         } catch (Exception e) {
@@ -84,13 +99,30 @@ public class ConfigManager {
                 databaseConfig.reload();
             }
             if (scoreboardConfig != null) {
-                // ScoreboardConfig reload if needed
+                scoreboardConfig.reloadConfig();
             }
             if (menuConfig != null) {
-                // MenuConfig reload if needed
+                menuConfig.reloadConfig();
             }
             if (hotbarConfig != null) {
-                // HotbarConfig reload if needed
+                hotbarConfig.reloadConfig();
+            }
+            if (levelsConfig != null) {
+                levelsConfig.reload();
+            }
+            if (messagesConfig != null) {
+                messagesConfig.reload();
+            }
+
+            // Refresh scoreboard and hotbar for all online players so they see updated config
+            Main main = Main.getInstance();
+            if (main != null) {
+                if (main.getScoreboardManager() != null) {
+                    main.getScoreboardManager().refreshAllScoreboards();
+                }
+                if (main.getHotbarManager() != null) {
+                    main.getHotbarManager().reloadHotbars();
+                }
             }
             
             logger.info("All configurations reloaded successfully!");
@@ -245,5 +277,17 @@ public class ConfigManager {
     
     public HotbarConfig getHotbarConfig() {
         return hotbarConfig;
+    }
+    
+    public LevelsConfig getLevelsConfig() {
+        return levelsConfig;
+    }
+
+    public ShopConfig getShopConfig() {
+        return shopConfig;
+    }
+
+    public MessagesConfig getMessagesConfig() {
+        return messagesConfig;
     }
 }

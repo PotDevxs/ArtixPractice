@@ -30,7 +30,7 @@ public class PlayerListener extends BaseListener {
       plugin.getPlayerManager().loadPlayer(event.getPlayer().getUniqueId());
       
       // Send welcome message
-      event.getPlayer().sendMessage(ChatUtils.colorize("&6&lWelcome to Bolt Practice!"));
+      event.getPlayer().sendMessage(ChatUtils.colorize("&6&lWelcome to ArtixPractice!"));
       event.getPlayer().sendMessage(ChatUtils.colorize("&7Use &f/practice &7to get started!"));
       
       // Teleport to spawn

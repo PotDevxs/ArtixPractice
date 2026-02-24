@@ -1,0 +1,315 @@
+# -----------------------------------------------------------------------------
+# Prefixo global (usado em mensagens que precisam de prefixo)
+# -----------------------------------------------------------------------------
+PREFIX: "&b&lArtixPractice &7» &r"
+
+# -----------------------------------------------------------------------------
+# GERAL - Reload, permissão, info do plugin (comandos /practice reload e /practice version)
+# -----------------------------------------------------------------------------
+GENERAL:
+  WELCOME_LINE1: "&b&lArtixPractice &7» &aWelcome to the server!"
+  WELCOME_LINE2: "&7Use &e/practice help &7for commands."
+  NO_PERMISSION_RELOAD: "&cYou don't have permission to reload the plugin!"
+  RELOAD_SUCCESS: "&aPlugin reloaded successfully!"
+  PLUGIN_INFO_TITLE: "&b&lArtixPractice"
+  PLUGIN_VERSION: "&7Version: &b{version}"
+  PLUGIN_AUTHOR: "&7Author: &b{authors}"
+  PLUGIN_DESCRIPTION: "&7Description: &b{description}"
+
+# =============================================================================
+# CONFIG - Mensagens de configuração / reload de configs
+# =============================================================================
+CONFIG:
+  RELOAD_SUCCESS: "&aConfiguration reloaded successfully!"
+  RELOAD_FAILED: "&cFailed to reload configuration!"
+
+# =============================================================================
+# ARENA - Regras de mundo de arena (não quebrar, não colocar, projéteis, etc.)
+# =============================================================================
+ARENA:
+  CANNOT_BREAK: "&cYou cannot break blocks in arenas!"
+  CANNOT_PLACE: "&cYou cannot place blocks in arenas!"
+  CANNOT_USE_PROJECTILES: "&cYou can only use projectiles in arenas!"
+  CANNOT_USE_BUCKETS: "&cYou cannot use buckets in arenas!"
+  ENTERED_ARENA_WORLD: "&aYou entered an arena world!"
+  CANNOT_USE_COMMAND: "&cYou cannot use this command in arenas!"
+  CANNOT_DROP_ITEMS: "&cYou cannot drop items in arenas!"
+  CANNOT_TELEPORT_DURING_MATCH: "&cYou cannot teleport during a match!"
+
+# -----------------------------------------------------------------------------
+# Menu de seleção de arena (itens, lore, mensagens)
+# -----------------------------------------------------------------------------
+ARENA_MENU:
+  LORE_TYPE: "&7Tipo: &f{type}"
+  LORE_STATUS_ENABLED: "&aAtivado"
+  LORE_STATUS_DISABLED: "&cDesativado"
+  LORE_STATUS: "&7Status: {status}"
+  LORE_KITS: "&7Kits: &f{count}"
+  LORE_CLICK_SELECT: "&eClique para selecionar esta arena."
+  NO_ARENAS_AVAILABLE: "&cNenhuma arena disponível encontrada."
+
+# =============================================================================
+# PARTIDA (MATCH) - Início, fim, tempo, oponente, kit
+# =============================================================================
+MATCH:
+  STARTED_TITLE: "&a&lMatch Started!"
+  OPPONENT: "&7Opponent: &c{opponent}"
+  KIT: "&fKit: &b{kit}"
+  YOU_WON: "&a&lYou won the match!"
+  YOU_LOST: "&c&lYou lost the match!"
+  TIME: "&7Match Time: &b{time}"
+
+# =============================================================================
+# PÓS-PARTIDA (POSTMATCH) / Notificações durante e após a partida
+# =============================================================================
+POSTMATCH:
+  # Linhas do inventário pós-partida (lista editável). Placeholders: {winner}, {loser}, {spectators}
+  INVENTORY_POSTMATCH:
+    - "&b&lPostMatch: &7(View Inventory)"
+    - "&aWinner: &e{winner} &7| &cLoser: &e{loser}"
+    - "&bSpectators: &e{spectators}"
+  NOTIFICATION_STARTED: "Match started! Good luck!"
+  NOTIFICATION_LOST: "You lost the match. Better luck next time!"
+  NOTIFICATION_WON: "You won the match!"
+
+# =============================================================================
+# NOTIFICAÇÕES - Prefixos e formatos (NotificationManager)
+# =============================================================================
+NOTIFICATIONS:
+  PREFIX: "&b&lArtix &8» &7"
+  ERROR_PREFIX: "&c&lError &8» &7"
+  SUCCESS_PREFIX: "&a&lSuccess &8» &7"
+  WARNING_PREFIX: "&e&lWarning &8» &7"
+  LIST_TITLE: "&b&lNotifications:"
+  LIST_LINE: "&7- {message}"
+  ACTION_BAR_FORMAT: "&b&lAction Bar: &7{message}"
+  TITLE_FORMAT: "&b&lTitle: &7{title}"
+  SUBTITLE_FORMAT: "&7{subtitle}"
+
+# =============================================================================
+# FFA - Free-for-all (kill, respawn)
+# =============================================================================
+FFA:
+  KILL: "&aYou killed &f{victim}&a in FFA!"
+  RESPAWNED: "&7You respawned in FFA."
+
+# =============================================================================
+# MENU - Profile, Settings, Divisions, itens do menu principal
+# =============================================================================
+MENU:
+  PROFILE_TITLE: "&b&lProfile &8>> &fMenu"
+  OPENING_STATISTICS: "&aOpening detailed statistics..."
+  OPENING_LEADERBOARD: "&aOpening leaderboard..."
+  OPENING_COSMETICS: "&aOpening cosmetics..."
+  RANKED_ELO: "&7Ranked ELO: &b{elo}"
+  SETTINGS_TOGGLE_NOT_BOUND: "&7Setting &f{setting} &7– toggle not yet bound."
+  DIVISIONS_TITLE: "&c&lProfile &8>> &fDivisions"
+  SETTINGS_TITLE: "&b&lProfile &8>> &fSettings"
+  BACK: "&c&lBack"
+  CLOSE: "&c&lClose"
+  ITEM_STATISTICS: "&b&lStatistics"
+  ITEM_ACHIEVEMENTS: "&b&lAchievements"
+  ITEM_YOUR_PROFILE: "&b&l{player}"
+  ITEM_LEADERBOARD: "&b&lLeaderboard"
+  ITEM_SHOP: "&b&lShop"
+  ITEM_SETTINGS: "&b&lSettings"
+  ITEM_TITLES: "&b&lTitles"
+  ITEM_RANKED: "&b&lRanked"
+  ITEM_COSMETICS: "&b&lCosmetics"
+  ITEM_DIVISIONS: "&b&lDivisions"
+
+# =============================================================================
+# MENU DIVISIONS - Tela de divisões/ranks
+# =============================================================================
+DIVISIONS:
+  MENU_TITLE: "&c&lProfile &8>> &fDivisions"
+  UNRANKED_NAME: "&7&lUnranked"
+  LORE_EXPERIENCE: "&7| Experience: &a{experience}"
+  LORE_PROGRESS: "&7| Progress: {bar} &7({percent}%)"
+  LORE_ELO_REQUIRED: "&7| ELO required: &f{elo}"
+  LORE_YOUR_DIVISION: "&a• Your current division"
+  LORE_CLICK_DETAILS: "&aClick to view details."
+  BACK: "&c&lBack"
+  BACK_LORE_RETURN: "Return to Profile menu."
+  BACK_LORE_CLICK: "Click to go back."
+
+# =============================================================================
+# SHOP - Loja de moedas
+# =============================================================================
+SHOP:
+  MENU_TITLE: "&c&lShop &8>> &fCoins"
+  PROFILE_NOT_LOADED: "&cProfile not loaded."
+  NOT_ENOUGH_COINS: "&cNot enough coins. You need &6{amount} &ccoins."
+  PURCHASED: "&aPurchased: &f{item}&a."
+  PURCHASE_FAILED: "&cPurchase failed."
+  LORE_PRICE: "&7Price: &6{amount} coins"
+  LORE_CLICK_PURCHASE: "&aClick to purchase."
+  LORE_NOT_ENOUGH_COINS: "&cNot enough coins."
+  BACK: "&c&lBack"
+
+# =============================================================================
+# TÍTULOS - Menu de títulos de jogador
+# =============================================================================
+TITLES:
+  MENU_TITLE: "&6&lTitles"
+  NOT_UNLOCKED: "&cYou have not unlocked this title."
+  TITLE_SET: "&aTitle set: {title}"
+  ITEM_NONE_SUFFIX: " (None)"
+  LORE_REMOVE_TITLE: "&7Remove title"
+  LORE_REQUIRES: "&7Requires: {key} {value}"
+  LORE_UNLOCKED: "&aUnlocked"
+  LORE_LOCKED: "&cLocked"
+  LORE_SELECTED: "&aSelected"
+  LORE_CLICK_SELECT: "&eClick to select"
+
+# =============================================================================
+# CONQUISTAS (Achievements) - Desbloqueio e menu
+# =============================================================================
+ACHIEVEMENTS:
+  UNLOCKED_TITLE: "&6&lAchievement Unlocked! &r{name}"
+  UNLOCKED: "&6&lAchievement Unlocked! &r{achievement}"
+  DESCRIPTION: "{description}"
+  MENU_TITLE: "&6&lAchievements &8({unlocked}/{total})"
+  LORE_PROGRESS: "&7Progress: &f{current}&7/&f{target}"
+  LORE_UNLOCKED: "&aUnlocked"
+  LORE_LOCKED: "&cLocked"
+
+# =============================================================================
+# RECOMPENSAS - Daily / Weekly
+# =============================================================================
+REWARDS:
+  DAILY_STREAK: "&a&lDaily Reward &7- &fLogin streak: &e{streak}"
+  WEEKLY: "&6&lWeekly Reward &7- &fThanks for playing!"
+
+# =============================================================================
+# COMANDO /practice - Help, queue, arena, kit, stats, reload, version
+# =============================================================================
+PRACTICE:
+  HELP_TITLE: "&b&lArtixPractice Help"
+  HELP_USE: "&7Use &e/practice <subcommand> &7for more options"
+  HELP_AVAILABLE: "&3Available commands:"
+  HELP_BLANK: "&7"
+  HELP_QUEUE: "&7- &e/practice queue &7- Join a queue"
+  HELP_ARENA: "&7- &e/practice arena &7- Manage arenas"
+  HELP_KIT: "&7- &e/practice kit &7- Manage kits"
+  HELP_STATS: "&7- &e/practice stats &7- View statistics"
+  HELP_HELP: "&7- &e/practice help &7- Show help"
+  INVALID_PARAMETERS: "&cInvalid parameters!"
+  ALREADY_IN_QUEUE: "&cYou are already in a queue!"
+  CANNOT_QUEUE_IN_MATCH: "&cYou cannot join a queue while in a match!"
+  JOINED_QUEUE: "&aJoined {type} queue for {kit}!"
+  PLAYERS_IN_QUEUE: "&7Players in queue: &b{count}"
+  FAILED_JOIN_QUEUE: "&cFailed to join queue!"
+  ARENA_MANAGEMENT_TITLE: "&b&lArena Management"
+  ARENA_COUNT: "&7Available arenas: &b{count}"
+  ARENA_USE: "&7Use &b/practice arena <name> &7to manage specific arena"
+  KIT_MANAGEMENT_TITLE: "&b&lKit Management"
+  KIT_COUNT: "&7Available kits: &b{count}"
+  KIT_USE: "&7Use &b/practice kit <name> &7to manage specific kit"
+  PROFILE_LOAD_FAILED: "&cFailed to load your profile!"
+  STATS_TITLE: "&b&lYour Statistics"
+  STATS_WINS: "&7Wins: &a{wins}"
+  STATS_LOSSES: "&7Losses: &c{losses}"
+  STATS_KILLS: "&7Kills: &a{kills}"
+  STATS_DEATHS: "&7Deaths: &c{deaths}"
+  STATS_ELO: "&7Elo: &6{elo}"
+  STATS_LEVEL: "&7Level: &b{level}"
+  HELP_COMMANDS: "&7Commands:"
+  HELP_PRACTICE: "&7- &e/practice &7- Open practice menu"
+  HELP_QUEUE_FULL: "&7- &e/practice queue <type> <kit> &7- Join a queue"
+  HELP_ARENA_CMD: "&7- &e/practice arena &7- Manage arenas"
+  HELP_KIT_CMD: "&7- &e/practice kit &7- Manage kits"
+  HELP_STATS_CMD: "&7- &e/practice stats &7- View statistics"
+  HELP_HELP_CMD: "&7- &e/practice help &7- Show this help"
+  EVENT_TYPES: "&7Event Types:"
+  EVENT_TYPE_LINE: "&7- &b{name} &7- {description}"
+  KIT_TYPES: "&7Kit Types:"
+  KIT_TYPE_LINE: "&7- &b{name} &7- {description}"
+
+# =============================================================================
+# HOLOGRAMAS - Comando /hologram (criar, deletar, listar, teleportar, etc.)
+# =============================================================================
+HOLOGRAM:
+  INVALID_PARAMETERS: "&cInvalid parameters!"
+  CREATED: "&aHologram '{name}' created successfully!"
+  CREATED_TYPE: "&7Type: &f{type}"
+  CREATED_KIT: "&7Kit: &f{kit}"
+  CREATE_FAILED: "&cFailed to create hologram!"
+  DELETED: "&aHologram '{name}' deleted successfully!"
+  DELETE_FAILED: "&cFailed to delete hologram!"
+  NOT_FOUND: "&cHologram '{name}' not found!"
+  LIST_EMPTY: "&7No holograms found."
+  MOVED: "&aHologram '{name}' moved to your location!"
+  MOVE_FAILED: "&cFailed to move hologram!"
+  UPDATED: "&aHologram '{name}' updated successfully!"
+  UPDATE_FAILED: "&cFailed to update hologram!"
+  RELOAD_SUCCESS: "&aHologram configuration reloaded successfully!"
+  RELOAD_FAILED: "&cFailed to reload hologram configuration!"
+  ENABLED: "&aHologram '{name}' enabled successfully!"
+  ENABLE_FAILED: "&cFailed to enable hologram!"
+  DISABLED: "&aHologram '{name}' disabled successfully!"
+  DISABLE_FAILED: "&cFailed to disable hologram!"
+  HELP_TITLE: "&b&lHologram Commands"
+  HELP_CREATE: "&7- &e/hologram create <name> <type> <leaderboard-type> [kit] &7- Create a hologram"
+  HELP_DELETE: "&7- &e/hologram delete <hologram> &7- Delete a hologram"
+  HELP_LIST: "&7- &e/hologram list &7- List all holograms"
+  HELP_TELEPORT: "&7- &e/hologram teleport <hologram> &7- Teleport to hologram"
+  HELP_MOVE: "&7- &e/hologram move <hologram> &7- Move hologram to your location"
+  HELP_UPDATE: "&7- &e/hologram update <hologram> &7- Update hologram data"
+  HELP_RELOAD: "&7- &e/hologram reload &7- Reload hologram configuration"
+  HELP_BLANK: "&7"
+  LEADERBOARD_TYPES_TITLE: "&b&lLeaderboard Types"
+  LEADERBOARD_WINS: "&7- &eWINS &7- Player wins leaderboard"
+  LEADERBOARD_KILLS: "&7- &eKILLS &7- Player kills leaderboard"
+  LEADERBOARD_ELO: "&7- &eELO &7- Player ELO leaderboard"
+  KIT_TYPES_TITLE: "&b&lKit Types"
+  KIT_TYPE_LINE: "&7- &e{name} &7- {name}"
+
+# =============================================================================
+# MODO SILENCIOSO - Comando /silent (não receber duelos)
+# =============================================================================
+SILENT:
+  PROFILE_NOT_LOADED: "&cSeu perfil não foi carregado."
+  ENABLED: "&aModo silencioso ativado. Você não receberá mais mensagens de duelos."
+  DISABLED: "&cModo silencioso desativado. Você voltou a receber mensagens de duelos."
+
+# =============================================================================
+# COMBATE / PROJÉTEIS - Cooldown e outras mensagens
+# =============================================================================
+COMBAT:
+  COOLDOWN: "&cYou are in cooldown!"
+
+# =============================================================================
+# BOT KNOCKBACK - Comando /botkb
+# =============================================================================
+BOTKB:
+  USAGE_DELETE: "&cUsage: /botkb delete <profile>"
+  PROFILE_DELETED: "&aKnockback profile '{profile}' deleted."
+  PROFILE_NOT_FOUND_DEFAULT: "&cProfile not found or cannot delete 'default'."
+  USAGE_CREATE: "&cUsage: /botkb create <name>"
+  PROFILE_CREATED: "&aKnockback profile '{name}' created."
+  PROFILE_EXISTS: "&cProfile already exists."
+  LIST_HEADER: "&eKnockback profiles: {list}"
+  USAGE_SET: "&cUsage: /botkb set <profile> <property> <value>"
+  SET_SUCCESS: "&aSet {profile}.{property} = {value}"
+  USAGE_GET: "&cUsage: /botkb get <profile> <property>"
+  GET_SUCCESS: "&e{profile}.{property} = {value}"
+  GET_NOT_FOUND: "&cProfile or property not found."
+  USAGE_APPLY: "&cUsage: /botkb apply <profile> [player]"
+  APPLY_NOT_FOUND: "&cProfile '{profile}' not found."
+  APPLY_SUCCESS: "&aProfile '{profile}' applied to player {player} (stored for next bot duel)."
+  APPLY_AVAILABLE: "&aProfile '{profile}' is available. Assign to bots via bot spawn config."
+  USAGE_RESET: "&cUsage: /botkb reset <profile>"
+  RESET_SUCCESS: "&eProfile '{profile}' reset to defaults."
+  USAGE_COPY: "&cUsage: /botkb copy <source> <destination>"
+  COPY_SUCCESS: "&aCopied '{source}' to '{destination}'."
+  COPY_FAIL: "&cSource not found or destination already exists."
+  USAGE_RENAME: "&cUsage: /botkb rename <profile> <newName>"
+  RENAME_SUCCESS: "&aRenamed '{profile}' to '{newName}'."
+  RENAME_FAIL: "&cProfile not found or cannot rename 'default'."
+  USAGE_INFO: "&cUsage: /botkb info <profile>"
+  INFO_NOT_FOUND: "&cProfile not found."
+  INFO_HEADER: "&e--- {profile} ---"
+  INFO_LINE_1: "horizontal: {horizontal}, vertical: {vertical}"
+  INFO_LINE_2: "verticalLimit: {verticalLimit}, friction: {friction}"
+  INFO_LINE_3: "extraHorizontal: {extraHorizontal}, extraVertical: {extraVertical}, delay: {delay}"

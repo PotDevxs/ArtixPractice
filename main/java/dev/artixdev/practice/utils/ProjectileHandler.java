@@ -1,19 +1,27 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
+import org.bukkit.Sound;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
+import dev.artixdev.libs.com.cryptomorin.xseries.XSound;
 import dev.artixdev.practice.Main;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Projectile Handler
  * Handles projectile-related functionality
  */
 public class ProjectileHandler {
-   
-   private static final int DEFAULT_COOLDOWN = 1100; // 1.1 seconds
+
+   private static final int DEFAULT_COOLDOWN_MS = 1100;
    private static final ItemStack DEFAULT_ITEM = XMaterial.BLAZE_POWDER.parseItem();
-   
+   private final Map<UUID, Long> shooterCooldowns = new HashMap<>();
    private final Main plugin;
    
    /**
@@ -52,7 +60,7 @@ public class ProjectileHandler {
     * @return cooldown in milliseconds
     */
    public int getProjectileCooldown() {
-      return DEFAULT_COOLDOWN;
+      return DEFAULT_COOLDOWN_MS;
    }
    
    /**
@@ -69,31 +77,21 @@ public class ProjectileHandler {
     * @return true if in cooldown
     */
    public boolean isInCooldown(Projectile projectile) {
-      if (projectile == null) {
-         return false;
-      }
-      
-      // TODO: Implement cooldown tracking
-      // This would require storing projectile launch times
-      return false;
+      if (projectile == null || !(projectile.getShooter() instanceof Entity)) return false;
+      UUID shooterId = ((Entity) projectile.getShooter()).getUniqueId();
+      Long last = shooterCooldowns.get(shooterId);
+      return last != null && (System.currentTimeMillis() - last) < DEFAULT_COOLDOWN_MS;
    }
    
-   /**
-    * Handle projectile launch
-    * @param projectile the projectile
-    */
    public void handleProjectileLaunch(Projectile projectile) {
-      if (projectile == null) {
-         return;
-      }
-      
-      // Check if projectile is allowed
+      if (projectile == null) return;
       if (!isProjectileAllowed(projectile)) {
          projectile.remove();
          return;
       }
-      
-      // Apply projectile effects
+      if (projectile.getShooter() instanceof Entity) {
+         shooterCooldowns.put(((Entity) projectile.getShooter()).getUniqueId(), System.currentTimeMillis());
+      }
       applyProjectileEffects(projectile);
    }
    
@@ -115,17 +113,15 @@ public class ProjectileHandler {
     * @param projectile the projectile
     */
    private void applyProjectileEffects(Projectile projectile) {
-      // TODO: Implement projectile effects
-      // This could include trail effects, sound effects, etc.
+      if (projectile == null) return;
+      Sound s = XSound.ENTITY_ARROW_SHOOT.parseSound();
+      if (s != null) projectile.getWorld().playSound(projectile.getLocation(), s, 0.25f, 1.2f);
    }
-   
-   /**
-    * Apply hit effects
-    * @param projectile the projectile
-    */
+
    private void applyHitEffects(Projectile projectile) {
-      // TODO: Implement hit effects
-      // This could include damage, knockback, etc.
+      if (projectile == null) return;
+      Sound s = XSound.ENTITY_ARROW_HIT.parseSound();
+      if (s != null) projectile.getWorld().playSound(projectile.getLocation(), s, 0.4f, 1.0f);
    }
    
    /**
@@ -208,25 +204,21 @@ public class ProjectileHandler {
     * @return damage amount
     */
    public double getProjectileDamage(Projectile projectile) {
-      if (projectile == null) {
-         return 0.0;
+      if (projectile == null) return 0.0;
+      if (projectile instanceof Arrow) return 2.0;
+      switch (projectile.getType().name()) {
+         case "SNOWBALL":
+         case "EGG": return 0.0;
+         case "FIREBALL": return 6.0;
+         case "TRIDENT": return 8.0;
+         default: return 1.0;
       }
-      
-      // TODO: Implement damage calculation based on projectile type
-      return 1.0;
    }
-   
-   /**
-    * Get projectile knockback
-    * @param projectile the projectile
-    * @return knockback multiplier
-    */
+
    public double getProjectileKnockback(Projectile projectile) {
-      if (projectile == null) {
-         return 0.0;
-      }
-      
-      // TODO: Implement knockback calculation based on projectile type
+      if (projectile == null) return 0.0;
+      if (projectile instanceof Arrow) return 1.0;
+      if (projectile.getType().name().equals("TRIDENT")) return 1.2;
       return 1.0;
    }
 }

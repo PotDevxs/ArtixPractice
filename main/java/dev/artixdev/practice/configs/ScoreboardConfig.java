@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.configs;
+package dev.artixdev.practice.configs;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -332,7 +332,7 @@ public class ScoreboardConfig extends BasicYamlStorage {
    public static List<String> TEAM_EVENT_ROUND_ADDITION_SCOREBOARD = Arrays.asList("", " &c{event_teamA_name} &7(&f{event_teamA_size}&7)", "&7vs", " &c{event_teamB_name} &7(&f{event_teamB_size}&7)");
 
    public ScoreboardConfig(JavaPlugin plugin) {
-      super(plugin, "scoreboard", false);
+      super(plugin, "scoreboard", true);
    }
 
    public List<Field> getConfigFields() {
@@ -357,7 +357,7 @@ public class ScoreboardConfig extends BasicYamlStorage {
    }
 
    public String[] getHeader() {
-      return new String[]{"This is the scoreboard config file for Bolt.", "Placeholders and documentation can be viewed at: https://docs.refinedev.xyz/", "You need help with the configuration or have any questions related to Bolt?", "Join us in our Discord: https://dsc.gg/refine", null};
+      return new String[]{"This is the scoreboard config file for Artix.", "Placeholders and documentation can be viewed at: https://docs.artixdev.com/", "You need help with the configuration or have any questions related to Artix?", "Join us in our Discord: https://dsc.gg/artix", null};
    }
    
    // Animated Title Methods - Frame Based

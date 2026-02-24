@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
 
 import java.util.function.DoubleUnaryOperator;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -52,7 +52,7 @@ public interface Double2FloatFunction extends DoubleUnaryOperator, Function<Doub
    default Float put(Double key, Float value) {
       double k = key;
       boolean containsKey = this.containsKey(k);
-      float v = this.put(k, value);
+      float v = this.put(k, value.floatValue());
       return containsKey ? v : null;
    }
 

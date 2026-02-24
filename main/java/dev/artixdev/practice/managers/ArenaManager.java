@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.managers;
+package dev.artixdev.practice.managers;
 
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.Arena;
@@ -29,12 +29,26 @@ public class ArenaManager {
     private final Main plugin;
     private final Map<UUID, Arena> arenas;
     private final Map<KitType, List<Arena>> arenasByKit;
+    private final Map<UUID, Arena> selectedArenaByPlayer;
     private BukkitTask arenaTask;
     
     public ArenaManager(Main plugin) {
         this.plugin = plugin;
         this.arenas = new ConcurrentHashMap<>();
         this.arenasByKit = new ConcurrentHashMap<>();
+        this.selectedArenaByPlayer = new ConcurrentHashMap<>();
+    }
+    
+    /** Set the arena selected by a player (e.g. from arena menu). */
+    public void setSelectedArena(Player player, Arena arena) {
+        if (player == null) return;
+        if (arena == null) selectedArenaByPlayer.remove(player.getUniqueId());
+        else selectedArenaByPlayer.put(player.getUniqueId(), arena);
+    }
+    
+    /** Get the arena currently selected by the player, or null. */
+    public Arena getSelectedArena(Player player) {
+        return player == null ? null : selectedArenaByPlayer.get(player.getUniqueId());
     }
     
     public void initialize() {

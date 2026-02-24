@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -486,7 +486,7 @@ public final class LongCollections {
             expectedNeededNextSize = 8;
          }
 
-         return (LongCollection)this.builder.apply(expectedNeededNextSize);
+         return this.builder.apply(expectedNeededNextSize);
       }
    }
 

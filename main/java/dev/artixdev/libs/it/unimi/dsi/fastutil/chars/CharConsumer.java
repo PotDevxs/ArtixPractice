@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -18,7 +18,7 @@ public interface CharConsumer extends Consumer<Character>, IntConsumer {
    /** @deprecated */
    @Deprecated
    default void accept(Character t) {
-      this.accept(t);
+      this.accept(t.charValue());
    }
 
    default CharConsumer andThen(CharConsumer after) {
@@ -35,7 +35,7 @@ public interface CharConsumer extends Consumer<Character>, IntConsumer {
          var10001 = (CharConsumer)after;
       } else {
          Objects.requireNonNull(after);
-         var10001 = after::accept;
+         var10001 = t -> after.accept(t);
       }
 
       return this.andThen(var10001);
@@ -44,6 +44,6 @@ public interface CharConsumer extends Consumer<Character>, IntConsumer {
    /** @deprecated */
    @Deprecated
    default Consumer<Character> andThen(Consumer<? super Character> after) {
-      return super.andThen(after);
+      return Consumer.super.andThen(after);
    }
 }

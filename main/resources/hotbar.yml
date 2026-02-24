@@ -1,25 +1,17 @@
-     #############################################################
-     #                                                           #
-     #     ______     __ __             __    ____           __  #
-     #    / ____/____/ // /____  __  __/ /   / __ \_________/ /  #
-     #   / /   / ___/ // //_  / / / / / /   / / / / ___/ __  /   #
-     #  / /___/ /  /__  __// /_/ /_/ / /___/ /_/ / /  / /_/ /    #
-     #  \____/_/     /_/  /___/\__, /_____/\____/_/   \__,_/     #
-     #                        /____/                             #
-     #                                                           #
-     #       Cracked by ThisIsTheCr4zyL0rd @ CrazySquad          #
-     #                                                           #
-     #                        https://t.me/Cr4zySQ               #
-     #            @Cr4zyL0rd                                     #
-     #                                                           #
-     #############################################################
-     
-CrazySquad:
-  Link: "https://t.me/Cr4zySQ"
-
-# Layout Types:
-# LOBBY, QUEUE, PARTY_LEADER (Leader Only), PARTY_MEMBER (Member Only), PARTY (Both), SPECTATING, EVENT, OTHER (For built-in items)
-# ACTION is optional
+#############################################################
+#                                                           #
+#    ArtixPractice | Versão exclusiva do Plugin conhecido   #
+#  Recuse imitações, Adquira o melhor de todos em nosso...  #
+#  Discord logo abaixo, está versão é exclusiva do Artix    #
+#                                                           #
+#        ARTIXPRACTICE | PRACTICE CORE [1.7x - 1.21x]       #
+#                LOJA: artixdevelopment.com                 #
+#                                                           #
+#        ArtixDevelopment • Melhor Loja de Plugins          #
+#                                                           #
+#    Discord: https://discord.gg/yqK5wyPPV6 | @Faastyzin    #
+#                                                           #
+#############################################################
 
 HOTBAR_ITEMS:
   LOBBY:

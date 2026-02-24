@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -25,7 +25,8 @@ public interface LongPredicate extends java.util.function.LongPredicate, Predica
    /** @deprecated */
    @Deprecated
    default Predicate<Long> and(Predicate<? super Long> other) {
-      return super.and(other);
+      Objects.requireNonNull(other);
+      return (Long t) -> this.test(t) && other.test(t);
    }
 
    default LongPredicate negate() {
@@ -48,6 +49,7 @@ public interface LongPredicate extends java.util.function.LongPredicate, Predica
    /** @deprecated */
    @Deprecated
    default Predicate<Long> or(Predicate<? super Long> other) {
-      return super.or(other);
+      Objects.requireNonNull(other);
+      return (Long t) -> this.test(t) || other.test(t);
    }
 }

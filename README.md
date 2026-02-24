@@ -2,6 +2,21 @@
 
 Plugin Spigot/Bukkit para servidores de prática (Practice) de Minecraft.
 
+### Licença e inicialização
+
+- A licença é validada ao iniciar (config: `License:` em `config.yml`). Key vazia, placeholder ou inválida na API resulta em **"Key Invalida"** e o plugin é **desativado**.
+- Key de desenvolvimento `ARTIX-DEVELOPERS-USER-MAX` é aceita para testes.
+
+### Comandos
+
+- Comandos são registrados **por código** (CommandMap); não há seção `commands:` no `plugin.yml`.
+- Principais: `/practice`, `/party`, `/accept`, `/shop`, `/cosmetics`, `/queue`, `/silent`, `/config`, `/animatedtitle`, `/hologram`, `/botkb`, `/togglev`, `/toggleduels`, `/postmatch`, `/artixlicense`. Ver `plugin.yml` para permissões.
+
+### Config e reload
+
+- `/config reload` recarrega database, scoreboard, menu, hotbar, messages, levels e **atualiza** scoreboard e hotbar de todos os jogadores online.
+- `scoreboard.yml` e `hotbar.yml` são copiados do JAR na primeira execução (em `plugins/ArtixPractice/`).
+
 ## Configuração Maven
 
 Este projeto está configurado para ser compilado com Maven.
@@ -20,7 +35,7 @@ Este projeto está configurado para ser compilado com Maven.
 <n>Artix</n>
 
 <!-- Depois (correto) -->
-<name>Artix</name>
+<name>ArtixPractice</name>
 ```
 
 ### Compilação
@@ -87,6 +102,26 @@ mvn validate
 # Ver dependências do projeto
 mvn dependency:tree
 ```
+
+### Problemas conhecidos: HolographicDisplays
+
+Se aparecer no console:
+
+```text
+[HolographicDisplays] Unexpected error while modifying the channel pipeline.
+java.util.NoSuchElementException: packet_handler
+```
+
+Isso é um **bug do HolographicDisplays** (não do ArtixPractice): o plugin tenta injetar um listener no pipeline Netty e não encontra o handler `packet_handler` (comum no 1.8 ou com ProtocolLib).
+
+**O que fazer:**
+
+1. **Ordem de carregamento** – Garantir que o HolographicDisplays carregue **antes** do ProtocolLib (no `plugin.yml` do HolographicDisplays: `loadbefore: [ProtocolLib]`), se você usar ProtocolLib.
+2. **Atualizar** – Usar a versão mais recente do HolographicDisplays (o projeto foi arquivado, mas builds antigos podem ter o problema).
+3. **Testar sem ProtocolLib** – Rodar sem ProtocolLib para ver se o erro some (confirma conflito de pipeline).
+4. **Alternativa** – Se o erro continuar, usar outro plugin de hologramas compatível com 1.8 ou desativar o HolographicDisplays.
+
+O ArtixPractice usa o HolographicDisplays como **softdepend** (opcional); o servidor funciona mesmo com esse aviso.
 
 ### Notas
 

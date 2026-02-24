@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.configs;
+package dev.artixdev.practice.configs;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -118,7 +118,7 @@ public class SettingsConfig extends BasicYamlStorage {
    @ConfigValue(
       priority = 10,
       path = "GENERAL.DISABLE-RESET-COMMAND",
-      comment = "Should we disable the '/bolt reset' command that wipes mongo?"
+      comment = "Should we disable the '/artix reset' command that wipes mongo?"
    )
    public static boolean DISABLE_RESET_COMMAND = true;
    @ConfigValue(
@@ -136,7 +136,7 @@ public class SettingsConfig extends BasicYamlStorage {
    @ConfigValue(
       priority = 10,
       path = "GENERAL.FORCE-ENTITY-HIDER",
-      comment = "Ignore the spigot's entity hider and use bolt's instead"
+      comment = "Ignore the spigot's entity hider and use artix's instead"
    )
    public static boolean FORCE_ENTITY_HIDER = false;
    @ConfigValue(
@@ -160,7 +160,7 @@ public class SettingsConfig extends BasicYamlStorage {
    @ConfigValue(
       priority = 14,
       path = "GENERAL.BLOCKED-COMMANDS",
-      comment = "Here you can put any commands with the '/' included and bolt will block it"
+      comment = "Here you can put any commands with the '/' included and artix will block it"
    )
    public static List<String> GENERAL_BLOCKED_COMMANDS = new ArrayList();
    @ConfigValue(
@@ -226,7 +226,7 @@ public class SettingsConfig extends BasicYamlStorage {
    @ConfigValue(
       priority = 10,
       path = "MATCH.BLOCKED-COMMANDS",
-      comment = "Here you can put any commands with the '/' included and bolt will block it"
+      comment = "Here you can put any commands with the '/' included and artix will block it"
    )
    public static List<String> MATCH_BLOCKED_COMMANDS = new ArrayList();
    @ConfigValue(
@@ -434,7 +434,7 @@ public class SettingsConfig extends BasicYamlStorage {
    @ConfigValue(
       priority = 90,
       path = "NAME-TAGS.ENABLED",
-      comment = "Toggle whether Bolt's NameTag system should be enabled or not\nPlease note that this won't disable match or event name-tags, only lobby & queue"
+      comment = "Toggle whether Artix's NameTag system should be enabled or not\nPlease note that this won't disable match or event name-tags, only lobby & queue"
    )
    public static boolean NAME_TAGS_ENABLED = true;
    @ConfigValue(
@@ -537,7 +537,7 @@ public class SettingsConfig extends BasicYamlStorage {
    }
 
    public String[] getHeader() {
-      return new String[]{"This is the main configuration file for Bolt.", "As you can see, there's tons to configure. Some options may impact gameplay, so use", "with caution, and make sure you know what each option does before configuring.", "If you need help with the configuration or have any questions related to Bolt, join us in our Discord", null};
+      return new String[]{"This is the main configuration file for Artix.", "As you can see, there's tons to configure. Some options may impact gameplay, so use", "with caution, and make sure you know what each option does before configuring.", "If you need help with the configuration or have any questions related to Artix, join us in our Discord", null};
    }
 
    public static void sendDebugMessage(String message) {
@@ -589,12 +589,12 @@ public class SettingsConfig extends BasicYamlStorage {
    }
 
    public void save() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'save'");
+      writeConfig();
+      saveConfig();
    }
 
+   /** Max match duration in seconds (from MATCH.TIME-LIMIT-VALUE, treated as minutes). */
    public long getMaxMatchDuration() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getMaxMatchDuration'");
+      return MATCH_TIME_LIMIT_ENABLED ? (long) MATCH_TIME_LIMIT_VALUE * 60L : -1L;
    }
 }

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -50,12 +50,12 @@ public final class ObjectIterators {
       return unwrap(i, array, 0, array.length);
    }
 
+   @SuppressWarnings("unchecked")
    public static <K> K[] unwrap(Iterator<? extends K> i, int max) {
       if (max < 0) {
          throw new IllegalArgumentException("The maximum number of elements (" + max + ") is negative");
       } else {
-         K[] array = new Object[16];
-
+         K[] array = (K[]) new Object[16];
          int j;
          for(j = 0; max-- != 0 && i.hasNext(); array[j++] = i.next()) {
             if (j == array.length) {
@@ -105,11 +105,12 @@ public final class ObjectIterators {
       }
    }
 
+   @SuppressWarnings("unchecked")
    public static <K> K[][] unwrapBig(Iterator<? extends K> i, long max) {
       if (max < 0L) {
          throw new IllegalArgumentException("The maximum number of elements (" + max + ") is negative");
       } else {
-         K[][] array = ObjectBigArrays.newBigArray(16L);
+         K[][] array = (K[][]) ObjectBigArrays.newBigArray(16L);
 
          long j;
          for(j = 0L; max-- != 0L && i.hasNext(); BigArrays.set(array, j++, i.next())) {

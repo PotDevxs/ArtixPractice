@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.floats;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.floats;
 
 import java.util.function.DoubleToIntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -55,7 +55,7 @@ public interface Float2CharFunction extends DoubleToIntFunction, Function<Float,
    default Character put(Float key, Character value) {
       float k = key;
       boolean containsKey = this.containsKey(k);
-      char v = this.put(k, value);
+      char v = this.put(k, value.charValue());
       return containsKey ? v : null;
    }
 

@@ -1,8 +1,7 @@
-﻿package dev.artixdev.practice.models;
+package dev.artixdev.practice.models;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EnderPearl;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import dev.artixdev.practice.enums.KitType;
 
@@ -34,6 +33,17 @@ public class Match {
     private EnderPearl enderPearl;
     private NPC bot;
     private Object botState;
+
+    /** Warmup: no damage until this time (ms). 0 = no warmup. */
+    private long warmupEndTime;
+    /** Match paused (e.g. /pause). */
+    private boolean paused;
+    /** Time left in match (seconds). -1 = no limit. */
+    private int timeLeft = -1;
+    /** Current match duration in ticks/seconds for display. */
+    private int matchTime;
+    private Arena arena;
+    private PlayerLocationTracker locationTracker;
 
     public Match(UUID id, Player player1, Player player2, KitType kitType) {
         this.id = id;
@@ -194,57 +204,86 @@ public class Match {
         return players;
     }
 
+    public long getWarmupEndTime() {
+        return warmupEndTime;
+    }
+
+    public void setWarmupEndTime(long warmupEndTime) {
+        this.warmupEndTime = warmupEndTime;
+    }
+
+    public boolean isInWarmup() {
+        return warmupEndTime > 0 && System.currentTimeMillis() < warmupEndTime;
+    }
+
+    public int getWarmupSecondsRemaining() {
+        if (warmupEndTime <= 0) return 0;
+        long rem = (warmupEndTime - System.currentTimeMillis()) / 1000;
+        return rem <= 0 ? 0 : (int) rem;
+    }
+
     public boolean isPaused() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isPaused'");
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
     }
 
     public int getTimeLeft() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTimeLeft'");
+        return timeLeft;
+    }
+
+    public void setTimeLeft(int timeLeft) {
+        this.timeLeft = timeLeft;
     }
 
     public void endMatch() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'endMatch'");
+        this.ended = true;
+        this.endTime = System.currentTimeMillis();
     }
 
     public void decrementTimeLeft() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'decrementTimeLeft'");
+        if (timeLeft > 0) timeLeft--;
     }
 
     public void updateMatch() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateMatch'");
+        // Optional: update distance, etc.
     }
 
     public Player getPlayer() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPlayer'");
+        return player1 != null ? player1 : player2;
     }
 
     public void incrementMatchTime() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'incrementMatchTime'");
+        matchTime++;
+    }
+
+    public int getMatchTime() {
+        return matchTime;
     }
 
     public boolean isActive() {
         return !ended;
     }
 
-    public Object getLocationTracker() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLocationTracker'");
+    public PlayerLocationTracker getLocationTracker() {
+        return locationTracker;
+    }
+
+    public void setLocationTracker(PlayerLocationTracker locationTracker) {
+        this.locationTracker = locationTracker;
     }
 
     public String getMaxPlayers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMaxPlayers'");
+        return String.valueOf(Math.max(2, getPlayers().size()));
     }
 
-    public HumanEntity getArena() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getArena'");
+    public Arena getArena() {
+        return arena;
+    }
+
+    public void setArena(Arena arena) {
+        this.arena = arena;
     }
 }

@@ -1,117 +1,153 @@
-﻿package me.drizzy.api.chunk.impl;
+package me.drizzy.api.chunk.impl;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
 import me.drizzy.api.chunk.IChunkAdapter;
-import net.minecraft.server.v1_12_R1.ChunkSection;
-import net.minecraft.server.v1_12_R1.NibbleArray;
 import org.bukkit.Chunk;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import org.bukkit.craftbukkit.v1_12_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_12_R1.util.LongHash;
-import dev.artixdev.practice.llIllIlIIlIIlII.IIlllIlIIlIIlII;
+import dev.artixdev.libs.it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import dev.artixdev.practice.utils.ReflectionUtils;
 
+/**
+ * Chunk adapter implementation for Minecraft version 1.12 R1.
+ * Handles caching and restoring chunk sections using NMS reflection.
+ */
 public class v1_12_R1ChunkAdapter implements IChunkAdapter {
-   private final Map<Long, ChunkSection[]> chunkSectionMap = new Long2ObjectOpenHashMap();
-   private static MethodHandle nonEmptyBlockCountSetter;
-   private static MethodHandle nonEmptyBlockCountGetter;
-   private static MethodHandle tickingBlockCountSetter;
-   private static MethodHandle tickingBlockCountGetter;
-   private static MethodHandle blockIdsSetter;
-   private static MethodHandle sectionsSetter;
 
-   public void cacheChunk(Chunk chunk) {
-      if (!chunk.isLoaded()) {
-         chunk.load();
-      }
+    private static final String NMS = "net.minecraft.server.v1_12_R1";
 
-      net.minecraft.server.v1_12_R1.Chunk nmsChunk = ((CraftChunk)chunk).getHandle();
-      long key = LongHash.toLong(nmsChunk.locX, nmsChunk.locZ);
-      this.chunkSectionMap.put(key, this.cloneSections(nmsChunk.getSections()));
-   }
+    private final Map<Long, Object[]> chunkSectionMap = new Long2ObjectOpenHashMap<>();
 
-   public void restoreChunk(Chunk chunk) {
-      try {
-         if (!chunk.isLoaded()) {
+    private static Class<?> chunkSectionClass;
+    private static Class<?> nibbleArrayClass;
+    private static Class<?> chunkClass;
+    private static MethodHandle nonEmptyBlockCountSetter;
+    private static MethodHandle nonEmptyBlockCountGetter;
+    private static MethodHandle tickingBlockCountSetter;
+    private static MethodHandle tickingBlockCountGetter;
+    private static MethodHandle blockIdsSetter;
+    private static MethodHandle sectionsSetter;
+
+    private static long toLong(int x, int z) {
+        return (long) x << 32 | (z & 0xFFFFFFFFL);
+    }
+
+    @Override
+    public void cacheChunk(Chunk chunk) {
+        if (!chunk.isLoaded()) {
             chunk.load();
-         }
+        }
+        try {
+            Object nmsChunk = chunk.getClass().getMethod("getHandle").invoke(chunk);
+            int locX = chunkClass.getField("locX").getInt(nmsChunk);
+            int locZ = chunkClass.getField("locZ").getInt(nmsChunk);
+            long key = toLong(locX, locZ);
+            Object[] sections = (Object[]) nmsChunk.getClass().getMethod("getSections").invoke(nmsChunk);
+            chunkSectionMap.put(key, cloneSections(sections));
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to cache chunk", e);
+        }
+    }
 
-         net.minecraft.server.v1_12_R1.Chunk nmsChunk = ((CraftChunk)chunk).getHandle();
-         long key = LongHash.toLong(nmsChunk.locX, nmsChunk.locZ);
-         if (!this.chunkSectionMap.containsKey(key)) {
-            throw new UnsupportedOperationException("Chunk invoked but not saved!");
-         } else {
-            ChunkSection[] sections = (ChunkSection[])this.chunkSectionMap.get(key);
-            sectionsSetter.invoke(nmsChunk, sections);
-            CraftWorld world = ((CraftChunk)chunk).getCraftWorld();
-            world.refreshChunk(nmsChunk.locX, nmsChunk.locZ);
-         }
-      } catch (Throwable e) {
-         throw e;
-      }
-   }
+    @Override
+    public void restoreChunk(Chunk chunk) {
+        if (!chunk.isLoaded()) {
+            chunk.load();
+        }
+        try {
+            Object nmsChunk = chunk.getClass().getMethod("getHandle").invoke(chunk);
+            int locX = chunkClass.getField("locX").getInt(nmsChunk);
+            int locZ = chunkClass.getField("locZ").getInt(nmsChunk);
+            long key = toLong(locX, locZ);
+            Object[] cachedSections = chunkSectionMap.get(key);
+            if (cachedSections == null) {
+                throw new UnsupportedOperationException("Chunk invoked but not saved!");
+            }
+            sectionsSetter.invoke(nmsChunk, cachedSections);
+            Object craftWorld = chunk.getClass().getMethod("getCraftWorld").invoke(chunk);
+            craftWorld.getClass().getMethod("refreshChunk", int.class, int.class).invoke(craftWorld, locX, locZ);
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to restore chunk", e);
+        }
+    }
 
-   public ChunkSection[] cloneSections(ChunkSection[] sections) {
-      ChunkSection[] newSections = new ChunkSection[sections.length];
+    private Object[] cloneSections(Object[] sections) {
+        Object[] cloned = (Object[]) java.lang.reflect.Array.newInstance(chunkSectionClass, sections.length);
+        for (int i = 0; i < sections.length; i++) {
+            if (sections[i] != null) {
+                cloned[i] = cloneSection(sections[i]);
+            }
+        }
+        return cloned;
+    }
 
-      for(int i = 0; i < sections.length; ++i) {
-         if (sections[i] != null) {
-            newSections[i] = this.cloneSection(sections[i]);
-         }
-      }
+    private Object cloneSection(Object original) {
+        try {
+            Method getSkyLight = original.getClass().getMethod("getSkyLightArray");
+            Object skyLight = getSkyLight.invoke(original);
+            boolean hasSkyLight = skyLight != null;
+            Method getYPosition = original.getClass().getMethod("getYPosition");
+            int yPos = (Integer) getYPosition.invoke(original);
+            Object cloned = chunkSectionClass.getConstructor(int.class, boolean.class).newInstance(yPos, hasSkyLight);
 
-      return newSections;
-   }
+            nonEmptyBlockCountSetter.invoke(cloned, nonEmptyBlockCountGetter.invoke(original));
+            tickingBlockCountSetter.invoke(cloned, tickingBlockCountGetter.invoke(original));
 
-   public ChunkSection cloneSection(ChunkSection chunkSection) {
-      try {
-         ChunkSection section = new ChunkSection(chunkSection.getYPosition(), chunkSection.getSkyLightArray() != null);
-         nonEmptyBlockCountSetter.invoke(section, nonEmptyBlockCountGetter.invoke(chunkSection));
-         tickingBlockCountSetter.invoke(section, tickingBlockCountGetter.invoke(chunkSection));
-         blockIdsSetter.invoke(section, chunkSection.getBlocks());
-         if (chunkSection.getEmittedLightArray() != null) {
-            section.a(this.cloneNibbleArray(chunkSection.getEmittedLightArray()));
-         }
+            Method getBlocks = original.getClass().getMethod("getBlocks");
+            Object blockData = getBlocks.invoke(original);
+            blockIdsSetter.invoke(cloned, blockData);
 
-         if (chunkSection.getSkyLightArray() != null) {
-            section.b(this.cloneNibbleArray(chunkSection.getSkyLightArray()));
-         }
+            Method getEmittedLight = original.getClass().getMethod("getEmittedLightArray");
+            Object emittedLight = getEmittedLight.invoke(original);
+            if (emittedLight != null) {
+                Method a = cloned.getClass().getMethod("a", nibbleArrayClass);
+                a.invoke(cloned, cloneNibbleArray(emittedLight));
+            }
+            if (skyLight != null) {
+                Method b = cloned.getClass().getMethod("b", nibbleArrayClass);
+                b.invoke(cloned, cloneNibbleArray(skyLight));
+            }
+            return cloned;
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to clone chunk section", e);
+        }
+    }
 
-         return section;
-      } catch (Throwable e) {
-         throw e;
-      }
-   }
+    private Object cloneNibbleArray(Object original) throws Throwable {
+        Method asBytes = original.getClass().getMethod("asBytes");
+        byte[] data = (byte[]) ((byte[]) asBytes.invoke(original)).clone();
+        return nibbleArrayClass.getConstructor(byte[].class).newInstance(data);
+    }
 
-   public NibbleArray cloneNibbleArray(NibbleArray nibbleArray) {
-      return new NibbleArray((byte[])nibbleArray.asBytes().clone());
-   }
+    static {
+        Lookup lookup = MethodHandles.lookup();
+        try {
+            chunkSectionClass = Class.forName(NMS + ".ChunkSection");
+            nibbleArrayClass = Class.forName(NMS + ".NibbleArray");
+            chunkClass = Class.forName(NMS + ".Chunk");
 
-   static {
-      Lookup lookup = MethodHandles.lookup();
+            Field nonEmptyBlockCount = chunkSectionClass.getDeclaredField("nonEmptyBlockCount");
+            ReflectionUtils.makeFieldAccessible(nonEmptyBlockCount);
+            nonEmptyBlockCountGetter = lookup.unreflectGetter(nonEmptyBlockCount);
+            nonEmptyBlockCountSetter = lookup.unreflectSetter(nonEmptyBlockCount);
 
-      try {
-         Field nonEmptyBlockCount = ChunkSection.class.getDeclaredField("nonEmptyBlockCount");
-         nonEmptyBlockCount.setAccessible(true);
-         nonEmptyBlockCountGetter = lookup.unreflectGetter(nonEmptyBlockCount);
-         nonEmptyBlockCountSetter = lookup.unreflectSetter(nonEmptyBlockCount);
-         Field tickingBlockCount = ChunkSection.class.getDeclaredField("tickingBlockCount");
-         tickingBlockCount.setAccessible(true);
-         tickingBlockCountGetter = lookup.unreflectGetter(tickingBlockCount);
-         tickingBlockCountSetter = lookup.unreflectSetter(tickingBlockCount);
-         Field blockIds = ChunkSection.class.getDeclaredField("blockIds");
-         blockIds.setAccessible(true);
-         blockIdsSetter = lookup.unreflectSetter(blockIds);
-         Field sections = net.minecraft.server.v1_12_R1.Chunk.class.getDeclaredField("sections");
-         IIlllIlIIlIIlII.lIIIIllIIlIIlII(sections);
-         sectionsSetter = lookup.unreflectSetter(sections);
-      } catch (Throwable e) {
-         e.printStackTrace();
-      }
+            Field tickingBlockCount = chunkSectionClass.getDeclaredField("tickingBlockCount");
+            ReflectionUtils.makeFieldAccessible(tickingBlockCount);
+            tickingBlockCountGetter = lookup.unreflectGetter(tickingBlockCount);
+            tickingBlockCountSetter = lookup.unreflectSetter(tickingBlockCount);
 
-   }
+            Field blockIds = chunkSectionClass.getDeclaredField("blockIds");
+            ReflectionUtils.makeFieldAccessible(blockIds);
+            blockIdsSetter = lookup.unreflectSetter(blockIds);
+
+            Field sectionsField = chunkClass.getDeclaredField("sections");
+            ReflectionUtils.makeFieldAccessible(sectionsField);
+            sectionsSetter = lookup.unreflectSetter(sectionsField);
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to initialize chunk adapter", e);
+        }
+    }
 }

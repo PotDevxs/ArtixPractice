@@ -1,4 +1,4 @@
-﻿package dev.artixdev.api.practice.tablist.util;
+package dev.artixdev.api.practice.tablist.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,16 +39,19 @@ public final class StringUtils {
       } else {
          ChatColor color;
          if (MINOR_VERSION >= 16) {
-            try {
-               String hexColor = prefixColor.replace("§", "").replace("x", "#");
-               color = ChatColor.of(hexColor);
-            } catch (Exception e) {
-               org.bukkit.ChatColor bukkitColor = org.bukkit.ChatColor.getByChar(prefixColor.substring(prefixColor.length() - 1).charAt(0));
-               if (bukkitColor == null) {
+            String hexColor = prefixColor.replace("§", "").replace("x", "#");
+            if (hexColor.length() == 7 && hexColor.charAt(0) == '#') {
+               color = null;
+            } else {
+               try {
+                  org.bukkit.ChatColor bukkitColor = org.bukkit.ChatColor.getByChar(prefixColor.substring(prefixColor.length() - 1).charAt(0));
+                  if (bukkitColor == null) {
+                     return null;
+                  }
+                  color = bukkitColor.asBungee();
+               } catch (Exception e) {
                   return null;
                }
-
-               color = bukkitColor.asBungee();
             }
          } else {
             org.bukkit.ChatColor bukkitColor = org.bukkit.ChatColor.getByChar(prefixColor.substring(prefixColor.length() - 1).charAt(0));
@@ -75,8 +78,8 @@ public final class StringUtils {
                try {
                   String color = matcher.group();
                   String hexColor = color.replace("&", "").replace("x", "#");
-                  ChatColor bungeeColor = ChatColor.of(hexColor);
-                  text = text.replace(color, bungeeColor.toString());
+                  String hexCode = buildHexCode(hexColor);
+                  text = text.replace(color, hexCode);
                } catch (Exception e) {
                }
             }
@@ -84,6 +87,18 @@ public final class StringUtils {
 
          return text;
       }
+   }
+
+   /** Builds the 1.16+ hex color code string (§x§R§R§G§G§B§B) from a #RRGGBB hex string. */
+   private static String buildHexCode(String hexColor) {
+      if (hexColor == null || hexColor.length() != 7 || hexColor.charAt(0) != '#') {
+         return "";
+      }
+      StringBuilder sb = new StringBuilder("\u00A7x");
+      for (char c : hexColor.substring(1).toCharArray()) {
+         sb.append('\u00A7').append(c);
+      }
+      return sb.toString();
    }
 
    private StringUtils() {

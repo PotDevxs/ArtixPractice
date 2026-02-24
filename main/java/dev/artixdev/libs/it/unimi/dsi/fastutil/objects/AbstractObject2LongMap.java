@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -72,7 +72,7 @@ public abstract class AbstractObject2LongMap<K> extends AbstractObject2LongFunct
                private final ObjectIterator<Object2LongMap.Entry<K>> i = Object2LongMaps.fastIterator(AbstractObject2LongMap.this);
 
                public K next() {
-                  return ((Object2LongMap.Entry)this.i.next()).getKey();
+                  return this.i.next().getKey();
                }
 
                public boolean hasNext() {

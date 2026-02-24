@@ -1,95 +1,182 @@
-﻿package me.drizzy.api.nms.impl;
+package me.drizzy.api.nms.impl;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import me.drizzy.api.nms.INMSImpl;
-import net.minecraft.network.protocol.game.PacketPlayOutAnimation;
-import net.minecraft.server.level.ChunkProviderServer;
-import net.minecraft.server.level.WorldServer;
-import net.minecraft.world.EnumHand;
-import net.minecraft.world.entity.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import dev.artixdev.libs.com.github.retrooper.packetevents.PacketEvents;
+import dev.artixdev.libs.com.github.retrooper.packetevents.manager.player.PlayerManager;
 import dev.artixdev.libs.com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import dev.artixdev.libs.com.github.retrooper.packetevents.util.Vector3d;
 import dev.artixdev.libs.com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
 import dev.artixdev.libs.com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityStatus;
 import dev.artixdev.libs.com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
-import dev.artixdev.practice.llIllIlIIlIIlII.IIIIIllIIlIIlII;
-import dev.artixdev.practice.llIllIlIIlIIlII.IllllIlIIlIIlII;
 
 public class v1_20_R2Impl implements INMSImpl {
+   private static final String NMS_PROTOCOL_GAME = "net.minecraft.network.protocol.game";
+   private static final String NMS_WORLD_ENTITY = "net.minecraft.world.entity";
+   private static final double PACKET_VIEW_RADIUS = 64.0;
+   private static final AtomicInteger ENTITY_ID_COUNTER = new AtomicInteger(-1);
    private final JavaPlugin plugin;
 
+   private static Object getHandle(Player player) {
+      try {
+         Method getHandle = player.getClass().getMethod("getHandle");
+         return getHandle.invoke(player);
+      } catch (Exception e) {
+         throw new RuntimeException("Failed to get NMS handle for player", e);
+      }
+   }
+
+   private static Field findField(Class<?> start, String name) throws NoSuchFieldException {
+      for (Class<?> c = start; c != null; c = c.getSuperclass()) {
+         try {
+            Field f = c.getDeclaredField(name);
+            f.setAccessible(true);
+            return f;
+         } catch (NoSuchFieldException ignored) { }
+      }
+      throw new NoSuchFieldException(name);
+   }
+
+   private static int nextEntityId() {
+      return ENTITY_ID_COUNTER.decrementAndGet();
+   }
+
+   private static List<Player> getNearbyPlayers(Location location) {
+      List<Player> out = new ArrayList<>();
+      if (location.getWorld() == null) return out;
+      for (Player p : location.getWorld().getPlayers()) {
+         if (p.getLocation().distanceSquared(location) <= PACKET_VIEW_RADIUS * PACKET_VIEW_RADIUS) {
+            out.add(p);
+         }
+      }
+      return out;
+   }
+
+   private static void sendPacket(Player player, Object packetWrapper) {
+      PlayerManager playerManager = PacketEvents.getAPI().getPlayerManager();
+      playerManager.sendPacket(player, packetWrapper);
+   }
+
    public void removeArrows(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      craftPlayer.getHandle().setArrowCount(0, true);
+      try {
+         Object entityPlayer = getHandle(player);
+         Method setArrowCount = entityPlayer.getClass().getMethod("setArrowCount", int.class, boolean.class);
+         setArrowCount.invoke(entityPlayer, 0, true);
+      } catch (Exception e) {
+         throw new RuntimeException("removeArrows failed", e);
+      }
    }
 
    public void setCanCollide(Player player, boolean canCollide) {
-      player.setCollidable(canCollide);
+      player.spigot().setCollidesWithEntities(canCollide);
    }
 
    public boolean isViewingInventory(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      return craftPlayer.getHandle().bR.j != 0;
+      try {
+         Object entityPlayer = getHandle(player);
+         Field containerField = findField(entityPlayer.getClass(), "bR");
+         Object container = containerField.get(entityPlayer);
+         Field windowField = findField(container.getClass(), "j");
+         int windowId = windowField.getInt(container);
+         return windowId != 0;
+      } catch (Exception e) {
+         return false;
+      }
    }
 
    public void sendEatingAnimation(Player player) {
-      Entity entityPlayer = ((CraftPlayer)player).getHandle();
-      ChunkProviderServer chunkproviderserver = ((WorldServer)entityPlayer.dL()).k();
-      chunkproviderserver.b(entityPlayer, new PacketPlayOutAnimation(entityPlayer, 2));
+      try {
+         Object entityPlayer = getHandle(player);
+         Method dL = entityPlayer.getClass().getMethod("dL");
+         Object world = dL.invoke(entityPlayer);
+         Method k = world.getClass().getMethod("k");
+         Object chunkProvider = k.invoke(world);
+         Class<?> entityClass = Class.forName(NMS_WORLD_ENTITY + ".Entity");
+         Class<?> packetClass = Class.forName(NMS_PROTOCOL_GAME + ".PacketPlayOutAnimation");
+         Class<?> packetInterface = Class.forName("net.minecraft.network.protocol.Packet");
+         Object packet = packetClass.getConstructor(entityClass, int.class).newInstance(entityPlayer, 2);
+         Method b = chunkProvider.getClass().getMethod("b", entityClass, packetInterface);
+         b.invoke(chunkProvider, entityPlayer, packet);
+      } catch (Exception e) {
+         throw new RuntimeException("sendEatingAnimation failed", e);
+      }
    }
 
    public void setJumping(Player player) {
    }
 
    public void animateDeath(Player player) {
-      int entityId = IIIIIllIIlIIlII.llllIIlIIlIIlII();
+      int entityId = nextEntityId();
       Location location = player.getLocation();
-      Entity entity = ((CraftPlayer)player).getHandle();
-      WrapperPlayServerSpawnEntity spawnPacket = new WrapperPlayServerSpawnEntity(entityId, Optional.of(player.getUniqueId()), EntityTypes.PLAYER, new Vector3d(location.getX(), location.getY(), location.getZ()), entity.dB(), entity.dg(), entity.co(), 0, Optional.empty());
-      WrapperPlayServerEntityStatus statusPacket = new WrapperPlayServerEntityStatus(entityId, 3);
-      List<Player> sentTo = IllllIlIIlIIlII.lllllIlIIlIIlII(player.getLocation());
-      Iterator var8 = sentTo.iterator();
+      Object entity = getHandle(player);
+      try {
+         Method dB = entity.getClass().getMethod("dB");
+         Method dg = entity.getClass().getMethod("dg");
+         Method co = entity.getClass().getMethod("co");
+         float pitch = ((Number) dB.invoke(entity)).floatValue();
+         float yaw = ((Number) dg.invoke(entity)).floatValue();
+         float headYaw = ((Number) co.invoke(entity)).floatValue();
+         WrapperPlayServerSpawnEntity spawnPacket = new WrapperPlayServerSpawnEntity(entityId, Optional.of(player.getUniqueId()), EntityTypes.PLAYER, new Vector3d(location.getX(), location.getY(), location.getZ()), pitch, yaw, headYaw, 0, Optional.empty());
+         WrapperPlayServerEntityStatus statusPacket = new WrapperPlayServerEntityStatus(entityId, 3);
+         List<Player> sentTo = getNearbyPlayers(player.getLocation());
+         Iterator<Player> var8 = sentTo.iterator();
 
-      while(var8.hasNext()) {
-         Player watcher = (Player)var8.next();
-         if (!watcher.getUniqueId().equals(player.getUniqueId())) {
-            IllllIlIIlIIlII.sendPacket(watcher, spawnPacket);
-            IllllIlIIlIIlII.sendPacket(watcher, statusPacket);
+         while (var8.hasNext()) {
+            Player watcher = var8.next();
+            if (!watcher.getUniqueId().equals(player.getUniqueId())) {
+               sendPacket(watcher, spawnPacket);
+               sendPacket(watcher, statusPacket);
+            }
          }
-      }
 
-      WrapperPlayServerDestroyEntities destroyPacket = new WrapperPlayServerDestroyEntities(entityId);
-      Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-         sentTo.forEach((watcher) -> {
-            IllllIlIIlIIlII.sendPacket(watcher, destroyPacket);
-         });
-      }, 60L);
+         WrapperPlayServerDestroyEntities destroyPacket = new WrapperPlayServerDestroyEntities(entityId);
+         Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+            sentTo.forEach((watcher) -> sendPacket(watcher, destroyPacket));
+         }, 60L);
+      } catch (Exception e) {
+         throw new RuntimeException("animateDeath failed", e);
+      }
    }
 
    public void startRightClick(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      craftPlayer.getHandle().c(EnumHand.a);
+      try {
+         Object entityPlayer = getHandle(player);
+         Class<?> enumHandClass = Class.forName("net.minecraft.world.EnumHand");
+         Object mainHand = enumHandClass.getEnumConstants()[0];
+         Method c = entityPlayer.getClass().getMethod("c", enumHandClass);
+         c.invoke(entityPlayer, mainHand);
+      } catch (Exception e) {
+         throw new RuntimeException("startRightClick failed", e);
+      }
    }
 
    public void stopRightClick(Player player) {
-      CraftPlayer craftPlayer = (CraftPlayer)player;
-      craftPlayer.getHandle().fo();
+      try {
+         Object entityPlayer = getHandle(player);
+         Method fo = entityPlayer.getClass().getMethod("fo");
+         fo.invoke(entityPlayer);
+      } catch (Exception e) {
+         throw new RuntimeException("stopRightClick failed", e);
+      }
    }
 
    public void setUnbreakable(ItemStack itemStack) {
       if (itemStack.hasItemMeta()) {
          ItemMeta itemMeta = itemStack.getItemMeta();
          if (itemMeta != null) {
-            itemMeta.setUnbreakable(true);
+            itemMeta.spigot().setUnbreakable(true);
          }
       }
    }

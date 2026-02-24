@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -161,7 +161,7 @@ public class LongOpenHashSet extends AbstractLongSet implements Serializable, Cl
    }
 
    public static LongOpenHashSet toSetWithExpectedSize(LongStream stream, int expectedSize) {
-      return expectedSize <= 16 ? toSet(stream) : (LongOpenHashSet)stream.collect(new LongCollections.SizeDecreasingSupplier(expectedSize, (size) -> {
+      return expectedSize <= 16 ? toSet(stream) : stream.collect(new LongCollections.SizeDecreasingSupplier<LongOpenHashSet>(expectedSize, (size) -> {
          return size <= 16 ? new LongOpenHashSet() : new LongOpenHashSet(size);
       }), LongOpenHashSet::add, LongOpenHashSet::addAll);
    }

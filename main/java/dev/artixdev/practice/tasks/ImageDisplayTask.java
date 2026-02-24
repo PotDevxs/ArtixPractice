@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.tasks;
+package dev.artixdev.practice.tasks;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import dev.artixdev.practice.Main;
 import dev.artixdev.practice.utils.ImageUtils;
 
 public class ImageDisplayTask implements Runnable {
@@ -32,7 +33,7 @@ public class ImageDisplayTask implements Runnable {
 
     public BukkitTask startTask(long delay, long period) {
         cancelled = false;
-        this.task = Bukkit.getScheduler().runTaskTimer(Bukkit.getPluginManager().getPlugin("Practice"), this, delay, period);
+        this.task = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), this, delay, period);
         return this.task;
     }
 

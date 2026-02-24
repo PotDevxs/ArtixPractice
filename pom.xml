@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -6,7 +6,7 @@
 
     <groupId>dev.artixdev</groupId>
     <artifactId>ArtixPractice</artifactId>
-    <version>22.0</version>
+    <version>22.9</version>
     <packaging>jar</packaging>
 
     <name>ArtixPractice</name>
@@ -18,7 +18,18 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <spigot.version>1.8.8-R0.1-SNAPSHOT</spigot.version>
+        <shade.minimizeJar>false</shade.minimizeJar>
     </properties>
+
+    <profiles>
+        <!-- Build menor: remove classes não referenciadas. Teste no servidor; se der ClassNotFound, use build normal. -->
+        <profile>
+            <id>minimal</id>
+            <properties>
+                <shade.minimizeJar>true</shade.minimizeJar>
+            </properties>
+        </profile>
+    </profiles>
 
     <repositories>
         <!-- Spigot Repository -->
@@ -76,7 +87,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <version>${spigot.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -107,14 +118,14 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Snappy compression (for SnappyCompressor / MongoDB wire protocol) -->
+        <!-- Snappy: só necessário para compressão MongoDB; excluído do JAR para reduzir tamanho (Mongo usa TCP sem Snappy) -->
         <dependency>
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
             <version>1.1.10.5</version>
         </dependency>
 
-        <!-- JNR Unix Socket (for UnixSocketChannelStream / MongoDB Unix domain sockets) -->
+        <!-- JNR Unix Socket: só para MongoDB Unix sockets; excluído do JAR (Mongo usa TCP) -->
         <dependency>
             <groupId>com.github.jnr</groupId>
             <artifactId>jnr-unixsocket</artifactId>
@@ -307,20 +318,20 @@
             <systemPath>${project.basedir}/libs/packetevents-spigot-2.11.1.jar</systemPath>
         </dependency>
 
-        <!-- Netty (provided by Spigot server, but needed for compilation) -->
+        <!-- Netty: fornecido pelo servidor Spigot - NÃO empacotar no JAR -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.94.Final</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- Mojang Authlib (for GameProfile and Property) -->
+        <!-- Mojang Authlib: fornecido pelo servidor - NÃO empacotar no JAR -->
         <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>authlib</artifactId>
             <version>1.5.21</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -362,6 +373,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <minimizeJar>${shade.minimizeJar}</minimizeJar>
                             <relocations>
                                 <!-- Relocate MongoDB -->
                                 <relocation>
@@ -421,6 +433,18 @@
                                     <shadedPattern>dev.artixdev.libs.org.jetbrains.annotations</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>com.comphenix.protocol:*</exclude>
+                                    <exclude>net.citizensnpcs:*</exclude>
+                                    <exclude>eu.decentsoftware:*</exclude>
+                                    <exclude>com.fastasyncworldedit:*</exclude>
+                                    <exclude>com.sk89q.worldedit:*</exclude>
+                                    <exclude>com.viaversion:*</exclude>
+                                    <exclude>org.xerial.snappy:*</exclude>
+                                    <exclude>com.github.jnr:*</exclude>
+                                </excludes>
+                            </artifactSet>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
@@ -428,6 +452,7 @@
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>**/module-info.class</exclude>
                                     </excludes>
                                 </filter>
                             </filters>

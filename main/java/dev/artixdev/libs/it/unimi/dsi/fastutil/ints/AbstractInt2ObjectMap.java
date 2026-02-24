@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -110,7 +110,7 @@ public abstract class AbstractInt2ObjectMap<V> extends AbstractInt2ObjectFunctio
                private final ObjectIterator<Int2ObjectMap.Entry<V>> i = Int2ObjectMaps.fastIterator(AbstractInt2ObjectMap.this);
 
                public V next() {
-                  return ((Int2ObjectMap.Entry)this.i.next()).getValue();
+                  return this.i.next().getValue();
                }
 
                public boolean hasNext() {

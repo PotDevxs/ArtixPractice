@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -859,15 +859,15 @@ public final class ShortArrays {
       if (to - from < 1024) {
          quickSort(a, from, to);
       } else {
-         int maxLevel = true;
-         int stackSize = true;
+         int maxLevel = 1;
+         int stackSize = 256;
          int stackPos = 0;
          int[] offsetStack = new int[256];
          int[] lengthStack = new int[256];
          int[] levelStack = new int[256];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -935,7 +935,7 @@ public final class ShortArrays {
    public static void parallelRadixSort(short[] a, int from, int to) {
       ForkJoinPool pool = getPool();
       if (to - from >= 1024 && pool.getParallelism() != 1) {
-         int maxLevel = true;
+         int maxLevel = 1;
          LinkedBlockingQueue<ShortArrays.Segment> queue = new LinkedBlockingQueue();
          queue.add(new ShortArrays.Segment(from, to - from, 0));
          AtomicInteger queueSize = new AtomicInteger(1);
@@ -1055,15 +1055,15 @@ public final class ShortArrays {
          }
 
       } else {
-         int maxLevel = true;
-         int stackSize = true;
+         int maxLevel = 1;
+         int stackSize = 256;
          int stackPos = 0;
          int[] offsetStack = new int[256];
          int[] lengthStack = new int[256];
          int[] levelStack = new int[256];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -1085,7 +1085,6 @@ public final class ShortArrays {
                lastUsed = -1;
                int i = 0;
 
-               int i;
                for(i = stable ? 0 : first; i < 256; ++i) {
                   if (count[i] != 0) {
                      lastUsed = i;
@@ -1165,7 +1164,7 @@ public final class ShortArrays {
    public static void parallelRadixSortIndirect(int[] perm, short[] a, int from, int to, boolean stable) {
       ForkJoinPool pool = getPool();
       if (to - from >= 1024 && pool.getParallelism() != 1) {
-         int maxLevel = true;
+         int maxLevel = 1;
          LinkedBlockingQueue<ShortArrays.Segment> queue = new LinkedBlockingQueue();
          queue.add(new ShortArrays.Segment(from, to - from, 0));
          AtomicInteger queueSize = new AtomicInteger(1);
@@ -1306,16 +1305,16 @@ public final class ShortArrays {
       if (to - from < 1024) {
          quickSort(a, b, from, to);
       } else {
-         int layers = true;
-         int maxLevel = true;
-         int stackSize = true;
+         int layers = 2;
+         int maxLevel = 1;
+         int stackSize = 256;
          int stackPos = 0;
          int[] offsetStack = new int[766];
          int[] lengthStack = new int[766];
          int[] levelStack = new int[766];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -1389,11 +1388,11 @@ public final class ShortArrays {
    public static void parallelRadixSort(short[] a, short[] b, int from, int to) {
       ForkJoinPool pool = getPool();
       if (to - from >= 1024 && pool.getParallelism() != 1) {
-         int layers = true;
+         int layers = 2;
          if (a.length != b.length) {
             throw new IllegalArgumentException("Array size mismatch.");
          } else {
-            int maxLevel = true;
+            int maxLevel = 1;
             LinkedBlockingQueue<ShortArrays.Segment> queue = new LinkedBlockingQueue();
             queue.add(new ShortArrays.Segment(from, to - from, 0));
             AtomicInteger queueSize = new AtomicInteger(1);
@@ -1544,16 +1543,16 @@ public final class ShortArrays {
       if (to - from < 64) {
          insertionSortIndirect(perm, a, b, from, to);
       } else {
-         int layers = true;
-         int maxLevel = true;
-         int stackSize = true;
+         int layers = 2;
+         int maxLevel = 1;
+         int stackSize = 256;
          int stackPos = 0;
          int[] offsetStack = new int[766];
          int[] lengthStack = new int[766];
          int[] levelStack = new int[766];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          int[] count = new int[256];
          int[] pos = new int[256];
@@ -1576,7 +1575,6 @@ public final class ShortArrays {
                lastUsed = -1;
                int i = 0;
 
-               int i;
                for(i = stable ? 0 : first; i < 256; ++i) {
                   if (count[i] != 0) {
                      lastUsed = i;
@@ -1656,13 +1654,13 @@ public final class ShortArrays {
 
          int p;
          for(p = i + 1; p < to; ++p) {
-            for(int p = firstLayer; p < layers; ++p) {
-               if (a[p][p] < a[p][m]) {
+            for(int r = firstLayer; r < layers; ++r) {
+               if (a[r][p] < a[r][m]) {
                   m = p;
                   break;
                }
 
-               if (a[p][p] > a[p][m]) {
+               if (a[r][p] > a[r][m]) {
                   break;
                }
             }
@@ -1699,7 +1697,7 @@ public final class ShortArrays {
          }
 
          p = 255 * (layers * 2 - 1) + 1;
-         int stackPos = 0;
+         stackPos = 0;
          int[] offsetStack = new int[p];
          int[] lengthStack = new int[p];
          int[] levelStack = new int[p];
@@ -1741,7 +1739,6 @@ public final class ShortArrays {
 
             int c;
             for(boolean var22 = true; i <= end; count[c] = 0) {
-               int p;
                for(p = layers; p-- != 0; t[p] = a[p][i]) {
                }
 
@@ -2094,7 +2091,6 @@ public final class ShortArrays {
             int d = c;
 
             while(true) {
-               int t;
                int t;
                while(b > c || (t = (t = Short.compare(x[b], v)) == 0 ? Short.compare(y[b], w) : t) > 0) {
                   for(; c >= b && (t = (t = Short.compare(x[c], v)) == 0 ? Short.compare(y[c], w) : t) >= 0; --c) {

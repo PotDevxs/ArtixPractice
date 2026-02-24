@@ -1,14 +1,17 @@
-﻿package dev.artixdev.practice.menus;
+package dev.artixdev.practice.menus;
 
 import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
 import dev.artixdev.api.practice.menu.Menu;
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.configs.menus.KitMenus;
 import dev.artixdev.practice.models.Kit;
+import dev.artixdev.practice.utils.ChatUtils;
 import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
 
 /**
@@ -58,29 +61,24 @@ public class KitEditManageMenu extends Menu {
          }
       }
       
-      // Add back button
       int backSlot = getSlot(8, 2);
-      // TODO: Create proper KitMenu or use appropriate menu
-      // For now, just add a placeholder back button
-      Material arrowMaterial = XMaterial.ARROW.parseMaterial();
-      buttons.put(backSlot, Button.placeholder(arrowMaterial, (byte) 0, "&cBack"));
-      
+      buttons.put(backSlot, new Button() {
+         @Override
+         public ItemStack getButtonItem(Player p) {
+            return new dev.artixdev.practice.utils.ItemBuilder(XMaterial.ARROW).name(ChatUtils.colorize("&cBack")).build();
+         }
+         @Override
+         public void clicked(Player p, ClickType clickType) {
+            p.closeInventory();
+         }
+      });
       return buttons;
    }
-   
-   /**
-    * Create kit button
-    * @param player the player
-    * @param index the button index
-    * @return kit button
-    */
+
    private Button createKitButton(Player player, int index) {
-      // Create kit button based on index
-      // This would typically create different types of kit management buttons
-      return null; // Placeholder
+      return null;
    }
-   
-   
+
    @Override
    public void onClose(Player player) {
       if (isClosedByMenu()) {

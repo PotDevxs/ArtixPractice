@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -25,7 +25,8 @@ public interface IntPredicate extends java.util.function.IntPredicate, Predicate
    /** @deprecated */
    @Deprecated
    default Predicate<Integer> and(Predicate<? super Integer> other) {
-      return super.and(other);
+      Objects.requireNonNull(other);
+      return (Integer t) -> this.test(t) && other.test(t);
    }
 
    default IntPredicate negate() {
@@ -48,6 +49,7 @@ public interface IntPredicate extends java.util.function.IntPredicate, Predicate
    /** @deprecated */
    @Deprecated
    default Predicate<Integer> or(Predicate<? super Integer> other) {
-      return super.or(other);
+      Objects.requireNonNull(other);
+      return (Integer t) -> this.test(t) || other.test(t);
    }
 }

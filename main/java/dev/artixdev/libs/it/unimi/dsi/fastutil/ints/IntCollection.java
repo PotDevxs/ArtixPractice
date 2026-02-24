@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -32,7 +32,7 @@ public interface IntCollection extends Collection<Integer>, IntIterable {
    /** @deprecated */
    @Deprecated
    default boolean add(Integer key) {
-      return this.add(key);
+      return this.add(key.intValue());
    }
 
    /** @deprecated */
@@ -66,9 +66,10 @@ public interface IntCollection extends Collection<Integer>, IntIterable {
    /** @deprecated */
    @Deprecated
    default boolean removeIf(Predicate<? super Integer> filter) {
-      return this.removeIf(filter instanceof java.util.function.IntPredicate ? (java.util.function.IntPredicate)filter : (key) -> {
-         return filter.test(key);
-      });
+      java.util.function.IntPredicate jdkFilter = filter instanceof java.util.function.IntPredicate
+         ? (java.util.function.IntPredicate) filter
+         : (int key) -> filter.test(key);
+      return this.removeIf(jdkFilter);
    }
 
    default boolean removeIf(java.util.function.IntPredicate filter) {
@@ -95,7 +96,7 @@ public interface IntCollection extends Collection<Integer>, IntIterable {
    /** @deprecated */
    @Deprecated
    default Stream<Integer> stream() {
-      return super.stream();
+      return this.intStream().boxed();
    }
 
    default IntStream intStream() {
@@ -105,7 +106,7 @@ public interface IntCollection extends Collection<Integer>, IntIterable {
    /** @deprecated */
    @Deprecated
    default Stream<Integer> parallelStream() {
-      return super.parallelStream();
+      return this.intParallelStream().boxed();
    }
 
    default IntStream intParallelStream() {

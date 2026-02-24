@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Stack;
 
@@ -14,7 +14,7 @@ public interface IntStack extends Stack<Integer> {
    /** @deprecated */
    @Deprecated
    default void push(Integer o) {
-      this.push(o);
+      this.push(o.intValue());
    }
 
    /** @deprecated */

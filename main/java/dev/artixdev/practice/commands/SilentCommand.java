@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.commands;
+package dev.artixdev.practice.commands;
 
 import org.bukkit.entity.Player;
 import dev.artixdev.api.practice.command.annotation.Command;
@@ -8,11 +8,12 @@ import dev.artixdev.api.practice.command.annotation.Sender;
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.PlayerProfile;
 import dev.artixdev.practice.utils.ChatUtils;
+import dev.artixdev.practice.utils.Messages;
 
 @Register(name = "silent")
 public class SilentCommand {
 
-    @Require("bolt.profile.silent")
+    @Require("artix.profile.silent")
     @Command(name = "", desc = "Go into silent mode")
     public void silentCommand(@Sender Player player) {
         PlayerProfile profile = Main.getInstance().getPlayerManager().getPlayerProfile(player.getUniqueId());
@@ -25,9 +26,9 @@ public class SilentCommand {
         profile.setSilentMode(!currentSilent);
         
         if (profile.isSilentMode()) {
-            player.sendMessage(ChatUtils.translate("&aModo silencioso ativado. Você não receberá mais mensagens de duelos."));
+            player.sendMessage(Messages.get("SILENT.ENABLED"));
         } else {
-            player.sendMessage(ChatUtils.translate("&cModo silencioso desativado. Você voltou a receber mensagens de duelos."));
+            player.sendMessage(Messages.get("SILENT.DISABLED"));
         }
     }
 }

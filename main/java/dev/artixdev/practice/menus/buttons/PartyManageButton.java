@@ -1,10 +1,19 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
+import dev.artixdev.api.practice.menu.MenuHandler;
+import dev.artixdev.practice.menus.PartyManageMenu;
 import dev.artixdev.practice.models.Team;
+import dev.artixdev.practice.utils.ChatUtils;
+import dev.artixdev.practice.utils.ItemBuilder;
+import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PartyManageButton extends Button {
     public static final int BUTTON_VERSION = 1;
@@ -20,9 +29,9 @@ public class PartyManageButton extends Button {
 
     @Override
     public void clicked(Player player, ClickType clickType) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for party manage button click handling
-        // Typically used to open party management menu
+        if (team != null) {
+            MenuHandler.getInstance().openMenu(new PartyManageMenu(team), player);
+        }
     }
 
     static {
@@ -37,9 +46,13 @@ public class PartyManageButton extends Button {
 
     @Override
     public ItemStack getButtonItem(Player player) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for party manage button item
-        // Typically shows management options
-        return null;
+        List<String> lore = Arrays.stream(BUTTON_MESSAGES).skip(1).limit(3)
+            .map(s -> "&7" + s)
+            .map(ChatUtils::colorize)
+            .collect(Collectors.toList());
+        return new ItemBuilder(XMaterial.BOOK)
+            .name(ChatUtils.colorize("&e" + BUTTON_MESSAGES[0]))
+            .lore(lore)
+            .build();
     }
 }

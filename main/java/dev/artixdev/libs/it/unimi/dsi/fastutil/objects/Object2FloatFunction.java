@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.util.function.ToDoubleFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -35,6 +35,10 @@ public interface Object2FloatFunction<K> extends ToDoubleFunction<K>, Function<K
    }
 
    float getFloat(Object var1);
+
+   default boolean containsKey(Object key) {
+      return this.getFloat(key) != this.defaultReturnValue();
+   }
 
    default float getOrDefault(Object key, float defaultValue) {
       float v;

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -524,19 +524,19 @@ public final class CharBigArrays {
    }
 
    public static void radixSort(char[][] a, long from, long to) {
-      int maxLevel = true;
-      int stackSize = true;
+      int maxLevel = 1;
+      int stackSize = 256;
       long[] offsetStack = new long[256];
       int offsetPos = 0;
       long[] lengthStack = new long[256];
       int lengthPos = 0;
       int[] levelStack = new int[256];
       int levelPos = 0;
-      int offsetPos = offsetPos + 1;
+      offsetPos = offsetPos + 1;
       offsetStack[offsetPos] = from;
-      int lengthPos = lengthPos + 1;
+      lengthPos = lengthPos + 1;
       lengthStack[lengthPos] = to - from;
-      int levelPos = levelPos + 1;
+      levelPos = levelPos + 1;
       levelStack[levelPos] = 0;
       long[] count = new long[256];
       long[] pos = new long[256];
@@ -550,7 +550,7 @@ public final class CharBigArrays {
             long length = lengthStack[lengthPos];
             --levelPos;
             int level = levelStack[levelPos];
-            int signMask = false;
+            int signMask = 0;
             if (length < 40L) {
                selectionSort(a, first, first + length);
             } else {
@@ -567,30 +567,28 @@ public final class CharBigArrays {
                int lastUsed = -1;
                long p = 0L;
 
-               for(int i = 0; i < 256; ++i) {
-                  if (count[i] != 0L) {
-                     lastUsed = i;
-                     if (level < 1 && count[i] > 1L) {
+               for(int k = 0; k < 256; ++k) {
+                  if (count[k] != 0L) {
+                     lastUsed = k;
+                     if (level < 1 && count[k] > 1L) {
                         offsetStack[offsetPos++] = p + first;
-                        lengthStack[lengthPos++] = count[i];
+                        lengthStack[lengthPos++] = count[k];
                         levelStack[levelPos++] = level + 1;
                      }
                   }
 
-                  pos[i] = p += count[i];
+                  pos[k] = p += count[k];
                }
 
                long end = length - count[lastUsed];
                count[lastUsed] = 0L;
-               int c = true;
-
                int c;
-               for(long i = 0L; i < end; count[c] = 0L) {
-                  char t = BigArrays.get(a, i + first);
-                  c = BigArrays.get(digit, i) & 255;
+               for(long j = 0L; j < end; count[c] = 0L) {
+                  char t = BigArrays.get(a, j + first);
+                  c = BigArrays.get(digit, j) & 255;
 
                   long d;
-                  while((d = --pos[c]) > i) {
+                  while((d = --pos[c]) > j) {
                      char z = t;
                      int zz = c;
                      t = BigArrays.get(a, d + first);
@@ -599,8 +597,8 @@ public final class CharBigArrays {
                      BigArrays.set(digit, d, (byte)zz);
                   }
 
-                  BigArrays.set(a, i + first, t);
-                  i += count[c];
+                  BigArrays.set(a, j + first, t);
+                  j += count[c];
                }
             }
          }
@@ -636,23 +634,23 @@ public final class CharBigArrays {
    }
 
    public static void radixSort(char[][] a, char[][] b, long from, long to) {
-      int layers = true;
+      int layers = 2;
       if (BigArrays.length(a) != BigArrays.length(b)) {
          throw new IllegalArgumentException("Array size mismatch.");
       } else {
-         int maxLevel = true;
-         int stackSize = true;
+         int maxLevel = 1;
+         int stackSize = 766;
          long[] offsetStack = new long[766];
          int offsetPos = 0;
          long[] lengthStack = new long[766];
          int lengthPos = 0;
          int[] levelStack = new int[766];
          int levelPos = 0;
-         int offsetPos = offsetPos + 1;
+         offsetPos = offsetPos + 1;
          offsetStack[offsetPos] = from;
-         int lengthPos = lengthPos + 1;
+         lengthPos = lengthPos + 1;
          lengthStack[lengthPos] = to - from;
-         int levelPos = levelPos + 1;
+         levelPos = levelPos + 1;
          levelStack[levelPos] = 0;
          long[] count = new long[256];
          long[] pos = new long[256];
@@ -666,7 +664,7 @@ public final class CharBigArrays {
                long length = lengthStack[lengthPos];
                --levelPos;
                int level = levelStack[levelPos];
-               int signMask = false;
+               int signMask = 0;
                if (length < 40L) {
                   selectionSort(a, b, first, first + length);
                } else {
@@ -684,31 +682,29 @@ public final class CharBigArrays {
                   int lastUsed = -1;
                   long p = 0L;
 
-                  for(int i = 0; i < 256; ++i) {
-                     if (count[i] != 0L) {
-                        lastUsed = i;
-                        if (level < 3 && count[i] > 1L) {
+                  for(int bucket = 0; bucket < 256; ++bucket) {
+                     if (count[bucket] != 0L) {
+                        lastUsed = bucket;
+                        if (level < 3 && count[bucket] > 1L) {
                            offsetStack[offsetPos++] = p + first;
-                           lengthStack[lengthPos++] = count[i];
+                           lengthStack[lengthPos++] = count[bucket];
                            levelStack[levelPos++] = level + 1;
                         }
                      }
 
-                     pos[i] = p += count[i];
+                     pos[bucket] = p += count[bucket];
                   }
 
                   long end = length - count[lastUsed];
                   count[lastUsed] = 0L;
-                  int c = true;
-
                   int c;
-                  for(long i = 0L; i < end; count[c] = 0L) {
-                     char t = BigArrays.get(a, i + first);
-                     char u = BigArrays.get(b, i + first);
-                     c = BigArrays.get(digit, i) & 255;
+                  for(long j = 0L; j < end; count[c] = 0L) {
+                     char t = BigArrays.get(a, j + first);
+                     char u = BigArrays.get(b, j + first);
+                     c = BigArrays.get(digit, j) & 255;
 
                      long d;
-                     while((d = --pos[c]) > i) {
+                     while((d = --pos[c]) > j) {
                         char z = t;
                         int zz = c;
                         t = BigArrays.get(a, d + first);
@@ -720,9 +716,9 @@ public final class CharBigArrays {
                         BigArrays.set(digit, d, (byte)zz);
                      }
 
-                     BigArrays.set(a, i + first, t);
-                     BigArrays.set(b, i + first, u);
-                     i += count[c];
+                     BigArrays.set(a, j + first, t);
+                     BigArrays.set(b, j + first, u);
+                     j += count[c];
                   }
                }
             }
@@ -759,16 +755,16 @@ public final class CharBigArrays {
       if (to - from < 1024L) {
          insertionSortIndirect(perm, a, b, from, to);
       } else {
-         int layers = true;
-         int maxLevel = true;
-         int stackSize = true;
+         int layers = 2;
+         int maxLevel = 1;
+         int stackSize = 766;
          int stackPos = 0;
          long[] offsetStack = new long[766];
          long[] lengthStack = new long[766];
          int[] levelStack = new int[766];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          long[] count = new long[256];
          long[] pos = new long[256];
@@ -780,7 +776,7 @@ public final class CharBigArrays {
                long first = offsetStack[stackPos];
                long length = lengthStack[stackPos];
                int level = levelStack[stackPos];
-               int signMask = false;
+               int signMask = 0;
                char[][] k = level < 2 ? a : b;
                int shift = (1 - level % 2) * 8;
 
@@ -827,35 +823,33 @@ public final class CharBigArrays {
                   Arrays.fill(count, 0L);
                } else {
                   end = first + length - count[lastUsed];
-                  int c = true;
-
                   int c;
-                  for(long i = first; i <= end; count[c] = 0L) {
-                     long t = BigArrays.get(perm, i);
+                  for(long j = first; j <= end; count[c] = 0L) {
+                     long t = BigArrays.get(perm, j);
                      c = BigArrays.get(k, t) >>> shift & 255 ^ 0;
-                     if (i < end) {
+                     if (j < end) {
                         long d;
-                        while((d = --pos[c]) > i) {
+                        while((d = --pos[c]) > j) {
                            long z = t;
                            t = BigArrays.get(perm, d);
                            BigArrays.set(perm, d, z);
                            c = BigArrays.get(k, t) >>> shift & 255 ^ 0;
                         }
 
-                        BigArrays.set(perm, i, t);
+                        BigArrays.set(perm, j, t);
                      }
 
                      if (level < 3 && count[c] > 1L) {
                         if (count[c] < 1024L) {
-                           insertionSortIndirect(perm, a, b, i, i + count[c]);
+                           insertionSortIndirect(perm, a, b, j, j + count[c]);
                         } else {
-                           offsetStack[stackPos] = i;
+                           offsetStack[stackPos] = j;
                            lengthStack[stackPos] = count[c];
                            levelStack[stackPos++] = level + 1;
                         }
                      }
 
-                     i += count[c];
+                     j += count[c];
                   }
                }
             }

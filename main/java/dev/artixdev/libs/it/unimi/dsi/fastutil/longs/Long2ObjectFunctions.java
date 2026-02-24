@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -38,9 +38,9 @@ public final class Long2ObjectFunctions {
       if (f instanceof Long2ObjectFunction) {
          return (Long2ObjectFunction)f;
       } else if (f instanceof LongFunction) {
-         LongFunction var10000 = (LongFunction)f;
-         Objects.requireNonNull((LongFunction)f);
-         return var10000::apply;
+         LongFunction<?> g = (LongFunction<?>) f;
+         Objects.requireNonNull(g);
+         return key -> (V) g.apply(key);
       } else {
          return new Long2ObjectFunctions.PrimitiveFunction(f);
       }
@@ -116,7 +116,10 @@ public final class Long2ObjectFunctions {
 
       public int size() {
          synchronized(this.sync) {
-            return this.function.size();
+            if (this.function instanceof Long2ObjectMap) {
+               return ((Long2ObjectMap<V>) this.function).size();
+            }
+            throw new UnsupportedOperationException("size() is not supported by the underlying Long2ObjectFunction");
          }
       }
 
@@ -172,7 +175,11 @@ public final class Long2ObjectFunctions {
 
       public void clear() {
          synchronized(this.sync) {
-            this.function.clear();
+            if (this.function instanceof Long2ObjectMap) {
+               ((Long2ObjectMap<V>) this.function).clear();
+            } else {
+               throw new UnsupportedOperationException("clear() is not supported by the underlying Long2ObjectFunction");
+            }
          }
       }
 
@@ -250,7 +257,10 @@ public final class Long2ObjectFunctions {
       }
 
       public int size() {
-         return this.function.size();
+         if (this.function instanceof Long2ObjectMap) {
+            return ((Long2ObjectMap<? extends V>) this.function).size();
+         }
+         throw new UnsupportedOperationException("size() is not supported by the underlying Long2ObjectFunction");
       }
 
       public V defaultReturnValue() {
@@ -274,7 +284,8 @@ public final class Long2ObjectFunctions {
       }
 
       public V getOrDefault(long k, V defaultValue) {
-         return this.function.getOrDefault(k, defaultValue);
+         V v = this.function.get(k);
+         return v == this.function.defaultReturnValue() && !this.function.containsKey(k) ? defaultValue : v;
       }
 
       public V remove(long k) {
@@ -300,7 +311,10 @@ public final class Long2ObjectFunctions {
       /** @deprecated */
       @Deprecated
       public V getOrDefault(Object k, V defaultValue) {
-         return this.function.getOrDefault(k, defaultValue);
+         if (k == null) return defaultValue;
+         long key = (Long) k;
+         V v = this.function.get(key);
+         return v == this.function.defaultReturnValue() && !this.function.containsKey(key) ? defaultValue : v;
       }
 
       /** @deprecated */
@@ -365,7 +379,7 @@ public final class Long2ObjectFunctions {
          if (key == null) {
             return defaultValue;
          } else {
-            Object v;
+            V v;
             return (v = this.function.apply((Long)key)) == null ? defaultValue : v;
          }
       }
@@ -419,11 +433,10 @@ public final class Long2ObjectFunctions {
       }
 
       public boolean equals(Object o) {
-         if (!(o instanceof dev.artixdev.libs.it.unimi.dsi.fastutil.Function)) {
-            return false;
-         } else {
-            return ((dev.artixdev.libs.it.unimi.dsi.fastutil.Function)o).size() == 0;
-         }
+         if (o == this) return true;
+         if (o instanceof Long2ObjectFunctions.EmptyFunction) return true;
+         if (!(o instanceof Long2ObjectMap)) return false;
+         return ((Long2ObjectMap<?>) o).size() == 0;
       }
 
       public String toString() {

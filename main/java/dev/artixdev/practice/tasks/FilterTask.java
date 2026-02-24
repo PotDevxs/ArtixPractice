@@ -1,9 +1,7 @@
-﻿package dev.artixdev.practice.tasks;
+package dev.artixdev.practice.tasks;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.function.Predicate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -80,30 +78,27 @@ public class FilterTask implements Runnable {
     }
 
     private boolean shouldFilterPlayer(Player player) {
-        // Implement player filtering logic
         return false;
     }
 
     private boolean shouldFilterArena(Arena arena) {
-        // Implement arena filtering logic
-        return false;
+        return arena != null && !arena.isEnabled();
     }
 
     private boolean shouldFilterMatch(Match match) {
-        // Implement match filtering logic
-        return false;
+        return match != null && match.isEnded();
     }
 
     private void applyPlayerFilter(Player player) {
-        // Apply player filter
+        // Optional: apply visibility or state changes
     }
 
     private void applyArenaFilter(Arena arena) {
-        // Apply arena filter
+        // Optional: refresh or unload disabled arena
     }
 
     private void applyMatchFilter(Match match) {
-        // Apply match filter
+        // Optional: cleanup or archive ended match
     }
 
     public void cancel() {

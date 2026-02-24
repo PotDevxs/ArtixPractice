@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -60,7 +60,7 @@ public abstract class AbstractObject2ObjectMap<K, V> extends AbstractObject2Obje
                private final ObjectIterator<Object2ObjectMap.Entry<K, V>> i = Object2ObjectMaps.fastIterator(AbstractObject2ObjectMap.this);
 
                public K next() {
-                  return ((Object2ObjectMap.Entry)this.i.next()).getKey();
+                  return this.i.next().getKey();
                }
 
                public boolean hasNext() {
@@ -104,7 +104,7 @@ public abstract class AbstractObject2ObjectMap<K, V> extends AbstractObject2Obje
                private final ObjectIterator<Object2ObjectMap.Entry<K, V>> i = Object2ObjectMaps.fastIterator(AbstractObject2ObjectMap.this);
 
                public V next() {
-                  return ((Object2ObjectMap.Entry)this.i.next()).getValue();
+                  return this.i.next().getValue();
                }
 
                public boolean hasNext() {

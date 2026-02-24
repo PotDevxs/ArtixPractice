@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -38,8 +38,9 @@ public final class Int2ObjectFunctions {
       if (f instanceof Int2ObjectFunction) {
          return (Int2ObjectFunction)f;
       } else if (f instanceof IntFunction) {
-         IntFunction var10000 = (IntFunction)f;
-         Objects.requireNonNull((IntFunction)f);
+         @SuppressWarnings("unchecked")
+         IntFunction<? extends V> var10000 = (IntFunction<? extends V>) f;
+         Objects.requireNonNull(var10000);
          return var10000::apply;
       } else {
          return new Int2ObjectFunctions.PrimitiveFunction(f);
@@ -116,7 +117,10 @@ public final class Int2ObjectFunctions {
 
       public int size() {
          synchronized(this.sync) {
-            return this.function.size();
+            if (this.function instanceof Int2ObjectMap) {
+               return ((Int2ObjectMap<V>) this.function).size();
+            }
+            throw new UnsupportedOperationException();
          }
       }
 
@@ -172,7 +176,11 @@ public final class Int2ObjectFunctions {
 
       public void clear() {
          synchronized(this.sync) {
-            this.function.clear();
+            if (this.function instanceof Int2ObjectMap) {
+               ((Int2ObjectMap<V>) this.function).clear();
+            } else {
+               throw new UnsupportedOperationException();
+            }
          }
       }
 
@@ -250,7 +258,10 @@ public final class Int2ObjectFunctions {
       }
 
       public int size() {
-         return this.function.size();
+         if (this.function instanceof Int2ObjectMap) {
+            return ((Int2ObjectMap<? extends V>) this.function).size();
+         }
+         throw new UnsupportedOperationException();
       }
 
       public V defaultReturnValue() {
@@ -273,8 +284,9 @@ public final class Int2ObjectFunctions {
          return this.function.get(k);
       }
 
+      @SuppressWarnings("unchecked")
       public V getOrDefault(int k, V defaultValue) {
-         return this.function.getOrDefault(k, defaultValue);
+         return ((Int2ObjectFunction<V>) this.function).getOrDefault(k, defaultValue);
       }
 
       public V remove(int k) {
@@ -299,8 +311,9 @@ public final class Int2ObjectFunctions {
 
       /** @deprecated */
       @Deprecated
+      @SuppressWarnings("unchecked")
       public V getOrDefault(Object k, V defaultValue) {
-         return this.function.getOrDefault(k, defaultValue);
+         return ((Int2ObjectFunction<V>) this.function).getOrDefault(k, defaultValue);
       }
 
       /** @deprecated */
@@ -365,8 +378,8 @@ public final class Int2ObjectFunctions {
          if (key == null) {
             return defaultValue;
          } else {
-            Object v;
-            return (v = this.function.apply((Integer)key)) == null ? defaultValue : v;
+            V v = this.function.apply((Integer)key);
+            return v == null ? defaultValue : v;
          }
       }
 
@@ -419,11 +432,16 @@ public final class Int2ObjectFunctions {
       }
 
       public boolean equals(Object o) {
+         if (o == this) {
+            return true;
+         }
          if (!(o instanceof dev.artixdev.libs.it.unimi.dsi.fastutil.Function)) {
             return false;
-         } else {
-            return ((dev.artixdev.libs.it.unimi.dsi.fastutil.Function)o).size() == 0;
          }
+         if (o instanceof Int2ObjectMap) {
+            return ((Int2ObjectMap<?>) o).size() == 0;
+         }
+         return false;
       }
 
       public String toString() {

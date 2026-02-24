@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -524,19 +524,19 @@ public final class ShortBigArrays {
    }
 
    public static void radixSort(short[][] a, long from, long to) {
-      int maxLevel = true;
-      int stackSize = true;
+      int maxLevel = 1;
+      int stackSize = 256;
       long[] offsetStack = new long[256];
       int offsetPos = 0;
       long[] lengthStack = new long[256];
       int lengthPos = 0;
       int[] levelStack = new int[256];
       int levelPos = 0;
-      int offsetPos = offsetPos + 1;
+      offsetPos = offsetPos + 1;
       offsetStack[offsetPos] = from;
-      int lengthPos = lengthPos + 1;
+      lengthPos = lengthPos + 1;
       lengthStack[lengthPos] = to - from;
-      int levelPos = levelPos + 1;
+      levelPos = levelPos + 1;
       levelStack[levelPos] = 0;
       long[] count = new long[256];
       long[] pos = new long[256];
@@ -567,25 +567,23 @@ public final class ShortBigArrays {
                int lastUsed = -1;
                long p = 0L;
 
-               for(int i = 0; i < 256; ++i) {
-                  if (count[i] != 0L) {
-                     lastUsed = i;
-                     if (level < 1 && count[i] > 1L) {
+               for(int b = 0; b < 256; ++b) {
+                  if (count[b] != 0L) {
+                     lastUsed = b;
+                     if (level < 1 && count[b] > 1L) {
                         offsetStack[offsetPos++] = p + first;
-                        lengthStack[lengthPos++] = count[i];
+                        lengthStack[lengthPos++] = count[b];
                         levelStack[levelPos++] = level + 1;
                      }
                   }
 
-                  pos[i] = p += count[i];
+                  pos[b] = p += count[b];
                }
 
                long end = length - count[lastUsed];
                count[lastUsed] = 0L;
-               int c = true;
-
                int c;
-               for(long i = 0L; i < end; count[c] = 0L) {
+               for(i = 0L; i < end; count[c] = 0L) {
                   short t = BigArrays.get(a, i + first);
                   c = BigArrays.get(digit, i) & 255;
 
@@ -636,23 +634,23 @@ public final class ShortBigArrays {
    }
 
    public static void radixSort(short[][] a, short[][] b, long from, long to) {
-      int layers = true;
+      int layers = 2;
       if (BigArrays.length(a) != BigArrays.length(b)) {
          throw new IllegalArgumentException("Array size mismatch.");
       } else {
-         int maxLevel = true;
-         int stackSize = true;
+         int maxLevel = 1;
+         int stackSize = 256;
          long[] offsetStack = new long[766];
          int offsetPos = 0;
          long[] lengthStack = new long[766];
          int lengthPos = 0;
          int[] levelStack = new int[766];
          int levelPos = 0;
-         int offsetPos = offsetPos + 1;
+         offsetPos = offsetPos + 1;
          offsetStack[offsetPos] = from;
-         int lengthPos = lengthPos + 1;
+         lengthPos = lengthPos + 1;
          lengthStack[lengthPos] = to - from;
-         int levelPos = levelPos + 1;
+         levelPos = levelPos + 1;
          levelStack[levelPos] = 0;
          long[] count = new long[256];
          long[] pos = new long[256];
@@ -684,25 +682,23 @@ public final class ShortBigArrays {
                   int lastUsed = -1;
                   long p = 0L;
 
-                  for(int i = 0; i < 256; ++i) {
-                     if (count[i] != 0L) {
-                        lastUsed = i;
-                        if (level < 3 && count[i] > 1L) {
+                  for(int j = 0; j < 256; ++j) {
+                     if (count[j] != 0L) {
+                        lastUsed = j;
+                        if (level < 3 && count[j] > 1L) {
                            offsetStack[offsetPos++] = p + first;
-                           lengthStack[lengthPos++] = count[i];
+                           lengthStack[lengthPos++] = count[j];
                            levelStack[levelPos++] = level + 1;
                         }
                      }
 
-                     pos[i] = p += count[i];
+                     pos[j] = p += count[j];
                   }
 
                   long end = length - count[lastUsed];
                   count[lastUsed] = 0L;
-                  int c = true;
-
                   int c;
-                  for(long i = 0L; i < end; count[c] = 0L) {
+                  for(i = 0L; i < end; count[c] = 0L) {
                      short t = BigArrays.get(a, i + first);
                      short u = BigArrays.get(b, i + first);
                      c = BigArrays.get(digit, i) & 255;
@@ -759,16 +755,16 @@ public final class ShortBigArrays {
       if (to - from < 1024L) {
          insertionSortIndirect(perm, a, b, from, to);
       } else {
-         int layers = true;
-         int maxLevel = true;
-         int stackSize = true;
+         int layers = 2;
+         int maxLevel = 1;
+         int stackSize = 256;
          int stackPos = 0;
          long[] offsetStack = new long[766];
          long[] lengthStack = new long[766];
          int[] levelStack = new int[766];
          offsetStack[stackPos] = from;
          lengthStack[stackPos] = to - from;
-         int stackPos = stackPos + 1;
+         stackPos = stackPos + 1;
          levelStack[stackPos] = 0;
          long[] count = new long[256];
          long[] pos = new long[256];
@@ -827,35 +823,33 @@ public final class ShortBigArrays {
                   Arrays.fill(count, 0L);
                } else {
                   end = first + length - count[lastUsed];
-                  int c = true;
-
                   int c;
-                  for(long i = first; i <= end; count[c] = 0L) {
-                     long t = BigArrays.get(perm, i);
+                  for(long idx = first; idx <= end; count[c] = 0L) {
+                     long t = BigArrays.get(perm, idx);
                      c = BigArrays.get(k, t) >>> shift & 255 ^ signMask;
-                     if (i < end) {
+                     if (idx < end) {
                         long d;
-                        while((d = --pos[c]) > i) {
+                        while((d = --pos[c]) > idx) {
                            long z = t;
                            t = BigArrays.get(perm, d);
                            BigArrays.set(perm, d, z);
                            c = BigArrays.get(k, t) >>> shift & 255 ^ signMask;
                         }
 
-                        BigArrays.set(perm, i, t);
+                        BigArrays.set(perm, idx, t);
                      }
 
                      if (level < 3 && count[c] > 1L) {
                         if (count[c] < 1024L) {
-                           insertionSortIndirect(perm, a, b, i, i + count[c]);
+                           insertionSortIndirect(perm, a, b, idx, idx + count[c]);
                         } else {
-                           offsetStack[stackPos] = i;
+                           offsetStack[stackPos] = idx;
                            lengthStack[stackPos] = count[c];
                            levelStack[stackPos++] = level + 1;
                         }
                      }
 
-                     i += count[c];
+                     idx += count[c];
                   }
                }
             }

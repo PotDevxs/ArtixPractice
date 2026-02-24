@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.cooldowns;
+package dev.artixdev.practice.cooldowns;
 
 import java.util.Map;
 import java.util.UUID;
@@ -154,8 +154,7 @@ public class ComboCooldown extends BaseCooldown implements Listener {
             if (plugin != null && plugin.getPlayerManager() != null) {
                 PlayerProfile attackerProfile = plugin.getPlayerManager().getPlayerProfile(attackerId);
                 if (attackerProfile != null && attackerProfile.getCurrentMatch() != null) {
-                    // Update combo in match snapshot if match system supports it
-                    // This would typically be handled by the match system itself
+                    // Combo display/effects are handled by match UI; no snapshot update needed here
                 }
             }
         } catch (Exception e) {

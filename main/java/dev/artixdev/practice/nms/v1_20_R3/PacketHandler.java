@@ -72,7 +72,7 @@ public class PacketHandler implements PacketHandlerInterface {
 
     private Object createPacket(PacketType packetType, Location location) {
         switch (packetType) {
-            case LIGHTNING_BOLT:
+            case LIGHTNING_ARTIX:
                 return createLightningPacket(location);
             case EXPLOSION:
                 return createExplosionPacket(location);
@@ -84,7 +84,7 @@ public class PacketHandler implements PacketHandlerInterface {
     }
 
     private Object createLightningPacket(Location location) {
-        // Create lightning bolt packet for 1.20.3
+        // Create lightning artix packet for 1.20.3
         // Requires NMS classes - implementation would use reflection or direct NMS access
         return null; // Implementation would go here
     }

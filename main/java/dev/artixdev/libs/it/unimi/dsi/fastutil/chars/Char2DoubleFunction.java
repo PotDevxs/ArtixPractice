@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
 
 import java.util.function.IntToDoubleFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -55,7 +55,7 @@ public interface Char2DoubleFunction extends IntToDoubleFunction, Function<Chara
    default Double put(Character key, Double value) {
       char k = key;
       boolean containsKey = this.containsKey(k);
-      double v = this.put(k, value);
+      double v = this.put(k, value.doubleValue());
       return containsKey ? v : null;
    }
 

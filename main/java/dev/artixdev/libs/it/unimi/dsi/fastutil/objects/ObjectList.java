@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -95,8 +95,9 @@ public interface ObjectList<K> extends Comparable<List<? extends K>>, List<K>, O
       }
    }
 
+   @SuppressWarnings("unchecked")
    default void sort(Comparator<? super K> comparator) {
-      K[] elements = this.toArray();
+      K[] elements = (K[]) this.toArray();
       if (comparator == null) {
          ObjectArrays.stableSort(elements);
       } else {
@@ -106,8 +107,9 @@ public interface ObjectList<K> extends Comparable<List<? extends K>>, List<K>, O
       this.setElements(elements);
    }
 
+   @SuppressWarnings("unchecked")
    default void unstableSort(Comparator<? super K> comparator) {
-      K[] elements = this.toArray();
+      K[] elements = (K[]) this.toArray();
       if (comparator == null) {
          ObjectArrays.unstableSort(elements);
       } else {

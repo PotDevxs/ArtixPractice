@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.configs;
+package dev.artixdev.practice.configs;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -54,7 +54,10 @@ public class DatabaseConfig {
     private String sqliteFilePath;
     private boolean sqliteBackupEnabled;
     private int sqliteBackupInterval;
-    
+
+    // Flatfile Settings (local JSON files)
+    private String flatfileFolder;
+
     // General Settings
     private boolean autoReconnect;
     private int reconnectDelay;
@@ -87,12 +90,12 @@ public class DatabaseConfig {
             mongoUrlEncode = config.getBoolean("MONGODB.URL_ENCODE", false);
             mongoHost = config.getString("MONGODB.NORMAL.HOST", "127.0.0.1");
             mongoPort = config.getInt("MONGODB.NORMAL.PORT", 27017);
-            mongoDatabase = config.getString("MONGODB.NORMAL.DATABASE", "bolt_practice");
+            mongoDatabase = config.getString("MONGODB.NORMAL.DATABASE", "artixpractice");
             mongoAuthEnabled = config.getBoolean("MONGODB.NORMAL.AUTHENTICATION.ENABLED", false);
             mongoUsername = config.getString("MONGODB.NORMAL.AUTHENTICATION.USERNAME", "");
             mongoPassword = config.getString("MONGODB.NORMAL.AUTHENTICATION.PASSWORD", "");
             mongoAuthDatabase = config.getString("MONGODB.NORMAL.AUTHENTICATION.AUTH_DATABASE", "admin");
-            mongoConnectionString = config.getString("MONGODB.URI.CONNECTION_STRING", "mongodb://127.0.0.1:27017/bolt_practice");
+            mongoConnectionString = config.getString("MONGODB.URI.CONNECTION_STRING", "mongodb://127.0.0.1:27017/artixpractice");
             mongoMinPoolSize = config.getInt("MONGODB.CONNECTION_POOL.MIN_SIZE", 2);
             mongoMaxPoolSize = config.getInt("MONGODB.CONNECTION_POOL.MAX_SIZE", 10);
             mongoMaxWaitTime = config.getInt("MONGODB.CONNECTION_POOL.MAX_WAIT_TIME", 30000);
@@ -101,7 +104,7 @@ public class DatabaseConfig {
             // MySQL Settings
             mysqlHost = config.getString("MYSQL.HOST", "127.0.0.1");
             mysqlPort = config.getInt("MYSQL.PORT", 3306);
-            mysqlDatabase = config.getString("MYSQL.DATABASE", "bolt_practice");
+            mysqlDatabase = config.getString("MYSQL.DATABASE", "artixpractice");
             mysqlUsername = config.getString("MYSQL.USERNAME", "root");
             mysqlPassword = config.getString("MYSQL.PASSWORD", "");
             mysqlSslEnabled = config.getBoolean("MYSQL.SSL_ENABLED", false);
@@ -109,10 +112,13 @@ public class DatabaseConfig {
             mysqlMaxConnections = config.getInt("MYSQL.MAX_CONNECTIONS", 10);
             
             // SQLite Settings
-            sqliteFilePath = config.getString("SQLITE.FILE_PATH", "plugins/Bolt/database.db");
+            sqliteFilePath = config.getString("SQLITE.FILE_PATH", "plugins/Artix/database.db");
             sqliteBackupEnabled = config.getBoolean("SQLITE.BACKUP_ENABLED", true);
             sqliteBackupInterval = config.getInt("SQLITE.BACKUP_INTERVAL", 3600);
-            
+
+            // Flatfile Settings
+            flatfileFolder = config.getString("FLATFILE.FOLDER", "data");
+
             // General Settings
             autoReconnect = config.getBoolean("SETTINGS.AUTO_RECONNECT", true);
             reconnectDelay = config.getInt("SETTINGS.RECONNECT_DELAY", 5000);
@@ -259,7 +265,11 @@ public class DatabaseConfig {
     public int getSqliteBackupInterval() {
         return sqliteBackupInterval;
     }
-    
+
+    public String getFlatfileFolder() {
+        return flatfileFolder;
+    }
+
     public boolean isAutoReconnect() {
         return autoReconnect;
     }

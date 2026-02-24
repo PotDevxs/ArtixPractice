@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -176,8 +176,8 @@ public final class Object2IntMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<K, Integer>> entrySet() {
-         return this.object2IntEntrySet();
+      public ObjectSet<java.util.Map.Entry<K, Integer>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<K, Integer>>)(ObjectSet<?>)this.object2IntEntrySet();
       }
 
       public ObjectSet<K> keySet() {
@@ -210,8 +210,8 @@ public final class Object2IntMaps {
          } else if (!(o instanceof Map)) {
             return false;
          } else {
-            Map<?, ?> m = (Map)o;
-            return m.size() != 1 ? false : ((Entry)m.entrySet().iterator().next()).equals(this.entrySet().iterator().next());
+            Map<?, ?> m = (Map<?, ?>)o;
+            return m.size() != 1 ? false : ((java.util.Map.Entry<?, ?>)m.entrySet().iterator().next()).equals(this.entrySet().iterator().next());
          }
       }
 
@@ -269,8 +269,8 @@ public final class Object2IntMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<K, Integer>> entrySet() {
-         return this.object2IntEntrySet();
+      public ObjectSet<java.util.Map.Entry<K, Integer>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<K, Integer>>)(ObjectSet<?>)this.object2IntEntrySet();
       }
 
       public ObjectSet<K> keySet() {
@@ -488,7 +488,7 @@ public final class Object2IntMaps {
 
       public ObjectSet<Object2IntMap.Entry<K>> object2IntEntrySet() {
          if (this.entries == null) {
-            this.entries = ObjectSets.unmodifiable(this.map.object2IntEntrySet());
+            this.entries = (ObjectSet<Object2IntMap.Entry<K>>)(ObjectSet<?>)ObjectSets.unmodifiable(this.map.object2IntEntrySet());
          }
 
          return this.entries;
@@ -496,8 +496,8 @@ public final class Object2IntMaps {
 
       /** @deprecated */
       @Deprecated
-      public ObjectSet<Entry<K, Integer>> entrySet() {
-         return this.object2IntEntrySet();
+      public ObjectSet<java.util.Map.Entry<K, Integer>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<K, Integer>>)(ObjectSet<?>)this.object2IntEntrySet();
       }
 
       public ObjectSet<K> keySet() {

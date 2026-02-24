@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -24,12 +24,13 @@ public final class ObjectArrays {
    private ObjectArrays() {
    }
 
+   @SuppressWarnings("unchecked")
    private static <K> K[] newArray(K[] prototype, int length) {
       Class<?> klass = prototype.getClass();
       if (klass == Object[].class) {
-         return length == 0 ? EMPTY_ARRAY : new Object[length];
+         return (K[]) (length == 0 ? EMPTY_ARRAY : new Object[length]);
       } else {
-         return (Object[])Array.newInstance(klass.getComponentType(), length);
+         return (K[]) Array.newInstance(klass.getComponentType(), length);
       }
    }
 
@@ -87,8 +88,9 @@ public final class ObjectArrays {
       return a;
    }
 
+   @SuppressWarnings("unchecked")
    public static <K> K[] copy(K[] array) {
-      return (Object[])array.clone();
+      return (K[]) array.clone();
    }
 
    /** @deprecated */
@@ -204,7 +206,7 @@ public final class ObjectArrays {
          K t = a[i];
          int j = i;
 
-         for(Object u = a[i - 1]; comp.compare(t, u) < 0; u = a[j - 1]) {
+         for(K u = a[i - 1]; comp.compare(t, u) < 0; u = a[j - 1]) {
             a[j] = u;
             if (from == j - 1) {
                --j;
@@ -333,7 +335,7 @@ public final class ObjectArrays {
          K t = a[i];
          int j = i;
 
-         for(Object u = a[i - 1]; ((Comparable)t).compareTo(u) < 0; u = a[j - 1]) {
+         for(K u = a[i - 1]; ((Comparable<K>)t).compareTo(u) < 0; u = a[j - 1]) {
             a[j] = u;
             if (from == j - 1) {
                --j;
@@ -775,7 +777,7 @@ public final class ObjectArrays {
    }
 
    public static <K> void mergeSort(K[] a, int from, int to, Comparator<K> comp) {
-      mergeSort(a, from, to, comp, (Object[])null);
+      mergeSort(a, from, to, comp, (K[])null);
    }
 
    public static <K> void mergeSort(K[] a, Comparator<K> comp) {
@@ -850,7 +852,7 @@ public final class ObjectArrays {
 
    public static <K> K[] shuffle(K[] a, int from, int to, Random random) {
       int p;
-      Object t;
+      K t;
       for(int i = to - from; i-- != 0; a[from + p] = t) {
          p = random.nextInt(i + 1);
          t = a[from + i];
@@ -862,7 +864,7 @@ public final class ObjectArrays {
 
    public static <K> K[] shuffle(K[] a, Random random) {
       int p;
-      Object t;
+      K t;
       for(int i = a.length; i-- != 0; a[p] = t) {
          p = random.nextInt(i + 1);
          t = a[i];
@@ -875,7 +877,7 @@ public final class ObjectArrays {
    public static <K> K[] reverse(K[] a) {
       int length = a.length;
 
-      Object t;
+      K t;
       for(int i = length / 2; i-- != 0; a[i] = t) {
          t = a[length - i - 1];
          a[length - i - 1] = a[i];
@@ -887,7 +889,7 @@ public final class ObjectArrays {
    public static <K> K[] reverse(K[] a, int from, int to) {
       int length = to - from;
 
-      Object t;
+      K t;
       for(int i = length / 2; i-- != 0; a[from + i] = t) {
          t = a[from + length - i - 1];
          a[from + length - i - 1] = a[from + i];
@@ -1153,7 +1155,6 @@ public final class ObjectArrays {
             int d = c;
 
             while(true) {
-               int t;
                int t;
                while(b > c || (t = (t = ((Comparable)x[b]).compareTo(v)) == 0 ? ((Comparable)y[b]).compareTo(w) : t) > 0) {
                   for(; c >= b && (t = (t = ((Comparable)x[c]).compareTo(v)) == 0 ? ((Comparable)y[c]).compareTo(w) : t) >= 0; --c) {

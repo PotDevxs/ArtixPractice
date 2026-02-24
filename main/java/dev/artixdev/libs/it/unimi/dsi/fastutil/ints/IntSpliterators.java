@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -335,16 +335,7 @@ public final class IntSpliterators {
 
       public boolean tryAdvance(java.util.function.IntConsumer action) {
          Objects.requireNonNull(action);
-         Spliterator var10000 = this.i;
-         Consumer var10001;
-         if (action instanceof Consumer) {
-            var10001 = (Consumer)action;
-         } else {
-            Objects.requireNonNull(action);
-            var10001 = action::accept;
-         }
-
-         return var10000.tryAdvance(var10001);
+         return this.i.tryAdvance((Integer x) -> action.accept(x));
       }
 
       /** @deprecated */
@@ -359,16 +350,7 @@ public final class IntSpliterators {
 
       public void forEachRemaining(java.util.function.IntConsumer action) {
          Objects.requireNonNull(action);
-         Spliterator var10000 = this.i;
-         Consumer var10001;
-         if (action instanceof Consumer) {
-            var10001 = (Consumer)action;
-         } else {
-            Objects.requireNonNull(action);
-            var10001 = action::accept;
-         }
-
-         var10000.forEachRemaining(var10001);
+         this.i.forEachRemaining((Integer x) -> action.accept(x));
       }
 
       /** @deprecated */

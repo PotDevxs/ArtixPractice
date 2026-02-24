@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -31,14 +31,6 @@ public interface LongIterable extends Iterable<Long> {
    @Deprecated
    default void forEach(Consumer<? super Long> action) {
       Objects.requireNonNull(action);
-      java.util.function.LongConsumer var10001;
-      if (action instanceof java.util.function.LongConsumer) {
-         var10001 = (java.util.function.LongConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEach(var10001);
+      this.forEach((long x) -> action.accept(x));
    }
 }

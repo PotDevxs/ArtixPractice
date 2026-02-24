@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.bytes.Byte2CharFunction;
@@ -31,6 +31,10 @@ public interface Int2CharFunction extends java.util.function.IntUnaryOperator, F
       return this.get(operand);
    }
 
+   default Character apply(Integer k) {
+      return k == null ? null : get(k);
+   }
+
    default char put(int key, char value) {
       throw new UnsupportedOperationException();
    }
@@ -51,7 +55,7 @@ public interface Int2CharFunction extends java.util.function.IntUnaryOperator, F
    default Character put(Integer key, Character value) {
       int k = key;
       boolean containsKey = this.containsKey(k);
-      char v = this.put(k, value);
+      char v = this.put(k, value.charValue());
       return containsKey ? v : null;
    }
 

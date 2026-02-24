@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -113,7 +113,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
          }
       } while(key[i] != k);
 
-      return this.value[i];
+      return (V) this.value[i];
    }
 
    public int size() {
@@ -150,7 +150,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
    public V put(int k, V v) {
       int oldKey = this.findKey(k);
       if (oldKey != -1) {
-         V oldValue = this.value[oldKey];
+         V oldValue = (V) this.value[oldKey];
          this.value[oldKey] = v;
          return oldValue;
       } else {
@@ -178,7 +178,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
       if (oldPos == -1) {
          return this.defRetValue;
       } else {
-         V oldValue = this.value[oldPos];
+         V oldValue = (V) this.value[oldPos];
          int tail = this.size - oldPos - 1;
          System.arraycopy(this.key, oldPos + 1, this.key, oldPos, tail);
          System.arraycopy(this.value, oldPos + 1, this.value, oldPos, tail);
@@ -302,7 +302,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
                   throw new NoSuchElementException();
                } else {
                   this.entry.key = Int2ObjectArrayMap.this.key[this.curr = this.next];
-                  this.entry.value = Int2ObjectArrayMap.this.value[this.next++];
+                  this.entry.value = (V) Int2ObjectArrayMap.this.value[this.next++];
                   return this.entry;
                }
             }
@@ -324,7 +324,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
 
                while(this.next < max) {
                   this.entry.key = Int2ObjectArrayMap.this.key[this.curr = this.next];
-                  this.entry.value = Int2ObjectArrayMap.this.value[this.next++];
+                  this.entry.value = (V) Int2ObjectArrayMap.this.value[this.next++];
                   action.accept(this.entry);
                }
 
@@ -351,7 +351,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
 
          for(int max = Int2ObjectArrayMap.this.size; i < max; ++i) {
             entry.key = Int2ObjectArrayMap.this.key[i];
-            entry.value = Int2ObjectArrayMap.this.value[i];
+            entry.value = (V) Int2ObjectArrayMap.this.value[i];
             action.accept(entry);
          }
 
@@ -382,7 +382,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
             java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
             if (e.getKey() != null && e.getKey() instanceof Integer) {
                int k = (Integer)e.getKey();
-               V v = e.getValue();
+               V v = (V) e.getValue();
                int oldPos = Int2ObjectArrayMap.this.findKey(k);
                if (oldPos != -1 && Objects.equals(v, Int2ObjectArrayMap.this.value[oldPos])) {
                   int tail = Int2ObjectArrayMap.this.size - oldPos - 1;
@@ -560,7 +560,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
                if (!this.hasNext()) {
                   throw new NoSuchElementException();
                } else {
-                  return Int2ObjectArrayMap.this.value[this.pos++];
+                  return (V) Int2ObjectArrayMap.this.value[this.pos++];
                }
             }
 
@@ -581,7 +581,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
                int max = Int2ObjectArrayMap.this.size;
 
                while(this.pos < max) {
-                  action.accept(Int2ObjectArrayMap.this.value[this.pos++]);
+                  action.accept((V) Int2ObjectArrayMap.this.value[this.pos++]);
                }
 
             }
@@ -596,7 +596,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
          int i = 0;
 
          for(int max = Int2ObjectArrayMap.this.size; i < max; ++i) {
-            action.accept(Int2ObjectArrayMap.this.value[i]);
+            action.accept((V) Int2ObjectArrayMap.this.value[i]);
          }
 
       }
@@ -624,7 +624,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
          }
 
          protected final V get(int location) {
-            return Int2ObjectArrayMap.this.value[location];
+            return (V) Int2ObjectArrayMap.this.value[location];
          }
 
          protected final Int2ObjectArrayMap<V>.ValuesCollection.ValuesSpliterator makeForSplit(int pos, int maxPos) {
@@ -635,7 +635,7 @@ public class Int2ObjectArrayMap<V> extends AbstractInt2ObjectMap<V> implements S
             int max = Int2ObjectArrayMap.this.size;
 
             while(this.pos < max) {
-               action.accept(Int2ObjectArrayMap.this.value[this.pos++]);
+               action.accept((V) Int2ObjectArrayMap.this.value[this.pos++]);
             }
 
          }

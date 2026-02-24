@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -45,7 +45,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
             this.mask = this.n - 1;
             this.maxFill = HashCommon.maxFill(this.n, f);
             this.key = new int[this.n + 1];
-            this.value = new Object[this.n + 1];
+            this.value = (V[]) new Object[this.n + 1];
          }
       } else {
          throw new IllegalArgumentException("Load factor must be greater than 0 and smaller than 1");
@@ -597,7 +597,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       V[] value = this.value;
       int mask = newN - 1;
       int[] newKey = new int[newN + 1];
-      V[] newValue = new Object[newN + 1];
+      V[] newValue = (V[]) new Object[newN + 1];
       int i = this.n;
 
       int pos;
@@ -623,9 +623,9 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
    }
 
    public Int2ObjectOpenHashMap<V> clone() {
-      Int2ObjectOpenHashMap c;
+      Int2ObjectOpenHashMap<V> c;
       try {
-         c = (Int2ObjectOpenHashMap)super.clone();
+         c = (Int2ObjectOpenHashMap<V>) super.clone();
       } catch (CloneNotSupportedException e) {
          throw new InternalError(e);
       }
@@ -635,7 +635,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       c.entries = null;
       c.containsNullKey = this.containsNullKey;
       c.key = (int[])this.key.clone();
-      c.value = (Object[])this.value.clone();
+      c.value = this.value.clone();
       return c;
    }
 
@@ -667,7 +667,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
    private void writeObject(ObjectOutputStream s) throws IOException {
       int[] key = this.key;
       V[] value = this.value;
-      Int2ObjectOpenHashMap<V>.EntryIterator i = new Int2ObjectOpenHashMap.EntryIterator();
+      Int2ObjectOpenHashMap<V>.EntryIterator i = new EntryIterator();
       s.defaultWriteObject();
       int var5 = this.size;
 
@@ -685,11 +685,11 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       this.maxFill = HashCommon.maxFill(this.n, this.f);
       this.mask = this.n - 1;
       int[] key = this.key = new int[this.n + 1];
-      V[] value = this.value = new Object[this.n + 1];
+      V[] value = this.value = (V[]) new Object[this.n + 1];
 
       Object v;
       int pos;
-      for(int var6 = this.size; var6-- != 0; value[pos] = v) {
+      for(int var6 = this.size; var6-- != 0; value[pos] = (V) v) {
          int k = s.readInt();
          v = s.readObject();
          if (k == 0) {
@@ -728,10 +728,10 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
          if (!(o instanceof java.util.Map.Entry)) {
             return false;
          } else {
-            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
+            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry<?, ?>) o;
             if (e.getKey() != null && e.getKey() instanceof Integer) {
-               int k = (Integer)e.getKey();
-               V v = e.getValue();
+               int k = (Integer) e.getKey();
+               V v = (V) e.getValue();
                if (k == 0) {
                   return Int2ObjectOpenHashMap.this.containsNullKey && Objects.equals(Int2ObjectOpenHashMap.this.value[Int2ObjectOpenHashMap.this.n], v);
                } else {
@@ -762,10 +762,10 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
          if (!(o instanceof java.util.Map.Entry)) {
             return false;
          } else {
-            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
+            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry<?, ?>) o;
             if (e.getKey() != null && e.getKey() instanceof Integer) {
-               int k = (Integer)e.getKey();
-               V v = e.getValue();
+               int k = (Integer) e.getKey();
+               V v = (V) e.getValue();
                if (k == 0) {
                   if (Int2ObjectOpenHashMap.this.containsNullKey && Objects.equals(Int2ObjectOpenHashMap.this.value[Int2ObjectOpenHashMap.this.n], v)) {
                      Int2ObjectOpenHashMap.this.removeNullEntry();
@@ -902,7 +902,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       }
    }
 
-   private final class EntryIterator extends Int2ObjectOpenHashMap.MapIterator implements ObjectIterator {
+   private final class EntryIterator extends Int2ObjectOpenHashMap<V>.MapIterator<Consumer<? super Int2ObjectMap.Entry<V>>> implements ObjectIterator<Int2ObjectMap.Entry<V>> {
       private Int2ObjectOpenHashMap<V>.MapEntry entry;
 
       private EntryIterator() {
@@ -928,7 +928,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       }
    }
 
-   private final class ValueSpliterator extends Int2ObjectOpenHashMap.MapSpliterator implements ObjectSpliterator {
+   private final class ValueSpliterator extends Int2ObjectOpenHashMap<V>.MapSpliterator<Consumer<? super V>, ValueSpliterator> implements ObjectSpliterator<V> {
       private static final int POST_SPLIT_CHARACTERISTICS = 0;
 
       ValueSpliterator() {
@@ -952,7 +952,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       }
    }
 
-   private final class ValueIterator extends Int2ObjectOpenHashMap.MapIterator implements ObjectIterator {
+   private final class ValueIterator extends Int2ObjectOpenHashMap<V>.MapIterator<Consumer<? super V>> implements ObjectIterator<V> {
       public ValueIterator() {
          super(null);
       }
@@ -966,7 +966,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       }
    }
 
-   private final class KeySpliterator extends Int2ObjectOpenHashMap.MapSpliterator implements IntSpliterator {
+   private final class KeySpliterator extends Int2ObjectOpenHashMap<V>.MapSpliterator<java.util.function.IntConsumer, KeySpliterator> implements IntSpliterator {
       private static final int POST_SPLIT_CHARACTERISTICS = 257;
 
       KeySpliterator() {
@@ -990,7 +990,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       }
    }
 
-   private final class KeyIterator extends Int2ObjectOpenHashMap.MapIterator implements IntIterator {
+   private final class KeyIterator extends Int2ObjectOpenHashMap<V>.MapIterator<java.util.function.IntConsumer> implements IntIterator {
       public KeyIterator() {
          super(null);
       }
@@ -1004,7 +1004,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       }
    }
 
-   private final class EntrySpliterator extends Int2ObjectOpenHashMap.MapSpliterator implements ObjectSpliterator {
+   private final class EntrySpliterator extends Int2ObjectOpenHashMap<V>.MapSpliterator<Consumer<? super Int2ObjectMap.Entry<V>>, EntrySpliterator> implements ObjectSpliterator<Int2ObjectMap.Entry<V>> {
       private static final int POST_SPLIT_CHARACTERISTICS = 1;
 
       EntrySpliterator() {
@@ -1028,7 +1028,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       }
    }
 
-   private abstract class MapSpliterator<ConsumerType, SplitType extends Int2ObjectOpenHashMap<V>.MapSpliterator<ConsumerType, SplitType>> {
+   private abstract class MapSpliterator<ConsumerType, SplitType extends Int2ObjectOpenHashMap<V>.MapSpliterator<ConsumerType, ?>> {
       int pos = 0;
       int max;
       int c;
@@ -1142,7 +1142,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       }
    }
 
-   private final class FastEntryIterator extends Int2ObjectOpenHashMap.MapIterator implements ObjectIterator {
+   private final class FastEntryIterator extends Int2ObjectOpenHashMap<V>.MapIterator<Consumer<? super Int2ObjectMap.Entry<V>>> implements ObjectIterator<Int2ObjectMap.Entry<V>> {
       private final Int2ObjectOpenHashMap<V>.MapEntry entry;
 
       private FastEntryIterator() {
@@ -1324,7 +1324,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
       }
    }
 
-   final class MapEntry implements java.util.Map.Entry<Integer, V>, Int2ObjectMap.Entry<V>, IntObjectPair<V> {
+   final class MapEntry implements Int2ObjectMap.Entry<V> {
       int index;
 
       MapEntry(int index) {
@@ -1338,15 +1338,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
          return Int2ObjectOpenHashMap.this.key[this.index];
       }
 
-      public int leftInt() {
-         return Int2ObjectOpenHashMap.this.key[this.index];
-      }
-
       public V getValue() {
-         return Int2ObjectOpenHashMap.this.value[this.index];
-      }
-
-      public V right() {
          return Int2ObjectOpenHashMap.this.value[this.index];
       }
 
@@ -1354,11 +1346,6 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
          V oldValue = Int2ObjectOpenHashMap.this.value[this.index];
          Int2ObjectOpenHashMap.this.value[this.index] = v;
          return oldValue;
-      }
-
-      public IntObjectPair<V> right(V v) {
-         Int2ObjectOpenHashMap.this.value[this.index] = v;
-         return this;
       }
 
       /** @deprecated */
@@ -1371,7 +1358,7 @@ public class Int2ObjectOpenHashMap<V> extends AbstractInt2ObjectMap<V> implement
          if (!(o instanceof java.util.Map.Entry)) {
             return false;
          } else {
-            java.util.Map.Entry<Integer, V> e = (java.util.Map.Entry)o;
+            java.util.Map.Entry<Integer, V> e = (java.util.Map.Entry<Integer, V>) o;
             return Int2ObjectOpenHashMap.this.key[this.index] == (Integer)e.getKey() && Objects.equals(Int2ObjectOpenHashMap.this.value[this.index], e.getValue());
          }
       }

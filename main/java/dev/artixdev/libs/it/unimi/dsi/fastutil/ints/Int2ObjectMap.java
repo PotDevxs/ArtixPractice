@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.Map;
 import java.util.Objects;
@@ -25,8 +25,9 @@ public interface Int2ObjectMap<V> extends Map<Integer, V>, Int2ObjectFunction<V>
 
    /** @deprecated */
    @Deprecated
+   @SuppressWarnings("unchecked")
    default ObjectSet<java.util.Map.Entry<Integer, V>> entrySet() {
-      return this.int2ObjectEntrySet();
+      return (ObjectSet<java.util.Map.Entry<Integer, V>>) (ObjectSet<?>) this.int2ObjectEntrySet();
    }
 
    /** @deprecated */
@@ -73,14 +74,19 @@ public interface Int2ObjectMap<V> extends Map<Integer, V>, Int2ObjectFunction<V>
    }
 
    default V getOrDefault(int key, V defaultValue) {
-      Object v;
-      return (v = this.get(key)) == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
+      V v = this.get(key);
+      return v == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
    }
 
    /** @deprecated */
    @Deprecated
    default V getOrDefault(Object key, V defaultValue) {
-      return super.getOrDefault(key, defaultValue);
+      if (key == null) {
+         return defaultValue;
+      }
+      int k = (Integer) key;
+      V v = this.get(k);
+      return v == this.defaultReturnValue() && !this.containsKey(k) ? defaultValue : v;
    }
 
    default V putIfAbsent(int key, V value) {
@@ -194,7 +200,7 @@ public interface Int2ObjectMap<V> extends Map<Integer, V>, Int2ObjectFunction<V>
       Objects.requireNonNull(value);
       V oldValue = this.get(key);
       V drv = this.defaultReturnValue();
-      Object newValue;
+      V newValue;
       if (oldValue == drv && !this.containsKey(key)) {
          newValue = value;
       } else {

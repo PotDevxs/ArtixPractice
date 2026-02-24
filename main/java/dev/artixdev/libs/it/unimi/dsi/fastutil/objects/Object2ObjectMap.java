@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.util.Map;
 import java.util.Objects;
@@ -19,8 +19,9 @@ public interface Object2ObjectMap<K, V> extends Map<K, V>, Object2ObjectFunction
 
    ObjectSet<Object2ObjectMap.Entry<K, V>> object2ObjectEntrySet();
 
+   @SuppressWarnings("unchecked")
    default ObjectSet<java.util.Map.Entry<K, V>> entrySet() {
-      return this.object2ObjectEntrySet();
+      return (ObjectSet<java.util.Map.Entry<K, V>>)(ObjectSet<?>)this.object2ObjectEntrySet();
    }
 
    default V put(K key, V value) {
@@ -51,7 +52,7 @@ public interface Object2ObjectMap<K, V> extends Map<K, V>, Object2ObjectFunction
    }
 
    default V getOrDefault(Object key, V defaultValue) {
-      Object v;
+      V v;
       return (v = this.get(key)) == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
    }
 
@@ -154,7 +155,7 @@ public interface Object2ObjectMap<K, V> extends Map<K, V>, Object2ObjectFunction
       Objects.requireNonNull(value);
       V oldValue = this.get(key);
       V drv = this.defaultReturnValue();
-      Object newValue;
+      V newValue;
       if (oldValue == drv && !this.containsKey(key)) {
          newValue = value;
       } else {

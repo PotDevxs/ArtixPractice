@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -159,15 +159,12 @@ public class MatchHistoryButton extends Button {
    
    @Override
    public void clicked(Player player, ClickType clickType) {
-      // Handle click - could open match details or revert ELO
       if (clickType == ClickType.MIDDLE && matchHistory.getEloChange() != 0) {
-         // Revert ELO changes
-         player.sendMessage(ChatUtils.colorize("&aELO changes reverted for match #" + matchHistory.getMatchId()));
-         // TODO: Implement ELO revert logic
+         player.sendMessage(ChatUtils.colorize("&eELO revert: contact an admin or use /practice elo revert (if available)."));
       } else {
-         // Open match details/inventories
-         player.sendMessage(ChatUtils.colorize("&7Opening match details..."));
-         // TODO: Implement match details view
+         String opp = matchHistory.getOpponentName() != null ? matchHistory.getOpponentName() : "Unknown";
+         int elo = matchHistory.getEloChange();
+         player.sendMessage(ChatUtils.colorize("&7Match #" + matchHistory.getMatchId() + " vs &f" + opp + " &7(ELO " + (elo >= 0 ? "+" : "") + elo + ")"));
       }
    }
 }

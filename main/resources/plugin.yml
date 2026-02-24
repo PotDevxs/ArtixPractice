@@ -1,17 +1,10 @@
 name: ArtixPractice
-main: dev.artixdev.practice.BoltPlugin
+main: dev.artixdev.practice.Main
 version: 22.9
 author: Faastyzin
 description: A feature-rich and well optimized Practice Core
 #api-version: "1.13"
 website: https://github.com/PotDevxs/ArtixPractice
-
-commands:
-  practice:
-    description: Main practice command
-    usage: /practice <subcommand>
-    permission: artixpractice.use
-    aliases: [artixpractice, practice]
 
 permissions:
   artixpractice.use:
@@ -37,6 +30,54 @@ permissions:
     default: op
   artixpractice.reload:
     description: Allows reloading the plugin
+    default: op
+  artixpractice.license: # Não toque, sei bem oque você quer aqui kk se fizer isto terá consequências...
+    description: Allows configuring and validating Artix license (config.yml License)
+    default: op
+  artix.holo.admin:
+    description: Hologram create/delete/list/move/update
+    default: op
+  artix.bot.knockback:
+    description: Bot knockback profile management
+    default: op
+  artix.config:
+    description: Config reload/validate/info
+    default: op
+  artix.animatedtitle:
+    description: Animated scoreboard title
+    default: op
+  artix.command.postmatch:
+    description: Open post-match inventory
+    default: op
+  artix.profile.silent:
+    description: Silent queue/party (no messages)
+    default: op
+  artix.admin:
+    description: Practice admin (e.g. reload)
+    default: op
+  artix.queue.admin:
+    description: Queue admin (add/remove/clear)
+    default: op
+  practice.kit.*:
+    description: Use specific kit (practice.kit.<kitname>)
+    default: true
+  practice.projectile.launch:
+    description: Launch projectiles in practice
+    default: true
+  practice.team.large:
+    description: Create larger parties
+    default: op
+  artix.kit.ranked:
+    description: Access ranked kits
+    default: true
+  artix.kit.tournament:
+    description: Access tournament kits
+    default: op
+  artix.kit.custom:
+    description: Access custom kits
+    default: op
+  artix.kit.event:
+    description: Access event kits
     default: op
 
 softdepend:

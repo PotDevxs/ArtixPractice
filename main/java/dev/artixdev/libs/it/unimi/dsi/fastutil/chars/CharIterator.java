@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
 
 import java.util.Objects;
 import java.util.PrimitiveIterator;
@@ -25,29 +25,14 @@ public interface CharIterator extends PrimitiveIterator<Character, CharConsumer>
 
    default void forEachRemaining(IntConsumer action) {
       Objects.requireNonNull(action);
-      CharConsumer var10001;
-      if (action instanceof CharConsumer) {
-         var10001 = (CharConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEachRemaining(var10001);
+      this.forEachRemaining((char x) -> action.accept(x));
    }
 
    /** @deprecated */
    @Deprecated
    default void forEachRemaining(Consumer<? super Character> action) {
-      CharConsumer var10001;
-      if (action instanceof CharConsumer) {
-         var10001 = (CharConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEachRemaining(var10001);
+      Objects.requireNonNull(action);
+      this.forEachRemaining((char x) -> action.accept(x));
    }
 
    default int skip(int n) {

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -647,8 +647,9 @@ public final class ObjectLists {
          return this.collection.hashCode();
       }
 
+      @SuppressWarnings("unchecked")
       public int compareTo(List<? extends K> o) {
-         return this.list.compareTo(o);
+         return this.list.compareTo((List) o);
       }
 
       public void sort(Comparator<? super K> comparator) {

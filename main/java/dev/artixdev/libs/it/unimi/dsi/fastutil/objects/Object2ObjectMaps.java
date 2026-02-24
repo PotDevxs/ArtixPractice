@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -148,8 +148,9 @@ public final class Object2ObjectMaps {
          return this.entries;
       }
 
-      public ObjectSet<Entry<K, V>> entrySet() {
-         return this.object2ObjectEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<java.util.Map.Entry<K, V>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<K, V>>)(ObjectSet<?>)this.object2ObjectEntrySet();
       }
 
       public ObjectSet<K> keySet() {
@@ -231,8 +232,9 @@ public final class Object2ObjectMaps {
          }
       }
 
-      public ObjectSet<Entry<K, V>> entrySet() {
-         return this.object2ObjectEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<java.util.Map.Entry<K, V>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<K, V>>)(ObjectSet<?>)this.object2ObjectEntrySet();
       }
 
       public ObjectSet<K> keySet() {
@@ -364,16 +366,18 @@ public final class Object2ObjectMaps {
          throw new UnsupportedOperationException();
       }
 
+      @SuppressWarnings("unchecked")
       public ObjectSet<Object2ObjectMap.Entry<K, V>> object2ObjectEntrySet() {
          if (this.entries == null) {
-            this.entries = ObjectSets.unmodifiable(this.map.object2ObjectEntrySet());
+            this.entries = (ObjectSet<Object2ObjectMap.Entry<K, V>>)(ObjectSet<?>)ObjectSets.unmodifiable(this.map.object2ObjectEntrySet());
          }
 
          return this.entries;
       }
 
-      public ObjectSet<Entry<K, V>> entrySet() {
-         return this.object2ObjectEntrySet();
+      @SuppressWarnings("unchecked")
+      public ObjectSet<java.util.Map.Entry<K, V>> entrySet() {
+         return (ObjectSet<java.util.Map.Entry<K, V>>)(ObjectSet<?>)this.object2ObjectEntrySet();
       }
 
       public ObjectSet<K> keySet() {
@@ -404,8 +408,9 @@ public final class Object2ObjectMaps {
          return o == this ? true : this.map.equals(o);
       }
 
+      @SuppressWarnings("unchecked")
       public V getOrDefault(Object key, V defaultValue) {
-         return this.map.getOrDefault(key, defaultValue);
+         return ((Object2ObjectMap<K, V>) this.map).getOrDefault(key, defaultValue);
       }
 
       public void forEach(BiConsumer<? super K, ? super V> action) {

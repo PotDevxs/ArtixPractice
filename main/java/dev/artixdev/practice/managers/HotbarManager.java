@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.managers;
+package dev.artixdev.practice.managers;
 
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.configs.HotbarConfig;
@@ -9,6 +9,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import dev.artixdev.libs.org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,106 +63,87 @@ public class HotbarManager {
     }
     
     /**
-     * Load custom items from configuration
+     * Load all layout types from hotbar.yml (HOTBAR_ITEMS; CUSTOM_ITEMS merged per layout).
      */
     private void loadCustomItems() {
-        // This would read from the hotbar configuration file
-        // and load custom items for different layout types
-        
-        // Example: Load lobby items
-        loadLayoutItems("LOBBY");
-        
-        // Example: Load queue items
-        loadLayoutItems("QUEUE");
-        
-        // Example: Load party items
-        loadLayoutItems("PARTY_LEADER");
-        loadLayoutItems("PARTY_MEMBER");
-        loadLayoutItems("PARTY");
-        
-        // Example: Load spectating items
-        loadLayoutItems("SPECTATING");
-        
-        // Example: Load event items
-        loadLayoutItems("EVENT");
-    }
-    
-    /**
-     * Load layout items for specific type
-     */
-    private void loadLayoutItems(String layoutType) {
-        Map<Integer, ItemStack> items = new HashMap<>();
-        
-        // This would read from configuration file
-        // For now, we'll create some example items
-        
-        switch (layoutType) {
-            case "LOBBY":
-                items.put(0, createItem(Material.DIAMOND_SWORD, "&c&lQueue", "&7Click to open queue menu"));
-                items.put(1, createItem(Material.EMERALD, "&a&lParty", "&7Click to open party menu"));
-                items.put(2, createItem(Material.BOOK, "&e&lKits", "&7Click to open kit menu"));
-                items.put(3, createItem(Material.SKULL_ITEM, "&b&lStats", "&7Click to view your stats"));
-                items.put(4, createItem(Material.COMPASS, "&d&lArenas", "&7Click to view arenas"));
-                break;
-                
-            case "QUEUE":
-                items.put(0, createItem(Material.REDSTONE, "&c&lLeave Queue", "&7Click to leave queue"));
-                items.put(1, createItem(Material.EMERALD, "&a&lParty", "&7Click to open party menu"));
-                items.put(2, createItem(Material.BOOK, "&e&lKits", "&7Click to open kit menu"));
-                items.put(3, createItem(Material.SKULL_ITEM, "&b&lStats", "&7Click to view your stats"));
-                break;
-                
-            case "PARTY_LEADER":
-                items.put(0, createItem(Material.DIAMOND_SWORD, "&c&lQueue", "&7Click to open queue menu"));
-                items.put(1, createItem(Material.REDSTONE, "&c&lDisband Party", "&7Click to disband party"));
-                items.put(2, createItem(Material.EMERALD, "&a&lInvite Player", "&7Click to invite player"));
-                items.put(3, createItem(Material.BOOK, "&e&lKits", "&7Click to open kit menu"));
-                items.put(4, createItem(Material.SKULL_ITEM, "&b&lStats", "&7Click to view your stats"));
-                break;
-                
-            case "PARTY_MEMBER":
-                items.put(0, createItem(Material.DIAMOND_SWORD, "&c&lQueue", "&7Click to open queue menu"));
-                items.put(1, createItem(Material.REDSTONE, "&c&lLeave Party", "&7Click to leave party"));
-                items.put(2, createItem(Material.BOOK, "&e&lKits", "&7Click to open kit menu"));
-                items.put(3, createItem(Material.SKULL_ITEM, "&b&lStats", "&7Click to view your stats"));
-                break;
-                
-            case "SPECTATING":
-                items.put(0, createItem(Material.REDSTONE, "&c&lStop Spectating", "&7Click to stop spectating"));
-                items.put(1, createItem(Material.EMERALD, "&a&lTeleport to Player", "&7Click to teleport to player"));
-                items.put(2, createItem(Material.BOOK, "&e&lMatch Info", "&7Click to view match info"));
-                break;
-                
-            case "EVENT":
-                items.put(0, createItem(Material.REDSTONE, "&c&lLeave Event", "&7Click to leave event"));
-                items.put(1, createItem(Material.BOOK, "&e&lEvent Info", "&7Click to view event info"));
-                break;
-        }
-        
-        layoutItems.put(layoutType, items);
-    }
-    
-    /**
-     * Create item with name and lore
-     */
-    private ItemStack createItem(Material material, String name, String... lore) {
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        
-        if (meta != null) {
-            meta.setDisplayName(ChatUtils.colorize(name));
-            
-            if (lore.length > 0) {
-                List<String> loreList = new ArrayList<>();
-                for (String line : lore) {
-                    loreList.add(ChatUtils.colorize(line));
-                }
-                meta.setLore(loreList);
+        ConfigurationSection hotbarItems = hotbarConfig.getConfigurationSection("HOTBAR_ITEMS");
+        if (hotbarItems != null) {
+            for (String layoutType : hotbarItems.getKeys(false)) {
+                loadLayoutItemsFromConfig(layoutType);
             }
-            
+        }
+        ConfigurationSection customItems = hotbarConfig.getConfigurationSection("CUSTOM_ITEMS");
+        if (customItems != null) {
+            for (String layoutType : customItems.getKeys(false)) {
+                if (!layoutItems.containsKey(layoutType)) {
+                    fillItemsFromSection(layoutType, "CUSTOM_ITEMS." + layoutType,
+                        hotbarConfig.getConfigurationSection("CUSTOM_ITEMS." + layoutType));
+                }
+            }
+        }
+    }
+
+    /**
+     * Load one layout from HOTBAR_ITEMS.<layoutType> and merge CUSTOM_ITEMS.<layoutType> if present.
+     */
+    private void loadLayoutItemsFromConfig(String layoutType) {
+        ConfigurationSection section = hotbarConfig.getConfigurationSection("HOTBAR_ITEMS." + layoutType);
+        if (section != null) {
+            fillItemsFromSection(layoutType, "HOTBAR_ITEMS." + layoutType, section);
+        }
+        ConfigurationSection customSection = hotbarConfig.getConfigurationSection("CUSTOM_ITEMS." + layoutType);
+        if (customSection != null) {
+            fillItemsFromSection(layoutType, "CUSTOM_ITEMS." + layoutType, customSection);
+        }
+    }
+
+    private void fillItemsFromSection(String layoutType, String pathPrefix, ConfigurationSection section) {
+        Map<Integer, ItemStack> items = layoutItems.computeIfAbsent(layoutType, k -> new HashMap<>());
+        for (String itemKey : section.getKeys(false)) {
+            ConfigurationSection itemSection = section.getConfigurationSection(itemKey);
+            if (itemSection == null) continue;
+            String itemPath = pathPrefix + "." + itemKey;
+            if (hotbarConfig.contains(itemPath + ".ENABLED") && !hotbarConfig.getBoolean(itemPath + ".ENABLED")) continue;
+            String name = hotbarConfig.getString(itemPath + ".NAME");
+            String materialStr = hotbarConfig.getString(itemPath + ".MATERIAL");
+            int slot = hotbarConfig.getInteger(itemPath + ".SLOT", 0);
+            int durability = hotbarConfig.getInteger(itemPath + ".DURABILITY", 0);
+            List<String> loreList = hotbarConfig.getStringList(itemPath + ".LORE");
+            if (name == null) name = "&f" + itemKey;
+            if (materialStr == null || materialStr.isEmpty()) continue;
+            Material material = parseMaterial(materialStr);
+            if (material == null || material == Material.AIR) continue;
+            ItemStack stack = createItemFromConfig(material, name, durability, loreList);
+            if (slot >= 0 && slot < 9) {
+                items.put(slot, stack);
+            }
+        }
+    }
+
+    private static Material parseMaterial(String name) {
+        if (name == null || name.isEmpty()) return null;
+        Material m = Material.matchMaterial(name);
+        if (m != null) return m;
+        String legacy = name.replace("GOLDEN_", "GOLD_").replace("LEGACY_", "");
+        m = Material.matchMaterial(legacy);
+        if (m != null) return m;
+        return Material.matchMaterial(name.toUpperCase());
+    }
+
+    private ItemStack createItemFromConfig(Material material, String displayName, int durability, List<String> lore) {
+        ItemStack item = new ItemStack(material, 1, (short) durability);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(ChatUtils.colorize(displayName));
+            if (lore != null && !lore.isEmpty()) {
+                List<String> colored = new ArrayList<>();
+                for (String line : lore) {
+                    colored.add(ChatUtils.colorize(line));
+                }
+                meta.setLore(colored);
+            }
             item.setItemMeta(meta);
         }
-        
         return item;
     }
     
@@ -267,20 +250,25 @@ public class HotbarManager {
     }
     
     /**
-     * Reload hotbar configurations
+     * Reload hotbar configurations and re-apply to all online players that have a layout.
      */
     public void reloadHotbars() {
         logger.info("Reloading hotbar configurations...");
         
-        // Clear cache
+        // Keep copy of who had which layout so we can re-apply after reload
+        Map<UUID, String> previousLayouts = new HashMap<>(playerLayouts);
+        
+        // Clear item cache only; reload from config
         layoutItems.clear();
-        playerLayouts.clear();
-        
-        // Reload configurations
-        // hotbarConfig.reload(); // This method might not exist
-        
-        // Reinitialize
         loadCustomItems();
+        
+        // Re-apply hotbar to each player that had one
+        for (Map.Entry<UUID, String> entry : previousLayouts.entrySet()) {
+            Player p = Bukkit.getPlayer(entry.getKey());
+            if (p != null && p.isOnline()) {
+                setHotbarLayout(p, entry.getValue());
+            }
+        }
         
         logger.info("Hotbar configurations reloaded successfully!");
     }

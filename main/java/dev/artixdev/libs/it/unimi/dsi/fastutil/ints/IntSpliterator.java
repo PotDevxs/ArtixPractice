@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.Objects;
 import java.util.Spliterator.OfInt;
@@ -8,15 +8,8 @@ public interface IntSpliterator extends OfInt {
    /** @deprecated */
    @Deprecated
    default boolean tryAdvance(Consumer<? super Integer> action) {
-      java.util.function.IntConsumer var10001;
-      if (action instanceof java.util.function.IntConsumer) {
-         var10001 = (java.util.function.IntConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      return this.tryAdvance((java.util.function.IntConsumer)var10001);
+      Objects.requireNonNull(action);
+      return this.tryAdvance((int x) -> action.accept(x));
    }
 
    default boolean tryAdvance(IntConsumer action) {
@@ -26,15 +19,8 @@ public interface IntSpliterator extends OfInt {
    /** @deprecated */
    @Deprecated
    default void forEachRemaining(Consumer<? super Integer> action) {
-      java.util.function.IntConsumer var10001;
-      if (action instanceof java.util.function.IntConsumer) {
-         var10001 = (java.util.function.IntConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEachRemaining((java.util.function.IntConsumer)var10001);
+      Objects.requireNonNull(action);
+      this.forEachRemaining((int x) -> action.accept(x));
    }
 
    default void forEachRemaining(IntConsumer action) {

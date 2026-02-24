@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.listeners;
+package dev.artixdev.practice.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,7 +51,7 @@ public class MatchListener implements Listener {
          }
          
          // Send match start notification
-         notificationManager.sendMessage(player, "Match started! Good luck!");
+         notificationManager.sendMessage(player, dev.artixdev.practice.utils.Messages.get("POSTMATCH.NOTIFICATION_STARTED"));
          
          // Update scoreboard and nametags
          updatePlayerDisplay(player);
@@ -109,11 +109,11 @@ public class MatchListener implements Listener {
          if (isWinner) {
             profile.addWin();
             profile.setWinStreak(profile.getWinStreak() + 1);
-            notificationManager.sendSuccess(player, "You won the match!");
+            notificationManager.sendSuccess(player, dev.artixdev.practice.utils.Messages.get("POSTMATCH.NOTIFICATION_WON"));
          } else {
             profile.addLoss();
             profile.setWinStreak(0);
-            notificationManager.sendMessage(player, "You lost the match. Better luck next time!");
+            notificationManager.sendMessage(player, dev.artixdev.practice.utils.Messages.get("POSTMATCH.NOTIFICATION_LOST"));
          }
          
          // Update ELO if ranked
@@ -123,6 +123,15 @@ public class MatchListener implements Listener {
          
          // Save profile
          plugin.getPlayerManager().savePlayerProfile(profile);
+         
+         // Check achievements and notify newly unlocked
+         if (plugin.getAchievementsManager() != null) {
+            java.util.Set<String> newly = plugin.getAchievementsManager().checkAndUnlockAll(profile);
+            for (String id : newly) {
+               dev.artixdev.practice.enums.AchievementType type = dev.artixdev.practice.enums.AchievementType.fromId(id);
+               if (type != null) plugin.getAchievementsManager().notifyUnlock(player, type);
+            }
+         }
          
          // Update display
          updatePlayerDisplay(player);

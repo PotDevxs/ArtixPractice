@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.util.function.LongToIntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -52,7 +52,7 @@ public interface Long2ByteFunction extends LongToIntFunction, Function<Long, Byt
    default Byte put(Long key, Byte value) {
       long k = key;
       boolean containsKey = this.containsKey(k);
-      byte v = this.put(k, value);
+      byte v = this.put(k, value.byteValue());
       return containsKey ? v : null;
    }
 

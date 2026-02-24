@@ -1,21 +1,318 @@
 #############################################################
 #                                                           #
-#  Articos Revamped | Versão exclusiva do Plugin conhecido  #
+#    ArtixPractice | Versão exclusiva do Plugin conhecido   #
 #  Recuse imitações, Adquira o melhor de todos em nosso...  #
-#  Discord logo abaixo, está versão é exclusiva do Yulgar   #
+#  Discord logo abaixo, está versão é exclusiva do Artix    #
 #                                                           #
-#       YULGAR | COMPETITIVE NETWORK [1.7x - 1.8.9]         #
-#      IP: yulgar.com.br | LOJA: loja.yulgar.com.br         #
-#                                                           #
-#        ArtixDevelopment • Melhor Loja de Plugins          #
+#        ARTIXPRACTICE | PRACTICE CORE [1.7x - 1.21x]       #
+#                LOJA: artixdevelopment.com                 #
 #                                                           #
 #    Discord: https://discord.gg/yqK5wyPPV6 | @Faastyzin    #
 #                                                           #
 #############################################################
 
-Faastyzin:
-  Link: "FaastyzinTheBestDEV"
+# Coloque sua licença Artix aqui para usar o plugin
+# Pegue sua key no site: https://artix.sideload.lol/
+License: "ARTIX-DEVELOPERS-USER-MAX"
+
+# Spawn do practice (mundo padrão do servidor se não configurado)
+spawn:
+  world: "world"
+  x: 0.5
+  y: 100.0
+  z: 0.5
+  yaw: 0.0
+  pitch: 0.0
+
+# DO NOT TOUCH!
+SYSTEM:
+  CONFIG-VERSION: 1
+GENERAL:
+  
+  # This is where players will initially spawn
+  SPAWN-LOCATION: ''
+  
+  # The radius of the spawning circle in FFA matches/events
+  FFA-SPAWN-RADIUS: 10
+  
+  # You can set the default party members size limit here
+  DEFAULT-PARTY-LIMIT: 15
+  
+  # This world is where arenas all arenas will be pasted according to grid
+  ARENA-WORLD: world
+  
+  # Do NOT touch this, unless you know what you are doing!
+  ARENA-GRID-SPACING-X: 1000
+  
+  # Do NOT touch this, unless you know what you are doing!
+  ARENA-GRID-SPACING-Z: 1000
+  
+  # Do NOT touch this, unless you know what you are doing!
+  ARENA-GRID-Y-LEVEL: 80
+  
+  # Only change this if you are going to reset stats or don't have any.
+  STARTING-ELO: 1000
+  
+  # Prevents donators from flying too far out from spawn or spectators from arena.
+  PREVENT-FLY-OUT-OF-BOUNDS: true
+  
+  # Toggle whether you wants chunks to be pre-loaded on startup or not
+  PRE-LOAD-CHUNKS: false
+  
+  # Should we clear the leaderboards before updating them?
+  # Disable this if your mongo is hosted externally and not locally.
+  CLEAR-LEADERBOARDS-BEFORE-UPDATE: false
+  
+  # Turn this off if you have a cracked server, because its useless.
+  CHECK-MOJANG-FOR-LEADERBOARD-NAMES: false
+  
+  # If enabled, players in lobby can shift-right click a player to duel them.
+  SHIFT-CLICK-DUEL: true
+  
+  # Should we hide players that aren't in your party?
+  HIDE-OTHER-PLAYERS: false
+  
+  # Should we enable help command?
+  HELP-COMMAND: true
+  
+  # Should we disable the '/artix reset' command that wipes mongo?
+  DISABLE-RESET-COMMAND: true
+  
+  # Here you can change the duel request sound, the default is NOTE_PLING
+  DUEL-REQUEST-SOUND: NOTE_PLING
+  
+  # Does profile/party duel affect stats?
+  DUEL-CHANGES-STATS: true
+  
+  # Ignore the spigot's entity hider and use artix's instead
+  FORCE-ENTITY-HIDER: false
+  
+  # The profile statistics saving time in minutes
+  # Increasing this from 15 minutes could help performance but also result in data loss
+  # Whilst decreasing this time interval can help prevent data loss but also affect performance
+  STATS-SAVE-INTERVAL: 15
+  
+  # The leaderboards updating time in minutes
+  # Increasing this from 3 minutes could help performance but also result in slow leaderboards
+  # Whilst decreasing this time interval can do the opposite
+  LEADERBOARD-UPDATE-INTERVAL: 3
+  
+  # You can put winner commands here for tournament.
+  # These commands are ran on every single winner.
+  # The placeholders are <winner> and <kit> for winner and kit name respectively.
+  TOURNAMENT-WINNER-COMMANDS:
+    - elo add <winner> <kit> 10
+  
+  # Here you can put any commands with the '/' included and artix will block it
+  BLOCKED-COMMANDS: []
+QUEUE:
+  
+  # Should we periodically send queue ticking messages to players in queue?
+  TICKING-MESSAGE-ENABLED: true
+  
+  # This value is added to the ping range every time the ranges are ticked.
+  FIRST-ELO-UPDATE: 25
+  
+  # How much ping will be added and removed when you start queuing for ranked.
+  FIRST-PING-UPDATE: 35
+  
+  # Queues are ticked everyone 0.2s, So 0.2 * 5 = 1 second of delay.
+  ELO-UPDATE-DELAY: 5
+  
+  # Queues are ticked everyone 0.2s, So 0.2 * 5 = 2 second of delay.
+  PING-UPDATE-DELAY: 5
+MATCH:
+  
+  # Here you can put any commands with the '/' included and artix will block it
+  BLOCKED-COMMANDS: []
+  
+  # The amount of time (in seconds) before the play-again expires.
+  PLAY-AGAIN-EXPIRE-SECONDS: 40
+  
+  # The commands prefixed by 'CONSOLE:' are ran by console when player wins the match and for player, it's 'PLAYER:'
+  # Do not put '/' in here, it's automatically done.
+  # Example: 'CONSOLE:elo add <winner> NoDebuff 10
+  WIN-COMMANDS: []
+  
+  # The commands prefixed by 'CONSOLE:' are ran by console when player loses the match and for player, it's 'PLAYER:'
+  # Do not put '/' in here, it's automatically done.
+  # Example: 'CONSOLE:elo remove <loser> NoDebuff 10
+  LOSE-COMMANDS: []
+  
+  # Here you can change the match started sound, the default is NOTE_BASS
+  STARTED-SOUND: NOTE_BASS
+  
+  # Here you can change the match countdown sound, the default is NOTE_PLING
+  COUNTDOWN-SOUND: NOTE_PLING
+  
+  # Enable the Match Started Title
+  # Title and Subtitle is configurable in locale.yml
+  SHOW-STARTED-TITLE: true
+  
+  # Enable the Match Countdown Title
+  # Title and Subtitle is configurable in lang.yml
+  SHOW-COUNTDOWN-TITLE: true
+  
+  # Enable the Match Winner Title
+  # Title and Subtitle is configurable in lang.yml
+  SHOW-WINNER-TITLE: true
+  
+  # Enable the Match Looser Title
+  # Title and Subtitle is configurable in lang.yml
+  SHOW-LOOSER-TITLE: true
+  
+  # Enable the Match Respawn Title
+  # Title and Subtitle is configurable in lang.yml
+  SHOW-RESPAWN-TITLE: true
+  
+  # Enable the Match Respawn Countdown Title
+  # Title and Subtitle is configurable in lang.yml
+  SHOW-RESPAWN-COUNTDOWN-TITLE: true
+  
+  # Enable the Match Bed Destroyed Title
+  # Title and Subtitle is configurable in lang.yml
+  SHOW-BED-DESTROYED-TITLE: true
+  
+  # Remove the bottles from player's hands as soon his drink is empty
+  REMOVE-BOTTLES: true
+  
+  # Should we clear placed blocks after each round of Bridges?
+  CLEAR-BLOCKS: false
+  
+  # Should we allow explosion to damage players?
+  EXPLOSION-DAMAGES-PLAYERS: false
+  
+  # Should we allow spleef to break a max of 4 in its trajectory?
+  SPLEEF-TRAJECTORY: true
+  
+  # Should we display kill effects in respawn matches like Bridges?
+  SHOW-KILL-EFFECTS: false
+  
+  # Should we send per kit disclaimer message?
+  DISCLAIMER-ENABLED: true
+  
+  # If enabled, players can do /leave in a match to leave the match.
+  # This only works for unranked solo matches, any other will say invalid state.
+  ALLOW-LEAVE: true
+  
+  # The minimum amount of won matches required by a player to join Ranked Queue
+  # Set this to 0, if you don't want any limit
+  RANKED-LIMIT: 10
+  
+  # The maximum amount of ping a player can have while joining Ranked Queue
+  # Set this to 0, if you don't want any limit
+  RANKED-MAX-PING: 300
+  
+  # The amount of time (in seconds) before the duel invite expires.
+  DUEL-EXPIRE-SECONDS: 60
+  
+  # The amount of delay (in seconds) before you get teleported back to spawn
+  TELEPORT-DELAY: 4
+  
+  # The amount of spawn protection (in seconds) when you respawn in BedFight
+  SPAWN-PROTECTION: 3
+  
+  # The amount of delay (in seconds) before BattleRush/PearlFight blocks disappear
+  BLOCK-REMOVE-TIMER: 10
+  
+  # This enables a timer on all standard matches, after the timer is up, the match is ended in a tie.
+  TIME-LIMIT-ENABLED: true
+  
+  # Specify the time limit in minutes for matches
+  TIME-LIMIT-VALUE: 20
+
+# Configure PlaceholderAPI hook settings here
+PLACEHOLDER-API:
+  
+  # Toggle Match PlaceholderAPI expansion
+  MATCH-EXPANSIONS: true
+  
+  # Toggle Stats PlaceholderAPI expansion
+  STATS-EXPANSIONS: true
+  
+  # Here you can change the format of the leadeboards placeholder
+  LEADERBOARD-FORMAT: '&e#<pos> &f<name> &7- &b<value> &7- <division>'
+
+# Configure whether there should be a cool-down for pearls and bows, and what should it be in seconds
+TIMER:
+  PEARL:
+    ENABLED: true
+    VALUE: 15
+  BRIDGE-BOW:
+    ENABLED: true
+    VALUE: 5
+  FIRE-BALL:
+    ENABLED: true
+    VALUE: 2
+
+# Here you can configure the format of the Holograms
+HOLOGRAMS:
+  DEFAULT-LINES:
+    - '&c&lPractice Leaderboards'
+    - '&7'
+    - '&e◉ <type> &e◉'
+    - '&7'
+    - <c>&a#1 &f<player1> &7- &b<value1> &7- <division1>
+    - <c>&2#2 &f<player2> &7- &b<value2> &7- <division2>
+    - <c>&e#3 &f<player3> &7- &b<value3> &7- <division3>
+    - <c>&c#4 &f<player4> &7- &b<value4> &7- <division4>
+    - <c>&c#5 &f<player5> &7- &b<value5> &7- <division5>
+    - <c>&c#6 &f<player6> &7- &b<value6> &7- <division6>
+    - <c>&c#7 &f<player7> &7- &b<value7> &7- <division7>
+    - <c>&c#8 &f<player8> &7- &b<value8> &7- <division8>
+    - <c>&c#9 &f<player9> &7- &b<value9> &7- <division9>
+    - <c>&c#10 &f<player10> &7- &b<value10> &7- <division10>
+    - '&7'
+    - '&fNext update in &c<update>'
+  KIT-LINES:
+    - '&c&lPractice Leaderboards'
+    - '&7'
+    - '&e◉ <kit> &e◉'
+    - '&7'
+    - <c>&a#1 &f<player1> &7- &c<value1> &7- <division1>
+    - <c>&2#2 &f<player2> &7- &c<value2> &7- <division2>
+    - <c>&e#3 &f<player3> &7- &c<value3> &7- <division3>
+    - <c>&c#4 &f<player4> &7- &c<value4> &7- <division4>
+    - <c>&c#5 &f<player5> &7- &c<value5> &7- <division5>
+    - <c>&c#6 &f<player6> &7- &c<value6> &7- <division6>
+    - <c>&c#7 &f<player7> &7- &c<value7> &7- <division7>
+    - <c>&c#8 &f<player8> &7- &c<value8> &7- <division8>
+    - <c>&c#9 &f<player9> &7- &c<value9> &7- <division9>
+    - <c>&c#10 &f<player10> &7- &c<value10> &7- <division10>
+    - '&7'
+    - '&fNext update in &c<update>'
+NAME-TAGS:
+  
+  # Toggle whether Artix's NameTag system should be enabled or not
+  # Please note that this won't disable match or event name-tags, only lobby & queue
+  ENABLED: true
+  
+  # You can change lobby name-tag here
+  LOBBY-PREFIX: '&a'
+  LOBBY-SUFFIX: ''
+  
+  # You can change party name-tag prefix here
+  PARTY-PREFIX: '&9'
+  PARTY-SUFFIX: ''
+  
+  # You can change queue name-tag prefix here
+  QUEUE-PREFIX: '&e'
+  QUEUE-SUFFIX: ''
+  
+  # You can change event name-tag prefix here
+  EVENT-PREFIX: '&b'
+  EVENT-SUFFIX: ''
+  
+  # You can change blue team name-tag prefix here
+  BLUE-TEAM-PREFIX: '&9[B] &9'
+  
+  # You can change red team name-tag prefix here
+  RED-TEAM-PREFIX: '&c[R] &c'
+
+# Should we log stats saving in console?
+LOGGING:
+  STATS-LOGS: true
 
 NAME-TAGS:
-  PREFIX: "&#ff0000[Yulgar] "
+  PREFIX: "&#ff0000[Artix] "
   SUFFIX: " &9[Gay]"

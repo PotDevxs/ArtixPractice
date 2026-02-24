@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils.serialize;
+package dev.artixdev.practice.utils.serialize;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -10,7 +10,7 @@ import dev.artixdev.libs.com.google.gson.JsonObject;
 import dev.artixdev.libs.com.google.gson.JsonParseException;
 import dev.artixdev.libs.com.google.gson.JsonSerializationContext;
 import dev.artixdev.libs.com.google.gson.JsonSerializer;
-import dev.artixdev.practice.Practice;
+import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.MatchHistory;
 import dev.artixdev.practice.models.PlayerSnapshot;
 
@@ -41,13 +41,13 @@ public class MatchHistorySerializer implements JsonDeserializer<MatchHistory>, J
 
         PlayerSnapshot winnerSnapshot = null;
         if (object.has("winnerSnapshot") && !object.get("winnerSnapshot").isJsonNull()) {
-            winnerSnapshot = Practice.getPlugin().getGson().fromJson(
+            winnerSnapshot = Main.getInstance().getGson().fromJson(
                 object.get("winnerSnapshot").getAsString(), PlayerSnapshot.class);
         }
 
         PlayerSnapshot loserSnapshot = null;
         if (object.has("looserSnapshot") && !object.get("looserSnapshot").isJsonNull()) {
-            loserSnapshot = Practice.getPlugin().getGson().fromJson(
+            loserSnapshot = Main.getInstance().getGson().fromJson(
                 object.get("looserSnapshot").getAsString(), PlayerSnapshot.class);
         }
 
@@ -68,11 +68,11 @@ public class MatchHistorySerializer implements JsonDeserializer<MatchHistory>, J
         object.addProperty("ranked", matchHistory.isRanked());
         
         if (matchHistory.getWinnerSnapshot() != null) {
-            object.addProperty("winnerSnapshot", Practice.getPlugin().getGson().toJson(matchHistory.getWinnerSnapshot()));
+            object.addProperty("winnerSnapshot", Main.getInstance().getGson().toJson(matchHistory.getWinnerSnapshot()));
         }
         
         if (matchHistory.getLoserSnapshot() != null) {
-            object.addProperty("looserSnapshot", Practice.getPlugin().getGson().toJson(matchHistory.getLoserSnapshot()));
+            object.addProperty("looserSnapshot", Main.getInstance().getGson().toJson(matchHistory.getLoserSnapshot()));
         }
         
         return object;

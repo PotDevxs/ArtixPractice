@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.chars;
 
 import java.util.function.IntUnaryOperator;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -55,7 +55,7 @@ public interface Char2ByteFunction extends IntUnaryOperator, Function<Character,
    default Byte put(Character key, Byte value) {
       char k = key;
       boolean containsKey = this.containsKey(k);
-      byte v = this.put(k, value);
+      byte v = this.put(k, value.byteValue());
       return containsKey ? v : null;
    }
 

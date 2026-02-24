@@ -19,7 +19,7 @@ public class UpdateHandler {
     private UpdateHandler() {
         Main plugin = Main.getInstance();
         if (plugin == null) {
-            throw new IllegalStateException("BoltPlugin instance is not available");
+            throw new IllegalStateException("ArtixPlugin instance is not available");
         }
         this.playerManager = plugin.getPlayerManager();
     }

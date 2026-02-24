@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.util.function.LongToIntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -52,7 +52,7 @@ public interface Long2CharFunction extends LongToIntFunction, Function<Long, Cha
    default Character put(Long key, Character value) {
       long k = key;
       boolean containsKey = this.containsKey(k);
-      char v = this.put(k, value);
+      char v = this.put(k, value.charValue());
       return containsKey ? v : null;
    }
 

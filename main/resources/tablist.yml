@@ -1,36 +1,33 @@
-     #############################################################
-     #                                                           #
-     #      Raider | Versão exclusiva do Plugin conhecido        #
-     #  Recuse imitações, Adquira o melhor de todos em nosso...  #
-     #  Discord logo abaixo, está versão é exclusiva do Yulgar   #
-     #                                                           #
-     #        RAIDER | COMPETITIVE PLUGIN [1.8x - 1.21x]         #
-     #       IP: dev.raider.club | LOJA: loja.raider.club        #
-     #                                                           #
-     #        ArtixDevelopment • Melhor Loja de Plugins          #
-     #                                                           #
-     #    Discord: https://discord.gg/yqK5wyPPV6 | @Faastyzin    #
-     #                                                           #
-     #############################################################
-     
-Faastyzin:
-  Link: "FaastyzinTheBestDEV"
+#############################################################
+#                                                           #
+#    ArtixPractice | Versão exclusiva do Plugin conhecido   #
+#  Recuse imitações, Adquira o melhor de todos em nosso...  #
+#  Discord logo abaixo, está versão é exclusiva do Artix    #
+#                                                           #
+#        ARTIXPRACTICE | PRACTICE CORE [1.7x - 1.21x]       #
+#                LOJA: artixdevelopment.com                 #
+#                                                           #
+#        ArtixDevelopment • Melhor Loja de Plugins          #
+#                                                           #
+#    Discord: https://discord.gg/yqK5wyPPV6 | @Faastyzin    #
+#                                                           #
+#############################################################
 
 TABLIST:
   ENABLED: true
   UPDATE-INTERVAL: 20
 
 SOCIAL:
-  WEBSITE: "artixdevelopment.com.br"
+  WEBSITE: "artixdevelopment.com"
   TWITTER: "@ArtixDevelopment"
-  STORE: "loja.artixdevelopment.com.br"
+  STORE: "loja.artixdevelopment.com"
   DISCORD: "dsc.gg/ArtixDevelopment"
 
 LOCALE:
   HEADER:
     - ""
-    - "&b&lRaider Practice"
-    - "&7www.artixdevelopment.com.br"
+    - "&b&lArtixPractice"
+    - "&7www.artixdevelopment.com"
     - ""
   FOOTER:
     - ""
@@ -61,7 +58,7 @@ LOBBY:
     19: "&b&lTwitter"
     20: "<skin_twitter><twitter>"
   MIDDLE:
-    1: "&b&lRaider Practice"
+    1: "&b&lArtixPractice"
     2: "&7&m----------------"
     3: "&b&lLobby"
     4: "&f<dot_red>Online: &b<online_count>"
@@ -146,7 +143,7 @@ IN-PARTY:
     19: "&b&lTwitter"
     20: "<skin_twitter><twitter>"
   MIDDLE:
-    1: "&b&lRaider Practice"
+    1: "&b&lArtixPractice"
     2: "&7&m----------------"
     3: "&b&lLobby"
     4: "&fOnline: &b<online_count>"
@@ -573,7 +570,7 @@ SPECTATING:
       19: "&b&lTwitter"
       20: "<skin_twitter><twitter>"
     MIDDLE:
-      1: "&b&lRaider Practice"
+      1: "&b&lArtixPractice"
       2: "&7&m----------------"
       3: "&b&lDetalhes da Partida"
       4: "&fDuracao: &b<match_duration>"

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -8,7 +8,7 @@ public interface IntConsumer extends Consumer<Integer>, java.util.function.IntCo
    /** @deprecated */
    @Deprecated
    default void accept(Integer t) {
-      this.accept(t);
+      this.accept(t.intValue());
    }
 
    default IntConsumer andThen(java.util.function.IntConsumer after) {
@@ -26,6 +26,6 @@ public interface IntConsumer extends Consumer<Integer>, java.util.function.IntCo
    /** @deprecated */
    @Deprecated
    default Consumer<Integer> andThen(Consumer<? super Integer> after) {
-      return super.andThen(after);
+      return Consumer.super.andThen(after);
    }
 }

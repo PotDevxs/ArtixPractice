@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -39,8 +39,6 @@ public class StatisticsButton extends Button {
         UUID playerId = player.getUniqueId();
         PlayerProfile playerProfile = playerManager.getPlayerProfile(playerId);
         
-        // Open statistics menu
-        // TODO: Get previous menu if needed
         StatisticsMenu statisticsMenu = new StatisticsMenu(null, playerProfile);
         MenuHandler.getInstance().openMenu(statisticsMenu, player);
     }

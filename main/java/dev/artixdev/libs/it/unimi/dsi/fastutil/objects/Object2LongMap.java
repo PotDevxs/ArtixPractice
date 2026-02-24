@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.util.Map;
 import java.util.Objects;
@@ -24,8 +24,9 @@ public interface Object2LongMap<K> extends Map<K, Long>, Object2LongFunction<K> 
 
    /** @deprecated */
    @Deprecated
+   @SuppressWarnings("unchecked")
    default ObjectSet<java.util.Map.Entry<K, Long>> entrySet() {
-      return this.object2LongEntrySet();
+      return (ObjectSet<java.util.Map.Entry<K, Long>>)(ObjectSet<?>)this.object2LongEntrySet();
    }
 
    /** @deprecated */
@@ -81,7 +82,7 @@ public interface Object2LongMap<K> extends Map<K, Long>, Object2LongFunction<K> 
    /** @deprecated */
    @Deprecated
    default Long getOrDefault(Object key, Long defaultValue) {
-      return (Long)super.getOrDefault(key, defaultValue);
+      return Map.super.getOrDefault(key, defaultValue);
    }
 
    default long putIfAbsent(K key, long value) {
@@ -241,31 +242,31 @@ public interface Object2LongMap<K> extends Map<K, Long>, Object2LongFunction<K> 
    /** @deprecated */
    @Deprecated
    default Long putIfAbsent(K key, Long value) {
-      return (Long)super.putIfAbsent(key, value);
+      return Map.super.putIfAbsent(key, value);
    }
 
    /** @deprecated */
    @Deprecated
    default boolean remove(Object key, Object value) {
-      return super.remove(key, value);
+      return Map.super.remove(key, value);
    }
 
    /** @deprecated */
    @Deprecated
    default boolean replace(K key, Long oldValue, Long newValue) {
-      return super.replace(key, oldValue, newValue);
+      return Map.super.replace(key, oldValue, newValue);
    }
 
    /** @deprecated */
    @Deprecated
    default Long replace(K key, Long value) {
-      return (Long)super.replace(key, value);
+      return Map.super.replace(key, value);
    }
 
    /** @deprecated */
    @Deprecated
    default Long merge(K key, Long value, BiFunction<? super Long, ? super Long, ? extends Long> remappingFunction) {
-      return (Long)super.merge(key, value, remappingFunction);
+      return Map.super.merge(key, value, remappingFunction);
    }
 
    public interface FastEntrySet<K> extends ObjectSet<Object2LongMap.Entry<K>> {

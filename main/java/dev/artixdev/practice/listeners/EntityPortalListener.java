@@ -1,9 +1,12 @@
-﻿package dev.artixdev.practice.listeners;
+package dev.artixdev.practice.listeners;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityPortalEnterEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
+
+import dev.artixdev.practice.Main;
 
 public class EntityPortalListener implements Listener {
     public static final int LISTENER_VERSION = 1;
@@ -15,13 +18,12 @@ public class EntityPortalListener implements Listener {
         PORTAL_CONSTANTS[0] = "EntityPortalListener";
     }
 
-    @EventHandler(
-        priority = EventPriority.HIGH,
-        ignoreCancelled = true
-    )
-    public void onEntityPortalEnter(EntityPortalEnterEvent event) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for entity portal enter handling
-        // Typically used to prevent players from entering portals during matches
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerPortal(PlayerPortalEvent event) {
+        Player player = event.getPlayer();
+        Main main = Main.getInstance();
+        if (main != null && main.getMatchManager() != null && main.getMatchManager().getMatchByPlayer(player) != null) {
+            event.setCancelled(true);
+        }
     }
 }

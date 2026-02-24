@@ -1,17 +1,17 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil;
+package dev.artixdev.libs.it.unimi.dsi.fastutil;
 
+/**
+ * Base interface for stack types with boxed element type.
+ *
+ * @param <K> the type of elements on the stack
+ */
 public interface Stack<K> {
-   void push(K var1);
+
+   void push(K o);
 
    K pop();
 
-   boolean isEmpty();
+   K top();
 
-   default K top() {
-      return this.peek(0);
-   }
-
-   default K peek(int i) {
-      throw new UnsupportedOperationException();
-   }
+   K peek(int i);
 }

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.models;
+package dev.artixdev.practice.models;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,11 +25,9 @@ public class PotionEffectData {
         return new PotionEffectData(potionEffect, duration);
     }
 
+    /** Creates PotionEffectData with duration only (no effect type). Use create(PotionEffect, int) for full creation. */
     public static PotionEffectData create(int duration) {
-        // This method was obfuscated and its exact logic needs to be inferred or provided.
-        // It seems to create a PotionEffectData with a specific duration.
-        // For now, it's a placeholder.
-        return null;
+        return new PotionEffectData(null, duration);
     }
 
     public int getDuration() {

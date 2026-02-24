@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import java.lang.invoke.MethodHandle;
@@ -804,22 +804,36 @@ public final class ItemUtils {
    }
 
    public static String serializeItemStack(Object displayIcon) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'serializeItemStack'");
+    if (displayIcon == null || !(displayIcon instanceof ItemStack)) {
+       return "{}";
+    }
+    return JsonUtils.toJson(displayIcon);
    }
 
    public static String serializeItemStacks(Object contents) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'serializeItemStacks'");
+    if (contents == null || !(contents instanceof ItemStack[])) {
+       return "[]";
+    }
+    return JsonUtils.toJson(contents);
    }
 
    public static ItemStack deserializeItemStack(JsonObject itemObject) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'deserializeItemStack'");
+    if (itemObject == null) return null;
+    try {
+       return JsonUtils.fromJson(itemObject.toString(), ItemStack.class);
+    } catch (Exception e) {
+       logger.warn("Failed to deserialize ItemStack", e);
+       return null;
+    }
    }
 
    public static ItemStack[] deserializeItemStacks(String asString) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'deserializeItemStacks'");
+    if (asString == null || asString.isEmpty()) return new ItemStack[0];
+    try {
+       return JsonUtils.fromJson(asString, new com.google.gson.reflect.TypeToken<ItemStack[]>(){});
+    } catch (Exception e) {
+       logger.warn("Failed to deserialize ItemStack array", e);
+       return new ItemStack[0];
+    }
    }
 }

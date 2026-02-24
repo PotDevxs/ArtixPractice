@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -209,15 +209,15 @@ public final class ObjectCollections {
       }
 
       public ObjectSpliterator<K> spliterator() {
-         return this.collection.spliterator();
+         return (ObjectSpliterator<K>)this.collection.spliterator();
       }
 
       public Stream<K> stream() {
-         return this.collection.stream();
+         return (Stream<K>)this.collection.stream();
       }
 
       public Stream<K> parallelStream() {
-         return this.collection.parallelStream();
+         return (Stream<K>)this.collection.parallelStream();
       }
 
       public void clear() {
@@ -322,7 +322,7 @@ public final class ObjectCollections {
             expectedNeededNextSize = 8;
          }
 
-         return (ObjectCollection)this.builder.apply(expectedNeededNextSize);
+         return this.builder.apply(expectedNeededNextSize);
       }
    }
 

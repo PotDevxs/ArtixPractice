@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
 
 import java.util.function.DoubleToLongFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -52,7 +52,7 @@ public interface Double2LongFunction extends DoubleToLongFunction, Function<Doub
    default Long put(Double key, Long value) {
       double k = key;
       boolean containsKey = this.containsKey(k);
-      long v = this.put(k, value);
+      long v = this.put(k, value.longValue());
       return containsKey ? v : null;
    }
 

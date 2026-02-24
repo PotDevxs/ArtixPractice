@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.doubles;
 
 import java.util.function.DoubleFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -39,8 +39,8 @@ public interface Double2ObjectFunction<V> extends DoubleFunction<V>, Function<Do
    V get(double var1);
 
    default V getOrDefault(double key, V defaultValue) {
-      Object v;
-      return (v = this.get(key)) == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
+      V v = this.get(key);
+      return v == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
    }
 
    default V remove(double key) {
@@ -63,7 +63,7 @@ public interface Double2ObjectFunction<V> extends DoubleFunction<V>, Function<Do
          return null;
       } else {
          double k = (Double)key;
-         Object v;
+         V v;
          return (v = this.get(k)) == this.defaultReturnValue() && !this.containsKey(k) ? null : v;
       }
    }

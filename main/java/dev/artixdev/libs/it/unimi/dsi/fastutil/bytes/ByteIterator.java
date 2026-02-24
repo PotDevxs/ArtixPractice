@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.bytes;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.bytes;
 
 import java.util.Objects;
 import java.util.PrimitiveIterator;
@@ -25,29 +25,14 @@ public interface ByteIterator extends PrimitiveIterator<Byte, ByteConsumer> {
 
    default void forEachRemaining(IntConsumer action) {
       Objects.requireNonNull(action);
-      ByteConsumer var10001;
-      if (action instanceof ByteConsumer) {
-         var10001 = (ByteConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEachRemaining(var10001);
+      this.forEachRemaining((byte x) -> action.accept(x));
    }
 
    /** @deprecated */
    @Deprecated
    default void forEachRemaining(Consumer<? super Byte> action) {
-      ByteConsumer var10001;
-      if (action instanceof ByteConsumer) {
-         var10001 = (ByteConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEachRemaining(var10001);
+      Objects.requireNonNull(action);
+      this.forEachRemaining((byte x) -> action.accept(x));
    }
 
    default int skip(int n) {

@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.models;
+package dev.artixdev.practice.models;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -87,7 +87,58 @@ public final class PlayerProfile {
    
    @SerializedName("selectedKit")
    private KitType selectedKit;
-   
+
+   @SerializedName("unlockedAchievements")
+   private java.util.Set<String> unlockedAchievements;
+
+   @SerializedName("lastLoginDay")
+   private long lastLoginDay;
+
+   @SerializedName("loginStreak")
+   private int loginStreak;
+
+   @SerializedName("lastWeeklyClaim")
+   private long lastWeeklyClaim;
+
+   @SerializedName("selectedTitleId")
+   private String selectedTitleId;
+
+   @SerializedName("unlockedTitleIds")
+   private java.util.Set<String> unlockedTitleIds;
+
+   @SerializedName("ffaKills")
+   private int ffaKills;
+
+   @SerializedName("ffaDeaths")
+   private int ffaDeaths;
+
+   @SerializedName("coins")
+   private int coins;
+
+   @SerializedName("eventTokens")
+   private int eventTokens;
+
+   @SerializedName("rankedWins")
+   private int rankedWins;
+
+   @SerializedName("rankedLosses")
+   private int rankedLosses;
+
+   @SerializedName("tournamentsHosted")
+   private int tournamentsHosted;
+
+   @SerializedName("eventsHosted")
+   private int eventsHosted;
+
+   @SerializedName("eventWins")
+   private int eventWins;
+
+   @SerializedName("tournamentWins")
+   private int tournamentWins;
+
+   @SerializedName("requiredWinsForRanked")
+   private int requiredWinsForRanked = 10;
+
    // Transient fields (not serialized)
    private transient Match currentMatch;
    private transient Queue currentQueue;
@@ -119,6 +170,98 @@ public final class PlayerProfile {
       this.cosmeticSettings = new CosmeticSettings();
       this.playerSettings = new PlayerSettings();
       this.inMatch = false;
+      this.unlockedAchievements = new java.util.HashSet<>();
+      this.loginStreak = 0;
+      this.selectedTitleId = "none";
+      this.unlockedTitleIds = new java.util.HashSet<>();
+   }
+
+   public java.util.Set<String> getUnlockedAchievements() {
+      if (unlockedAchievements == null) unlockedAchievements = new java.util.HashSet<>();
+      return unlockedAchievements;
+   }
+
+   public void setUnlockedAchievements(java.util.Set<String> unlockedAchievements) {
+      this.unlockedAchievements = unlockedAchievements;
+   }
+
+   public boolean hasAchievement(String achievementId) {
+      return getUnlockedAchievements().contains(achievementId);
+   }
+
+   public long getLastLoginDay() {
+      return lastLoginDay;
+   }
+
+   public void setLastLoginDay(long lastLoginDay) {
+      this.lastLoginDay = lastLoginDay;
+   }
+
+   public int getLoginStreak() {
+      return loginStreak;
+   }
+
+   public void setLoginStreak(int loginStreak) {
+      this.loginStreak = loginStreak;
+   }
+
+   public long getLastWeeklyClaim() {
+      return lastWeeklyClaim;
+   }
+
+   public void setLastWeeklyClaim(long lastWeeklyClaim) {
+      this.lastWeeklyClaim = lastWeeklyClaim;
+   }
+
+   public String getSelectedTitleId() {
+      return selectedTitleId == null ? "none" : selectedTitleId;
+   }
+
+   public void setSelectedTitleId(String selectedTitleId) {
+      this.selectedTitleId = selectedTitleId;
+   }
+
+   public java.util.Set<String> getUnlockedTitleIds() {
+      if (unlockedTitleIds == null) unlockedTitleIds = new java.util.HashSet<>();
+      return unlockedTitleIds;
+   }
+
+   public void setUnlockedTitleIds(java.util.Set<String> unlockedTitleIds) {
+      this.unlockedTitleIds = unlockedTitleIds;
+   }
+
+   public boolean hasUnlockedTitleId(String titleId) {
+      return getUnlockedTitleIds().contains(titleId != null ? titleId : "none");
+   }
+
+   public void addUnlockedTitleId(String titleId) {
+      if (titleId != null && !titleId.isEmpty() && !"none".equalsIgnoreCase(titleId)) {
+         getUnlockedTitleIds().add(titleId);
+      }
+   }
+
+   public int getFfaKills() {
+      return ffaKills;
+   }
+
+   public void setFfaKills(int ffaKills) {
+      this.ffaKills = ffaKills;
+   }
+
+   public void addFfaKill() {
+      this.ffaKills++;
+   }
+
+   public int getFfaDeaths() {
+      return ffaDeaths;
+   }
+
+   public void setFfaDeaths(int ffaDeaths) {
+      this.ffaDeaths = ffaDeaths;
+   }
+
+   public void addFfaDeath() {
+      this.ffaDeaths++;
    }
    
    /**
@@ -682,63 +825,56 @@ public final class PlayerProfile {
    }
 
    public Collection<PlayerProfile> getOnlineProfiles() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getOnlineProfiles'");
+    return java.util.Collections.emptyList();
    }
 
    public OfflinePlayer getPlayer() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getPlayer'");
+    return uniqueId != null ? Bukkit.getOfflinePlayer(uniqueId) : null;
    }
 
    public long getLastSaveTime() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getLastSaveTime'");
+    return 0L;
    }
 
    public String getUsername() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getUsername'");
+    return name != null ? name : (uniqueId != null ? uniqueId.toString() : "");
    }
 
    public void updateStatistics() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updateStatistics'");
+    // No-op until statistics update logic is implemented.
    }
 
    public void updateCooldowns() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updateCooldowns'");
+    // No-op until cooldown storage is added; CooldownTask can still run.
+   }
+
+   /** Returns currently active cooldowns (e.g. name -> expiry time). Empty until cooldown storage is implemented. */
+   public java.util.Map<String, Long> getActiveCooldowns() {
+    return java.util.Collections.emptyMap();
    }
 
    public void updateLocation() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updateLocation'");
+    // No-op until location tracking is implemented.
    }
 
    public void updateInventory() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updateInventory'");
+    // No-op until inventory sync is implemented.
    }
 
    public void updateInventoryEffects() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updateInventoryEffects'");
+    // No-op until inventory effects are implemented.
    }
 
    public void updateInventoryCooldowns() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updateInventoryCooldowns'");
+    // No-op until inventory cooldown storage is implemented.
    }
 
    public void cleanupInventory() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'cleanupInventory'");
+    // No-op until inventory cleanup logic is implemented.
    }
 
-   public Object getUuid() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getUuid'");
+   public UUID getUuid() {
+    return uniqueId;
    }
 
    public KitType getSelectedKit() {
@@ -750,13 +886,11 @@ public final class PlayerProfile {
    }
 
    public Object getInventory() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getInventory'");
+    return null;
    }
 
    public Object getArmor() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getArmor'");
+    return null;
    }
 
    public int getExperience() {
@@ -804,38 +938,107 @@ public final class PlayerProfile {
    }
 
    public Object getStatistics() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getStatistics'");
+    return null;
    }
 
    public Object getSettings() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getSettings'");
+    return playerSettings;
    }
 
-   public Object getCoins() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getCoins'");
+   public int getCoins() {
+      return coins;
+   }
+
+   public void setCoins(int coins) {
+      this.coins = coins;
+   }
+
+   public int getEventTokens() {
+      return eventTokens;
+   }
+
+   public void setEventTokens(int eventTokens) {
+      this.eventTokens = eventTokens;
+   }
+
+   public int getRankedWins() {
+      return rankedWins;
+   }
+
+   public void setRankedWins(int rankedWins) {
+      this.rankedWins = rankedWins;
+   }
+
+   public int getRankedLosses() {
+      return rankedLosses;
+   }
+
+   public void setRankedLosses(int rankedLosses) {
+      this.rankedLosses = rankedLosses;
+   }
+
+   public int getUnrankedWins() {
+      return Math.max(0, wins - rankedWins);
+   }
+
+   public int getUnrankedLosses() {
+      return Math.max(0, losses - rankedLosses);
+   }
+
+   public int getTournamentsHosted() {
+      return tournamentsHosted;
+   }
+
+   public void setTournamentsHosted(int tournamentsHosted) {
+      this.tournamentsHosted = tournamentsHosted;
+   }
+
+   public int getEventsHosted() {
+      return eventsHosted;
+   }
+
+   public void setEventsHosted(int eventsHosted) {
+      this.eventsHosted = eventsHosted;
+   }
+
+   public int getEventWins() {
+      return eventWins;
+   }
+
+   public void setEventWins(int eventWins) {
+      this.eventWins = eventWins;
+   }
+
+   public int getTournamentWins() {
+      return tournamentWins;
+   }
+
+   public void setTournamentWins(int tournamentWins) {
+      this.tournamentWins = tournamentWins;
+   }
+
+   public int getRequiredWinsForRanked() {
+      return requiredWinsForRanked;
+   }
+
+   public void setRequiredWinsForRanked(int requiredWinsForRanked) {
+      this.requiredWinsForRanked = requiredWinsForRanked;
    }
 
    public Object getFirstJoin() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getFirstJoin'");
+    return null;
    }
 
    public Object getPreferences() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getPreferences'");
+    return null;
    }
 
    public String getWinstreak() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getWinstreak'");
+    return String.valueOf(winStreak);
    }
 
    public Skin getSkin() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getSkin'");
+    return null;
    }
 
 }

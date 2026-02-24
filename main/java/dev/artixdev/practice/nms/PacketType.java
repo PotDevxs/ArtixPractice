@@ -1,7 +1,7 @@
 ﻿package dev.artixdev.practice.nms;
 
 public enum PacketType {
-    LIGHTNING_BOLT,
+    LIGHTNING_ARTIX,
     EXPLOSION,
     SOUND,
     PARTICLE,

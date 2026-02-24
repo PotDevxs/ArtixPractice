@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -161,9 +161,7 @@ public class IntOpenHashSet extends AbstractIntSet implements Serializable, Clon
    }
 
    public static IntOpenHashSet toSetWithExpectedSize(IntStream stream, int expectedSize) {
-      return expectedSize <= 16 ? toSet(stream) : (IntOpenHashSet)stream.collect(new IntCollections.SizeDecreasingSupplier(expectedSize, (size) -> {
-         return size <= 16 ? new IntOpenHashSet() : new IntOpenHashSet(size);
-      }), IntOpenHashSet::add, IntOpenHashSet::addAll);
+      return expectedSize <= 16 ? toSet(stream) : stream.collect(() -> new IntCollections.SizeDecreasingSupplier<>(expectedSize, size -> size <= 16 ? new IntOpenHashSet() : new IntOpenHashSet(size)).get(), (set, value) -> set.add(value), (a, b) -> a.addAll(b));
    }
 
    private int realSize() {

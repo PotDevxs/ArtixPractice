@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.function.IntToLongFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -32,6 +32,10 @@ public interface Int2LongFunction extends IntToLongFunction, Function<Integer, L
       return this.get(operand);
    }
 
+   default Long apply(Integer k) {
+      return k == null ? null : get(k);
+   }
+
    default long put(int key, long value) {
       throw new UnsupportedOperationException();
    }
@@ -52,7 +56,7 @@ public interface Int2LongFunction extends IntToLongFunction, Function<Integer, L
    default Long put(Integer key, Long value) {
       int k = key;
       boolean containsKey = this.containsKey(k);
-      long v = this.put(k, value);
+      long v = this.put(k, value.longValue());
       return containsKey ? v : null;
    }
 

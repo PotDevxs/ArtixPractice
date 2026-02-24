@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
 
 import java.util.Objects;
 import java.util.Spliterator.OfPrimitive;
@@ -8,29 +8,15 @@ public interface ShortSpliterator extends OfPrimitive<Short, ShortConsumer, Shor
    /** @deprecated */
    @Deprecated
    default boolean tryAdvance(Consumer<? super Short> action) {
-      ShortConsumer var10001;
-      if (action instanceof ShortConsumer) {
-         var10001 = (ShortConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      return this.tryAdvance(var10001);
+      Objects.requireNonNull(action);
+      return this.tryAdvance((short x) -> action.accept(x));
    }
 
    /** @deprecated */
    @Deprecated
    default void forEachRemaining(Consumer<? super Short> action) {
-      ShortConsumer var10001;
-      if (action instanceof ShortConsumer) {
-         var10001 = (ShortConsumer)action;
-      } else {
-         Objects.requireNonNull(action);
-         var10001 = action::accept;
-      }
-
-      this.forEachRemaining(var10001);
+      Objects.requireNonNull(action);
+      this.forEachRemaining((short x) -> action.accept(x));
    }
 
    default long skip(long n) {

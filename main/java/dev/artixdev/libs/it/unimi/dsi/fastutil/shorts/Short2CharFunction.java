@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
 
 import java.util.function.IntUnaryOperator;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -55,7 +55,7 @@ public interface Short2CharFunction extends IntUnaryOperator, Function<Short, Ch
    default Character put(Short key, Character value) {
       short k = key;
       boolean containsKey = this.containsKey(k);
-      char v = this.put(k, value);
+      char v = this.put(k, value.charValue());
       return containsKey ? v : null;
    }
 

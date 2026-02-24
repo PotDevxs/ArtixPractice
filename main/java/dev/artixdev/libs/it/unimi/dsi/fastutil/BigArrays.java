@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil;
+package dev.artixdev.libs.it.unimi.dsi.fastutil;
 
 import java.lang.reflect.Array;
 import java.util.Objects;
@@ -776,11 +776,11 @@ public class BigArrays {
    }
 
    public static void incr(int[][] array, long index) {
-      int var10002 = array[segment(index)][displacement(index)]++;
+      array[segment(index)][displacement(index)]++;
    }
 
    public static void decr(int[][] array, long index) {
-      int var10002 = array[segment(index)][displacement(index)]--;
+      array[segment(index)][displacement(index)]--;
    }
 
    public static void assertBigArray(int[][] array) {
@@ -1213,11 +1213,11 @@ public class BigArrays {
    }
 
    public static void incr(long[][] array, long index) {
-      int var10002 = array[segment(index)][displacement(index)]++;
+      array[segment(index)][displacement(index)]++;
    }
 
    public static void decr(long[][] array, long index) {
-      int var10002 = array[segment(index)][displacement(index)]--;
+      array[segment(index)][displacement(index)]--;
    }
 
    public static void assertBigArray(long[][] array) {
@@ -1605,11 +1605,11 @@ public class BigArrays {
    }
 
    public static void incr(double[][] array, long index) {
-      int var10002 = array[segment(index)][displacement(index)]++;
+      array[segment(index)][displacement(index)]++;
    }
 
    public static void decr(double[][] array, long index) {
-      int var10002 = array[segment(index)][displacement(index)]--;
+      array[segment(index)][displacement(index)]--;
    }
 
    public static void assertBigArray(double[][] array) {
@@ -3153,11 +3153,11 @@ public class BigArrays {
    }
 
    public static void incr(float[][] array, long index) {
-      int var10002 = array[segment(index)][displacement(index)]++;
+      array[segment(index)][displacement(index)]++;
    }
 
    public static void decr(float[][] array, long index) {
-      int var10002 = array[segment(index)][displacement(index)]--;
+      array[segment(index)][displacement(index)]--;
    }
 
    public static void assertBigArray(float[][] array) {
@@ -3655,15 +3655,15 @@ public class BigArrays {
 
    public static <K> K[][] wrap(K[] array) {
       if (array.length == 0 && array.getClass() == Object[].class) {
-         return ObjectBigArrays.EMPTY_BIG_ARRAY;
+         return (K[][])ObjectBigArrays.EMPTY_BIG_ARRAY;
       } else {
-         Object[][] bigArray;
+         K[][] bigArray;
          if (array.length <= 134217728) {
-            bigArray = (Object[][])Array.newInstance(array.getClass(), 1);
+            bigArray = (K[][])Array.newInstance(array.getClass(), 1);
             bigArray[0] = array;
             return bigArray;
          } else {
-            bigArray = ObjectBigArrays.newBigArray(array.getClass(), (long)array.length);
+            bigArray = (K[][])ObjectBigArrays.newBigArray(array.getClass(), (long)array.length);
 
             for(int i = 0; i < bigArray.length; ++i) {
                System.arraycopy(array, (int)start(i), bigArray[i], 0, bigArray[i].length);
@@ -3682,19 +3682,19 @@ public class BigArrays {
       ensureLength(length);
       int valid = array.length - (array.length != 0 && (array.length <= 0 || array[array.length - 1].length != 134217728) ? 1 : 0);
       int baseLength = (int)(length + 134217727L >>> 27);
-      K[][] base = (Object[][])java.util.Arrays.copyOf(array, baseLength);
+      K[][] base = (K[][])java.util.Arrays.copyOf(array, baseLength);
       Class<?> componentType = array.getClass().getComponentType();
       int residual = (int)(length & 134217727L);
       int i;
       if (residual != 0) {
          for(i = valid; i < baseLength - 1; ++i) {
-            base[i] = (Object[])Array.newInstance(componentType.getComponentType(), 134217728);
+            base[i] = (K[])Array.newInstance(componentType.getComponentType(), 134217728);
          }
 
-         base[baseLength - 1] = (Object[])Array.newInstance(componentType.getComponentType(), residual);
+         base[baseLength - 1] = (K[])Array.newInstance(componentType.getComponentType(), residual);
       } else {
          for(i = valid; i < baseLength; ++i) {
-            base[i] = (Object[])Array.newInstance(componentType.getComponentType(), 134217728);
+            base[i] = (K[])Array.newInstance(componentType.getComponentType(), 134217728);
          }
       }
 
@@ -3726,7 +3726,7 @@ public class BigArrays {
          return array;
       } else {
          int baseLength = (int)(length + 134217727L >>> 27);
-         K[][] base = (Object[][])java.util.Arrays.copyOf(array, baseLength);
+         K[][] base = (K[][])java.util.Arrays.copyOf(array, baseLength);
          int residual = (int)(length & 134217727L);
          if (residual != 0) {
             base[baseLength - 1] = ObjectArrays.trim(base[baseLength - 1], residual);
@@ -3753,9 +3753,9 @@ public class BigArrays {
    }
 
    public static <K> K[][] copy(K[][] array) {
-      K[][] base = (Object[][])array.clone();
+      K[][] base = (K[][])array.clone();
 
-      for(int i = base.length; i-- != 0; base[i] = (Object[])array[i].clone()) {
+      for(int i = base.length; i-- != 0; base[i] = (K[])array[i].clone()) {
       }
 
       return base;
@@ -3906,7 +3906,6 @@ public class BigArrays {
          long y = 0L;
          int i = a.length;
 
-         int i;
          while(i-- != 0) {
             int[] t = a[i];
 

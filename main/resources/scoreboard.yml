@@ -1,641 +1,621 @@
-# This is the scoreboard config file for Bolt.
-# Placeholders and documentation can be viewed at: https://docs.refinedev.xyz/
-# You need help with the configuration or have any questions related to Bolt?
-# Join us in our Discord: https://dsc.gg/refine
+#############################################################
+#                                                           #
+#    ArtixPractice | Versão exclusiva do Plugin conhecido   #
+#  Recuse imitações, Adquira o melhor de todos em nosso...  #
+#  Discord logo abaixo, está versão é exclusiva do Artix    #
+#                                                           #
+#        ARTIXPRACTICE | PRACTICE CORE [1.7x - 1.21x]       #
+#                LOJA: artixdevelopment.com                 #
+#                                                           #
+#        ArtixDevelopment • Melhor Loja de Plugins          #
+#                                                           #
+#    Discord: https://discord.gg/yqK5wyPPV6 | @Faastyzin    #
+#                                                           #
+#############################################################
 
 SCOREBOARD:
-  TITLE: "&b&lArtix &7&l%splitter% &fPractice"
-  
-  # Animated Title System - Frame Based
+  TITLE: '&b&lPractice'
   ANIMATED_TITLE:
     ENABLED: true
     FRAMES:
-      - "&b&lPractice"
-      - "&b&lPractice"
-      - "&b&lPractice"
-      - "&3&lP&b&lractice"
-      - "&3&lPr&b&lactice"
-      - "&3&lPra&b&lctice"
-      - "&3&lPrac&b&ltice"
-      - "&3&lPract&b&lice"
-      - "&3&lPracti&b&lce"
-      - "&3&lPractic&b&le"
-      - "&3&lPractice"
-      - "&b&lP&3&lractice"
-      - "&b&lPr&3&lactice"
-      - "&b&lPra&3&lctice"
-      - "&b&lPrac&3&ltice"
-      - "&b&lPract&3&lice"
-      - "&b&lPracti&3&lce"
-      - "&b&lPractic&3&le"
-      - "&b&lPractice"
-      - "&b&lPractice"
-      - "&b&lPractice"
-    FRAME_DURATION: 2  # Ticks per frame (20 ticks = 1 second)
-    LOOP_ENABLED: true  # Whether to loop back to first frame
-  
-  ELO-RANGE-FORMAT: "{min_range} -> {max_range}"
-  ENDING-SCOREBOARD-ENABLED: true
-  
+      - '&b&lPractice'
+      - '&3&lP&b&lractice'
+      - '&b&lP&3&lr&b&lactice'
+      - '&b&lPr&3&la&b&lctice'
+      - '&b&lPra&3&lc&b&ltice'
+      - '&b&lPra&3&lc&3&lt&b&lice'
+      - '&b&lPract&3&li&b&lce'
+      - '&b&lPracti&3&lc&b&le'
+      - '&b&lPractice'
+      - '&b&lPractice'
+      - '&b&lPractice'
+      - '&b&lPractice'
+      - '&b&lPractice'
+    FRAME_DURATION: 0.2
+    LOOP_ENABLED: true
   LOBBY:
-    - "&7&m----------------------"
-    - "&fOnline: &b{online}"
-    - "&fIn Fights: &b{in_fights}"
-    - "&fIn Queues: &b{in_queues}"
-    - ""
-    - "&bartixstore.com"
-    - "&7&m----------------------"
-  
+    - '&7&m----------------------'
+    - '&fOnline: &b{online}'
+    - '&fPlaying: &b{in_fights}'
+    - ''
+    - '&fLevel: {level_color}{level} &7({level_percentage})'
+    - '{progress_bar_10}'
+    - ''
+    - '&fCoins: &b{coins}'
+    - '&fTokens: &b{tokens}'
+    - ''
+    - '&bartixdevelopment.com'
+    - '&7&m----------------------'
   PARTY:
-    - "&7&m----------------------"
-    - "&fOnline: &b{online}"
-    - "&fIn Fights: &b{in_fights}"
-    - ""
-    - "&9&lYour Party"
-    - " &fLeader: &a{party_leader}"
-    - " &fMembers: &e{party_size}/{party_limit}"
-    - ""
-    - "&bartixstore.com"
-    - "&7&m----------------------"
-  
+    - '&7&m----------------------'
+    - '&c&lLobby'
+    - ' &fOnline: &c{online}'
+    - ' &fQueuing: &c{in_queues}'
+    - ' &fFighting: &c{in_fights}'
+    - ''
+    - '&c&lParty'
+    - ' &fLeader: &c{party_leader}'
+    - ' &fMembers: &c{party_size}/{party_limit}'
+    - ''
+    - '&7&otest.refinedev.xyz'
+    - '&7&m----------------------'
   TOURNAMENT:
-    - "&7&m----------------------"
-    - "&fOnline: &b{online}"
-    - "&fIn Fights: &b{in_fights}"
-    - ""
-    - "&b&lTournament &7({tournament_team_size} VS {tournament_team_size})"
-    - " &fKit: &b{tournament_kit}"
-    - " &fRound: &b{tournament_round}"
-    - " &fPlayers: &b{tournament_players}/{tournament_max_players}"
-    - ""
-    - "&bartixstore.com"
-    - "&7&m----------------------"
-  
+    - '&7&m----------------------'
+    - '&c&lLobby'
+    - ' &fOnline: &c{online}'
+    - ' &fQueuing: &c{in_queues}'
+    - ' &fFighting: &c{in_fights}'
+    - ''
+    - '&c&lTournament &7({tournament_team_size} VS {tournament_team_size})'
+    - ' &fKit: &c{tournament_kit}'
+    - ' &fRound: &c{tournament_round}'
+    - ' &fPlayers: &c{tournament_players}/{tournament_max_players}'
+    - ''
+    - '&7&otest.refinedev.xyz'
+    - '&7&m----------------------'
   UNRANKED_QUEUE:
-    - "&7&m----------------------"
-    - "&fOnline: &b{online}"
-    - "&fIn Fights: &b{in_fights}"
-    - ""
-    - "&b&lQueued..."
-    - " &fType: &b{queue_type}"
-    - " &fKit: &b{queue_kit}"
-    - " &fTime: &b{queue_duration}"
-    - ""
-    - "&bartixstore.com"
-    - "&7&m----------------------"
-  
+    - '&7&m----------------------'
+    - '&c&lLobby'
+    - ' &fOnline: &c{online}'
+    - ' &fQueuing: &c{in_queues}'
+    - ' &fFighting: &c{in_fights}'
+    - ''
+    - '&c&lQueue'
+    - ' &fType: &c{queue_type}'
+    - ' &fKit: &c{queue_kit}'
+    - ' &fDuration: &c{queue_duration}'
+    - ''
+    - '&7&otest.refinedev.xyz'
+    - '&7&m----------------------'
   RANKED_QUEUE:
-    - "&7&m----------------------"
-    - "&fOnline: &b{online}"
-    - "&fIn Fights: &b{in_fights}"
-    - ""
-    - "&c&lQueued...."
-    - " &fType: &b{queue_type}"
-    - " &fKit: &b{queue_kit}"
-    - " &fTime: &b{queue_duration}"
-    - ""
-    - "&bartixstore.com"
-    - "&7&m----------------------"
-  
+    - '&7&m----------------------'
+    - '&c&lLobby'
+    - ' &fOnline: &c{online}'
+    - ' &fQueuing: &c{in_queues}'
+    - ' &fFighting: &c{in_fights}'
+    - ''
+    - '&c&lQueue'
+    - ' &fType: &c{queue_type}'
+    - ' &fKit: &c{queue_kit}'
+    - ' &fDuration: &c{queue_duration}'
+    - ''
+    - '&7&otest.refinedev.xyz'
+    - '&7&m----------------------'
   MATCH:
     SOLO:
-      - "&7&m----------------------"
-      - "&fKit: &b{match_kit}"
-      - "&fDuration: &b{match_duration}"
-      - ""
-      - "&fOpponent: &b{opponent_name}"
-      - ""
-      - "&fYour Ping: &b{your_ping}ms"
-      - "&fTheir Ping: &b{opponent_ping}ms"
-      - ""
-      - "&bartixstore.com"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fRival: &c{opponent_name}'
+      - ' &fDuration: &c{match_duration}'
+      - ' &fPing: &a{your_ping}ms &7%splitter% &c{opponent_ping}ms'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     SOLO_BEST_OF:
-      - "&7&m----------------------"
-      - "&fKit: &b{match_kit}"
-      - "&fDuration: &b{match_duration}"
-      - ""
-      - "&b&lPoints"
-      - " &fYou: &a{your_points_formatted}"
-      - " &fTheir: &c{opponent_points_formatted}"
-      - ""
-      - "&bartixstore.com"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fRival: &c{opponent_name}'
+      - ' &fDuration: &c{match_duration}'
+      - ''
+      - '&c&lPoints'
+      - ' &fYour: &a{your_points_formatted}'
+      - ' &fTheir: &c{opponent_points_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     SOLO_BOXING:
-      - "&7&m----------------------"
-      - "&fKit: &b{match_kit}"
-      - "&fDuration: &b{match_duration}"
-      - ""
-      - "&b&lHits &r{hit_difference}"
-      - " &fYour Hits: &a{your_hits} &e{your_combo}"
-      - " &fTheir Hits: &c{opponent_hits} &e{opponent_combo}"
-      - ""
-      - "&bartixstore.com"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fRival: &c{opponent_name}'
+      - ' &fDuration: &c{match_duration}'
+      - ''
+      - '&c&lHits &r{hit_difference}'
+      - ' &fYour Hits: &a{your_hits} &e{your_combo}'
+      - ' &fTheir Hits: &c{opponent_hits} &e{opponent_combo}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     SOLO_BRIDGE:
-      - "&7&m----------------------"
-      - "&fRival: &c{opponent_name}"
-      - "&fKills: &c{your_kills}"
-      - "&fDuracao: &c{match_duration}"
-      - ""
-      - "&c&lScore"
-      - " &c[V] &r{red_points_formatted}"
-      - " &9[A] &r{blue_points_formatted}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fRival: &c{opponent_name}'
+      - ' &fKills: &c{your_kills}'
+      - ' &fDuration: &c{match_duration}'
+      - ''
+      - '&c&lScore'
+      - ' &c[R] &r{red_points_formatted}'
+      - ' &9[B] &r{blue_points_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     SOLO_BATTLE_RUSH:
-      - "&7&m----------------------"
-      - "&fRival: &c{opponent_name}"
-      - "&fDuracao: &c{match_duration}"
-      - ""
-      - "&c&lScore"
-      - " &c[V] &r{red_points_formatted}"
-      - " &9[A] &r{blue_points_formatted}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fRival: &c{opponent_name}'
+      - ' &fDuration: &c{match_duration}'
+      - ''
+      - '&c&lScore'
+      - ' &c[R] &r{red_points_formatted}'
+      - ' &9[B] &r{blue_points_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     SOLO_MLG_RUSH:
-      - "&7&m----------------------"
-      - "&fRival: &c{opponent_name}"
-      - "&fKills: &c{your_kills}"
-      - "&fDuracao: &c{match_duration}"
-      - ""
-      - "&c&lScore"
-      - " &aVoce: &r{your_points_formatted}"
-      - " &cOponente: &r{their_points_formatted}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fRival: &c{opponent_name}'
+      - ' &fKills: &c{your_kills}'
+      - ' &fDuration: &c{match_duration}'
+      - ''
+      - '&c&lScore'
+      - ' &aYou: &r{your_points_formatted}'
+      - ' &cThem: &r{their_points_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     SOLO_PEARL_FIGHT:
-      - "&7&m----------------------"
-      - "&fRival: &c{opponent_name}"
-      - "&fDuracao: &c{match_duration}"
-      - ""
-      - "&c&lVidas"
-      - " &c[V] &r{red_lives_formatted}"
-      - " &9[A] &r{blue_lives_formatted}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fRival: &c{opponent_name}'
+      - ' &fDuration: &c{match_duration}'
+      - ''
+      - '&c&lLives'
+      - ' &c[R] &r{red_lives_formatted}'
+      - ' &9[B] &r{blue_lives_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     SOLO_BEDWARS:
-      - "&7&m----------------------"
-      - "&fRival: &c{opponent_name}"
-      - "&fKills: &c{your_kills}"
-      - "&fDuracao: &c{match_duration}"
-      - ""
-      - "&c&lCamas"
-      - " &c[V] &fVermelho: &r{bedwars_red_formatted}"
-      - " &9[A] &fAzul: &r{bedwars_blue_formatted}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fRival: &c{opponent_name}'
+      - ' &fKills: &c{your_kills}'
+      - ' &fDuration: &c{match_duration}'
+      - ''
+      - '&c&lBeds'
+      - ' &c[R] &fRed: &r{bedwars_red_formatted}'
+      - ' &9[B] &fBlue: &r{bedwars_blue_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     SOLO_TOP_FIGHT:
-      - "&7&m----------------------"
-      - "&fRival: &c{opponent_name}"
-      - "&fDuracao: &c{match_duration}"
-      - ""
-      - "&c&lVidas"
-      - " &c[V] &r{red_lives_formatted}"
-      - " &9[A] &r{blue_lives_formatted}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fRival: &c{opponent_name}'
+      - ' &fDuration: &c{match_duration}'
+      - ''
+      - '&c&lLives'
+      - ' &c[R] &r{red_lives_formatted}'
+      - ' &9[B] &r{blue_lives_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     SOLO_STICK_FIGHT:
-      - "&7&m----------------------"
-      - "&fRival: &c{opponent_name}"
-      - "&fKills: &c{your_kills}"
-      - "&fDuracao: &c{match_duration}"
-      - ""
-      - "&c&lScore"
-      - " &aVoce: &r{your_points_formatted}"
-      - " &cOponente: &r{their_points_formatted}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fRival: &c{opponent_name}'
+      - ' &fKills: &c{your_kills}'
+      - ' &fDuration: &c{match_duration}'
+      - ''
+      - '&c&lScore'
+      - ' &aYou: &r{your_points_formatted}'
+      - ' &cThem: &r{their_points_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     TEAM:
-      - "&7&m----------------------"
-      - "&fDuracao: &c{match_duration}"
-      - "&fKit: &c{match_kit}"
-      - ""
-      - "&fSeu Time: &c{your_team_alive}/{your_team_count}"
-      - "&fTime Rival: &c{opponent_team_alive}/{opponent_team_count}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fDuration: &c{match_duration}'
+      - ' &fKit: &c{match_kit}'
+      - ''
+      - ' &fYour Team: &c{your_team_alive}/{your_team_count}'
+      - ' &fRival Team: &c{opponent_team_alive}/{opponent_team_count}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     TEAM_BEST_OF:
-      - "&7&m----------------------"
-      - "&fDuracao: &c{match_duration}"
-      - "&fKit: &c{match_kit}"
-      - ""
-      - "&c&lPoints"
-      - " &fVoce: &a{your_points_formatted}"
-      - " &fOponente: &c{opponent_points_formatted}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fDuration: &c{match_duration}'
+      - ' &fKit: &c{match_kit}'
+      - ''
+      - '&c&lPoints'
+      - ' &fYour: &a{your_points_formatted}'
+      - ' &fTheir: &c{opponent_points_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     TEAM_BOXING:
-      - "&7&m----------------------"
-      - "&fDuracao: &c{match_duration}"
-      - "&fKit: &c{match_kit}"
-      - ""
-      - "&c&lHits &r{hit_difference}"
-      - " &fSeu Time Hits: &a{your_hits}"
-      - " &fTime Rival Hits: &c{opponent_hits}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fDuration: &c{match_duration}'
+      - ' &fKit: &c{match_kit}'
+      - ''
+      - '&c&lHits &r{hit_difference}'
+      - ' &fYour Team Hits: &a{your_hits}'
+      - ' &fRival Team Hits: &c{opponent_hits}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     TEAM_BRIDGE:
-      - "&7&m----------------------"
-      - "&fDuracao: &c{match_duration}"
-      - "&fKit: &c{match_kit}"
-      - ""
-      - "&c&lScore"
-      - " &c[V] &r{red_points_formatted}"
-      - " &9[A] &r{blue_points_formatted}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fDuration: &c{match_duration}'
+      - ' &fKit: &c{match_kit}'
+      - ''
+      - '&c&lScore'
+      - ' &c[R] &r{red_points_formatted}'
+      - ' &9[B] &r{blue_points_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     TEAM_BEDWARS:
-      - "&7&m----------------------"
-      - "&fDuracao: &c{match_duration}"
-      - "&fKills: &c{your_kills}"
-      - ""
-      - "&c&lBeds"
-      - " &c[V] &fVermelho: &r{bedwars_red_formatted}"
-      - " &9[A] &fAzul: &r{bedwars_blue_formatted}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fDuration: &c{match_duration}'
+      - ' &fKills: &c{your_kills}'
+      - ''
+      - '&c&lBeds'
+      - ' &c[R] &fRed: &r{bedwars_red_formatted}'
+      - ' &9[B] &fBlue: &r{bedwars_blue_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     TEAM_BATTLE_RUSH:
-      - "&7&m----------------------"
-      - "&fDuracao: &c{match_duration}"
-      - "&fKit: &c{match_kit}"
-      - ""
-      - "&c&lScore"
-      - " &c[V] &r{red_points_formatted}"
-      - " &9[A] &r{blue_points_formatted}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fDuration: &c{match_duration}'
+      - ' &fKit: &c{match_kit}'
+      - ''
+      - '&c&lScore'
+      - ' &c[R] &r{red_points_formatted}'
+      - ' &9[B] &r{blue_points_formatted}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     TEAM_HCF:
-      - "&7&m----------------------"
-      - "&fDuracao: &c{match_duration}"
-      - "&fKit: &c{match_kit}"
-      - ""
-      - " &fSeu Time: &c{your_team_alive}/{your_team_count}"
-      - " &fTime Rival: &c{opponent_team_alive}/{opponent_team_count}"
-      - "{bard}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fDuration: &c{match_duration}'
+      - ' &fKit: &c{match_kit}'
+      - ''
+      - ' &fYour Team: &c{your_team_alive}/{your_team_count}'
+      - ' &fRival Team: &c{opponent_team_alive}/{opponent_team_count}'
+      - '{bard}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     HCF_BARD_ADDITION:
-      - " &fBard Energia: &c{your_bard_energy}"
-    
+      - ' &fBard Energy: &c{your_bard_energy}'
     FFA:
-      - "&7&m----------------------"
-      - " &fPlayers: &c{alive_count}/{total_count}"
-      - " &fKit: &c{match_kit}"
-      - " &fDuracao: &c{match_duration}"
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-    
+      - '&7&m----------------------'
+      - '&c&lFight'
+      - ' &fPlayers: &c{alive_count}/{total_count}'
+      - ' &fKit: &c{match_kit}'
+      - ' &fDuration: &c{match_duration}'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
     ENDING:
-      - "&7&m----------------------"
-      - "&cPartida Status: &fEnded"
-      - ""
-      - "&7Sua Partida terminou,"
-      - "&7voltando ao spawn."
-      - ""
-      - "&cyulgar.com.br"
-      - "&7&m----------------------"
-  
+      - '&7&m----------------------'
+      - '&cMatch Status: &fEnded'
+      - ''
+      - '&7Your match has ended,'
+      - '&7teleporting you to spawn.'
+      - ''
+      - '&7&otest.refinedev.xyz'
+      - '&7&m----------------------'
+  ELO-RANGE-FORMAT: '{min_range} -> {max_range}'
+  ENDING-SCOREBOARD-ENABLED: true
   SPECTATOR:
     MATCH:
       SOLO:
-        - "&7&m----------------------"
-        - "&c&lFight (Solo)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - " &c{playerA_name} &7({playerA_ping})"
-        - " &7&ovs"
-        - " &c{playerB_name} &7({playerB_ping})"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Solo)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - ' &c{playerA_name} &7({playerA_ping})'
+        - ' &7&ovs'
+        - ' &c{playerB_name} &7({playerB_ping})'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       SOLO_BEST_OF:
-        - "&7&m----------------------"
-        - "&c&lFight (Solo)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lPoints"
-        - " &fPlayer A: &e{playerA_points_formatted}"
-        - " &fPlayer B: &e{playerB_points_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Solo)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lPoints'
+        - ' &fPlayer A: &e{playerA_points_formatted}'
+        - ' &fPlayer B: &e{playerB_points_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       SOLO_BOXING:
-        - "&7&m----------------------"
-        - "&c&lFight (Solo)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lHits"
-        - " &fPlayerA Hits: &a{playerA_hits}"
-        - " &fPlayerB Hits: &c{playerB_hits}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Solo)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lHits'
+        - ' &fPlayerA Hits: &a{playerA_hits}'
+        - ' &fPlayerB Hits: &c{playerB_hits}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       SOLO_BATTLE_RUSH:
-        - "&7&m----------------------"
-        - "&c&lFight (Solo)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lScore"
-        - " &c[R] &r{red_points_formatted}"
-        - " &9[B] &r{blue_points_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Solo)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lScore'
+        - ' &c[R] &r{red_points_formatted}'
+        - ' &9[B] &r{blue_points_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       SOLO_BRIDGE:
-        - "&7&m----------------------"
-        - "&c&lFight (Solo)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lScore"
-        - " &c[R] &r{red_points_formatted}"
-        - " &9[B] &r{blue_points_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Solo)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lScore'
+        - ' &c[R] &r{red_points_formatted}'
+        - ' &9[B] &r{blue_points_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       SOLO_MLG_RUSH:
-        - "&7&m----------------------"
-        - "&c&lFight (Solo)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lScore"
-        - " &ePlayerA &r{playerA_points_formatted}"
-        - " &ePlayerB &r{playerA_points_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Solo)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lScore'
+        - ' &ePlayerA &r{playerA_points_formatted}'
+        - ' &ePlayerB &r{playerA_points_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       SOLO_STICK_FIGHT:
-        - "&7&m----------------------"
-        - "&c&lFight (Solo)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lScore"
-        - " &ePlayerA &r{playerA_points_formatted}"
-        - " &ePlayerB &r{playerB_points_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Solo)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lScore'
+        - ' &ePlayerA &r{playerA_points_formatted}'
+        - ' &ePlayerB &r{playerB_points_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       SOLO_BEDWARS:
-        - "&7&m----------------------"
-        - "&c&lFight (Solo)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lBeds"
-        - " &c[R] &fRed: &r{bedwars_red_formatted}"
-        - " &9[B] &fBlue: &r{bedwars_blue_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Solo)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lBeds'
+        - ' &c[R] &fRed: &r{bedwars_red_formatted}'
+        - ' &9[B] &fBlue: &r{bedwars_blue_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       SOLO_PEARL_FIGHT:
-        - "&7&m----------------------"
-        - "&c&lFight (Solo)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lLives"
-        - " &c[R] &r{red_lives_formatted}"
-        - " &9[B] &r{blue_lives_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Solo)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lLives'
+        - ' &c[R] &r{red_lives_formatted}'
+        - ' &9[B] &r{blue_lives_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       SOLO_TOP_FIGHT:
-        - "&7&m----------------------"
-        - "&c&lFight (Solo)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lLives"
-        - " &c[R] &r{red_lives_formatted}"
-        - " &9[B] &r{blue_lives_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Solo)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lLives'
+        - ' &c[R] &r{red_lives_formatted}'
+        - ' &9[B] &r{blue_lives_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       TEAM:
-        - "&7&m----------------------"
-        - "&c&lFight (Team)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - " &cTeam A &7({teamA_size}&7)"
-        - "&7vs"
-        - " &cTeam B &7({teamB_size}&7)"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Team)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - ' &cTeam A &7({teamA_size}&7)'
+        - '&7vs'
+        - ' &cTeam B &7({teamB_size}&7)'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       TEAM_BEST_OF:
-        - "&7&m----------------------"
-        - "&c&lFight (Team)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lPoints"
-        - " &fTeam A: &e{teamA_points_formatted}"
-        - " &fTeam B: &e{teamB_points_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Team)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lPoints'
+        - ' &fTeam A: &e{teamA_points_formatted}'
+        - ' &fTeam B: &e{teamB_points_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       TEAM_BOXING:
-        - "&7&m----------------------"
-        - "&c&lFight (Team)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lHits"
-        - " &fTeamA Hits: &a{teamA_hits}"
-        - " &fTeamB Hits: &c{teamB_hits}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Team)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lHits'
+        - ' &fTeamA Hits: &a{teamA_hits}'
+        - ' &fTeamB Hits: &c{teamB_hits}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       TEAM_BRIDGE:
-        - "&7&m----------------------"
-        - "&c&lFight (Team)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lScore"
-        - " &c[R] &r{red_points_formatted}"
-        - " &9[B] &r{blue_points_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Team)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lScore'
+        - ' &c[R] &r{red_points_formatted}'
+        - ' &9[B] &r{blue_points_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       TEAM_BATTLE_RUSH:
-        - "&7&m----------------------"
-        - "&c&lFight (Team)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lScore"
-        - " &c[R] &r{red_points_formatted}"
-        - " &9[B] &r{blue_points_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Team)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lScore'
+        - ' &c[R] &r{red_points_formatted}'
+        - ' &9[B] &r{blue_points_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       TEAM_BEDWARS:
-        - "&7&m----------------------"
-        - "&c&lFight (Team)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - "&c&lBeds"
-        - " &c[R] &fRed: &r{bedwars_red_formatted}"
-        - " &9[B] &fBlue: &r{bedwars_blue_formatted}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Team)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - '&c&lBeds'
+        - ' &c[R] &fRed: &r{bedwars_red_formatted}'
+        - ' &9[B] &fBlue: &r{bedwars_blue_formatted}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       TEAM_HCF:
-        - "&7&m----------------------"
-        - "&c&lFight (Team)"
-        - " &fKit: &c{match_kit}"
-        - " &fArena: &c{match_arena}"
-        - " &fDuration: &c{match_duration}"
-        - ""
-        - " &cTeam A &7({teamA_size}&7)"
-        - "&7vs"
-        - " &cTeam B &7({teamB_size}&7)"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (Team)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fArena: &c{match_arena}'
+        - ' &fDuration: &c{match_duration}'
+        - ''
+        - ' &cTeam A &7({teamA_size}&7)'
+        - '&7vs'
+        - ' &cTeam B &7({teamB_size}&7)'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       FFA:
-        - "&7&m----------------------"
-        - "&c&lFight (FFA)"
-        - " &fKit: &c{match_kit}"
-        - " &fDuration: &c{match_duration}"
-        - " &fAlive: &c{players_alive}/{player_count}"
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-      
+        - '&7&m----------------------'
+        - '&c&lFight (FFA)'
+        - ' &fKit: &c{match_kit}'
+        - ' &fDuration: &c{match_duration}'
+        - ' &fAlive: &c{players_alive}/{player_count}'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
       ENDING:
-        - "&7&m----------------------"
-        - "&c&lFight"
-        - " &cMatch Status: &fEnded"
-        - ""
-        - " &7The match has ended,"
-        - " &7teleporting you to spawn."
-        - ""
-        - "&7&otest.refinedev.xyz"
-        - "&7&m----------------------"
-  
+        - '&7&m----------------------'
+        - '&c&lFight'
+        - ' &cMatch Status: &fEnded'
+        - ''
+        - ' &7The match has ended,'
+        - ' &7teleporting you to spawn.'
+        - ''
+        - '&7&otest.refinedev.xyz'
+        - '&7&m----------------------'
   EVENT:
     SOLO:
-      STATUS_WAITING: " &fWaiting for players..."
-      STATUS_COUNTING: " &fStarting in &c{event_remaining}&fs"
+      STATUS_WAITING: ' &fWaiting for players...'
+      STATUS_COUNTING: ' &fStarting in &c{event_remaining}&fs'
       WAITING:
-        - "&7&m----------------------"
-        - "&c&l{event_name} Event"
-        - ""
-        - " &fHost: &c{event_host_name}"
-        - " &fPlayers: &c{event_player_count}/{event_max_players}"
-        - ""
-        - "{event_status}"
-        - "&7&m----------------------"
+        - '&7&m----------------------'
+        - '&c&l{event_name} Event'
+        - ''
+        - ' &fHost: &c{event_host_name}'
+        - ' &fPlayers: &c{event_player_count}/{event_max_players}'
+        - ''
+        - '{event_status}'
+        - '&7&m----------------------'
       FIGHTING:
-        - "&7&m----------------------"
-        - "&c&l{event_name} Event"
-        - ""
-        - " &fPlayers: &c{event_players_alive}/{event_max_players}"
-        - " &fDuration: &c{event_duration}"
-        - "&7&m----------------------"
+        - '&7&m----------------------'
+        - '&c&l{event_name} Event'
+        - ''
+        - ' &fPlayers: &c{event_players_alive}/{event_max_players}'
+        - ' &fDuration: &c{event_duration}'
+        - '&7&m----------------------'
       ROUND_ADDITION:
-        - ""
-        - " &c{event_playerA_name} &7(&f{event_playerA_ping}&7)"
-        - "&7vs"
-        - " &c{event_playerB_name} &7(&f{event_playerB_ping}&7)"
-    
+        - ''
+        - ' &c{event_playerA_name} &7(&f{event_playerA_ping}&7)'
+        - '&7vs'
+        - ' &c{event_playerB_name} &7(&f{event_playerB_ping}&7)'
     TEAM:
-      STATUS_WAITING: " &fWaiting for players..."
-      STATUS_COUNTING: " &fStarting in &c{event_remaining}&fs"
+      STATUS_WAITING: ' &fWaiting for players...'
+      STATUS_COUNTING: ' &fStarting in &c{event_remaining}&fs'
       WAITING:
-        - "&7&m----------------------"
-        - "&c&l{event_name} Event"
-        - ""
-        - " &fHost: &c{event_host_name}"
-        - " &fPlayers: &c{event_player_count}/{event_max_players}"
-        - ""
-        - "{event_status}"
-        - "&7&m----------------------"
+        - '&7&m----------------------'
+        - '&c&l{event_name} Event'
+        - ''
+        - ' &fHost: &c{event_host_name}'
+        - ' &fPlayers: &c{event_player_count}/{event_max_players}'
+        - ''
+        - '{event_status}'
+        - '&7&m----------------------'
       FIGHTING:
-        - "&7&m----------------------"
-        - "&c&l{event_name} Event"
-        - ""
-        - " &fPlayers: &c{event_players_alive}/{event_max_players}"
-        - " &fDuration: &c{event_duration}"
-        - "&7&m----------------------"
+        - '&7&m----------------------'
+        - '&c&l{event_name} Event'
+        - ''
+        - ' &fPlayers: &c{event_players_alive}/{event_max_players}'
+        - ' &fDuration: &c{event_duration}'
+        - '&7&m----------------------'
       ROUND_ADDITION:
-        - ""
-        - " &c{event_teamA_name} &7(&f{event_teamA_size}&7)"
-        - "&7vs"
-        - " &c{event_teamB_name} &7(&f{event_teamB_size}&7)"
+        - ''
+        - ' &c{event_teamA_name} &7(&f{event_teamA_size}&7)'
+        - '&7vs'
+        - ' &c{event_teamB_name} &7(&f{event_teamB_size}&7)'

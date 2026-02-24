@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -136,7 +136,7 @@ public interface IntList extends Comparable<List<? extends Integer>>, List<Integ
    /** @deprecated */
    @Deprecated
    default boolean add(Integer k) {
-      return this.add(k);
+      return this.add(k.intValue());
    }
 
    int removeInt(int var1);

@@ -1,15 +1,20 @@
-﻿package dev.artixdev.practice.menus;
+package dev.artixdev.practice.menus;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
 import dev.artixdev.api.practice.menu.pagination.PaginatedMenu;
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.configs.menus.StatsMenus;
 import dev.artixdev.practice.menus.buttons.StatsButton;
 import dev.artixdev.practice.models.PlayerProfile;
+import dev.artixdev.practice.utils.ChatUtils;
+import dev.artixdev.practice.utils.ItemBuilder;
+import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
 
 /**
  * Stats Menu
@@ -71,11 +76,19 @@ public class StatsMenu extends PaginatedMenu {
    @Override
    public Map<Integer, Button> getGlobalButtons(Player player) {
       Map<Integer, Button> buttons = new HashMap<>();
-      
-      // Add global buttons like back button, refresh button, etc.
-      // This would typically include buttons that appear on all pages
-      
+      buttons.put(36, new StatsBackButton());
       return buttons;
+   }
+
+   private static final class StatsBackButton extends Button {
+      @Override
+      public ItemStack getButtonItem(Player player) {
+         return new ItemBuilder(XMaterial.ARROW).name(ChatUtils.colorize("&cBack")).build();
+      }
+      @Override
+      public void clicked(Player player, ClickType clickType) {
+         player.closeInventory();
+      }
    }
    
    /**

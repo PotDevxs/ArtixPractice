@@ -1,9 +1,11 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
+import dev.artixdev.api.practice.menu.MenuHandler;
+import dev.artixdev.practice.menus.StatisticsMenu;
 import dev.artixdev.practice.models.PlayerProfile;
 import dev.artixdev.practice.utils.ItemBuilder;
 import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
@@ -53,7 +55,7 @@ public class StatsButton extends Button {
    
    @Override
    public void clicked(Player player, ClickType clickType) {
-      // Handle click - could open profile menu or show more details
-      // TODO: Implement click behavior
+      if (profile == null) return;
+      MenuHandler.getInstance().openMenu(new StatisticsMenu(null, profile), player);
    }
 }

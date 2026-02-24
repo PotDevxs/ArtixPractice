@@ -104,7 +104,7 @@ public class SpigotHandler {
    public static SpigotHandler getInstance() {
       if (instance == null) {
          // Try to get plugin from Bukkit
-         JavaPlugin plugin = (JavaPlugin) org.bukkit.Bukkit.getPluginManager().getPlugin("Bolt");
+         JavaPlugin plugin = (JavaPlugin) org.bukkit.Bukkit.getPluginManager().getPlugin("ArtixPractice");
          if (plugin == null) {
             // Try to get any JavaPlugin
             for (org.bukkit.plugin.Plugin p : org.bukkit.Bukkit.getPluginManager().getPlugins()) {

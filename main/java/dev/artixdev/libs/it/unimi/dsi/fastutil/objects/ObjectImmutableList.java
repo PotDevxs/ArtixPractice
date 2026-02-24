@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
@@ -20,8 +20,9 @@ public class ObjectImmutableList<K> extends ObjectLists.ImmutableListBase<K> imp
    private final K[] a;
    private static final Collector<Object, ?, ObjectImmutableList<Object>> TO_LIST_COLLECTOR;
 
+   @SuppressWarnings("unchecked")
    private static final <K> K[] emptyArray() {
-      return ObjectArrays.EMPTY_ARRAY;
+      return (K[]) ObjectArrays.EMPTY_ARRAY;
    }
 
    public ObjectImmutableList(K[] a) {
@@ -37,12 +38,12 @@ public class ObjectImmutableList<K> extends ObjectLists.ImmutableListBase<K> imp
    }
 
    public ObjectImmutableList(ObjectList<? extends K> l) {
-      this(l.isEmpty() ? emptyArray() : new Object[l.size()]);
+      this((K[]) (l.isEmpty() ? emptyArray() : new Object[l.size()]));
       l.getElements(0, this.a, 0, l.size());
    }
 
    public ObjectImmutableList(K[] a, int offset, int length) {
-      this(length == 0 ? emptyArray() : new Object[length]);
+      this((K[]) (length == 0 ? emptyArray() : new Object[length]));
       System.arraycopy(a, offset, this.a, 0, length);
    }
 
@@ -72,14 +73,17 @@ public class ObjectImmutableList<K> extends ObjectLists.ImmutableListBase<K> imp
       }
    }
 
+   @SuppressWarnings("unchecked")
    public static <K> Collector<K, ?, ObjectImmutableList<K>> toList() {
-      return TO_LIST_COLLECTOR;
+      return (Collector<K, ?, ObjectImmutableList<K>>) (Collector<?, ?, ?>) TO_LIST_COLLECTOR;
    }
 
    public static <K> Collector<K, ?, ObjectImmutableList<K>> toListWithExpectedSize(int expectedSize) {
-      return expectedSize <= 10 ? toList() : Collector.of(new ObjectCollections.SizeDecreasingSupplier(expectedSize, (size) -> {
-         return size <= 10 ? new ObjectArrayList() : new ObjectArrayList(size);
-      }), ObjectArrayList::add, ObjectArrayList::combine, ObjectImmutableList::convertTrustedToImmutableList);
+      return expectedSize <= 10 ? toList() : Collector.<K, ObjectArrayList<K>, ObjectImmutableList<K>>of(
+         new ObjectCollections.SizeDecreasingSupplier<K, ObjectArrayList<K>>(expectedSize, size -> size <= 10 ? new ObjectArrayList<>() : new ObjectArrayList<>(size)),
+         ObjectArrayList::add,
+         ObjectArrayList::combine,
+         ObjectImmutableList::convertTrustedToImmutableList);
    }
 
    public K get(int index) {
@@ -142,11 +146,12 @@ public class ObjectImmutableList<K> extends ObjectLists.ImmutableListBase<K> imp
       }
    }
 
+   @SuppressWarnings("unchecked")
    public <T> T[] toArray(T[] a) {
       if (a == null) {
-         a = new Object[this.size()];
+         a = (T[]) new Object[this.size()];
       } else if (a.length < this.size()) {
-         a = (Object[])Array.newInstance(a.getClass().getComponentType(), this.size());
+         a = (T[]) Array.newInstance(a.getClass().getComponentType(), this.size());
       }
 
       System.arraycopy(this.a, 0, a, 0, this.size());
@@ -478,12 +483,13 @@ public class ObjectImmutableList<K> extends ObjectLists.ImmutableListBase<K> imp
          return Arrays.copyOfRange(this.a, this.from, this.to, Object[].class);
       }
 
+      @SuppressWarnings("unchecked")
       public <K> K[] toArray(K[] a) {
          int size = this.size();
          if (a == null) {
-            a = new Object[size];
+            a = (K[]) new Object[size];
          } else if (a.length < size) {
-            a = (Object[])Array.newInstance(a.getClass().getComponentType(), size);
+            a = (K[]) Array.newInstance(a.getClass().getComponentType(), size);
          }
 
          System.arraycopy(this.a, this.from, a, 0, size);

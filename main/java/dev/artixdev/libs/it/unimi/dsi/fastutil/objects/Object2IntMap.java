@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.util.Map;
 import java.util.Objects;
@@ -24,8 +24,9 @@ public interface Object2IntMap<K> extends Map<K, Integer>, Object2IntFunction<K>
 
    /** @deprecated */
    @Deprecated
+   @SuppressWarnings("unchecked")
    default ObjectSet<java.util.Map.Entry<K, Integer>> entrySet() {
-      return this.object2IntEntrySet();
+      return (ObjectSet<java.util.Map.Entry<K, Integer>>)(ObjectSet<?>)this.object2IntEntrySet();
    }
 
    /** @deprecated */
@@ -81,7 +82,7 @@ public interface Object2IntMap<K> extends Map<K, Integer>, Object2IntFunction<K>
    /** @deprecated */
    @Deprecated
    default Integer getOrDefault(Object key, Integer defaultValue) {
-      return (Integer)super.getOrDefault(key, defaultValue);
+      return Map.super.getOrDefault(key, defaultValue);
    }
 
    default int putIfAbsent(K key, int value) {
@@ -241,31 +242,31 @@ public interface Object2IntMap<K> extends Map<K, Integer>, Object2IntFunction<K>
    /** @deprecated */
    @Deprecated
    default Integer putIfAbsent(K key, Integer value) {
-      return (Integer)super.putIfAbsent(key, value);
+      return Map.super.putIfAbsent(key, value);
    }
 
    /** @deprecated */
    @Deprecated
    default boolean remove(Object key, Object value) {
-      return super.remove(key, value);
+      return Map.super.remove(key, value);
    }
 
    /** @deprecated */
    @Deprecated
    default boolean replace(K key, Integer oldValue, Integer newValue) {
-      return super.replace(key, oldValue, newValue);
+      return Map.super.replace(key, oldValue, newValue);
    }
 
    /** @deprecated */
    @Deprecated
    default Integer replace(K key, Integer value) {
-      return (Integer)super.replace(key, value);
+      return Map.super.replace(key, value);
    }
 
    /** @deprecated */
    @Deprecated
    default Integer merge(K key, Integer value, BiFunction<? super Integer, ? super Integer, ? extends Integer> remappingFunction) {
-      return (Integer)super.merge(key, value, remappingFunction);
+      return Map.super.merge(key, value, remappingFunction);
    }
 
    public interface FastEntrySet<K> extends ObjectSet<Object2IntMap.Entry<K>> {

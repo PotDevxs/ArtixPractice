@@ -1,6 +1,5 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -14,32 +13,32 @@ import dev.artixdev.libs.it.unimi.dsi.fastutil.ints.IntIterator;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.ints.IntSpliterator;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.ints.IntSpliterators;
 
-public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunction<K> implements Serializable, Object2IntMap<K> {
+public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunction<K> implements Object2IntMap<K> {
    private static final long serialVersionUID = -4940583368468432370L;
 
    protected AbstractObject2IntMap() {
    }
 
    public boolean containsKey(Object k) {
-      ObjectIterator i = this.object2IntEntrySet().iterator();
+      ObjectIterator<Object2IntMap.Entry<K>> i = this.object2IntEntrySet().iterator();
 
       do {
          if (!i.hasNext()) {
             return false;
          }
-      } while(((Object2IntMap.Entry)i.next()).getKey() != k);
+      } while(i.next().getKey() != k);
 
       return true;
    }
 
    public boolean containsValue(int v) {
-      ObjectIterator i = this.object2IntEntrySet().iterator();
+      ObjectIterator<Object2IntMap.Entry<K>> i = this.object2IntEntrySet().iterator();
 
       do {
          if (!i.hasNext()) {
             return false;
          }
-      } while(((Object2IntMap.Entry)i.next()).getIntValue() != v);
+      } while(i.next().getIntValue() != v);
 
       return true;
    }
@@ -71,7 +70,7 @@ public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunctio
                private final ObjectIterator<Object2IntMap.Entry<K>> i = Object2IntMaps.fastIterator(AbstractObject2IntMap.this);
 
                public K next() {
-                  return ((Object2IntMap.Entry)this.i.next()).getKey();
+                  return this.i.next().getKey();
                }
 
                public boolean hasNext() {
@@ -91,7 +90,7 @@ public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunctio
          }
 
          public ObjectSpliterator<K> spliterator() {
-            return ObjectSpliterators.asSpliterator(this.iterator(), Size64.sizeOf((Map)AbstractObject2IntMap.this), 65);
+            return ObjectSpliterators.asSpliterator(this.iterator(), Size64.sizeOf((Map<K, Integer>)AbstractObject2IntMap.this), 65);
          }
       };
    }
@@ -115,7 +114,7 @@ public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunctio
                private final ObjectIterator<Object2IntMap.Entry<K>> i = Object2IntMaps.fastIterator(AbstractObject2IntMap.this);
 
                public int nextInt() {
-                  return ((Object2IntMap.Entry)this.i.next()).getIntValue();
+                  return this.i.next().getIntValue();
                }
 
                public boolean hasNext() {
@@ -135,26 +134,26 @@ public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunctio
          }
 
          public IntSpliterator spliterator() {
-            return IntSpliterators.asSpliterator(this.iterator(), Size64.sizeOf((Map)AbstractObject2IntMap.this), 320);
+            return IntSpliterators.asSpliterator(this.iterator(), Size64.sizeOf((Map<K, Integer>)AbstractObject2IntMap.this), 320);
          }
       };
    }
 
    public void putAll(Map<? extends K, ? extends Integer> m) {
       if (m instanceof Object2IntMap) {
-         ObjectIterator i = Object2IntMaps.fastIterator((Object2IntMap)m);
+         ObjectIterator<Object2IntMap.Entry<K>> i = Object2IntMaps.fastIterator((Object2IntMap<K>)m);
 
          while(i.hasNext()) {
-            Object2IntMap.Entry<? extends K> e = (Object2IntMap.Entry)i.next();
+            Object2IntMap.Entry<? extends K> e = i.next();
             this.put(e.getKey(), e.getIntValue());
          }
       } else {
          int n = m.size();
-         Iterator i = m.entrySet().iterator();
+         Iterator<? extends java.util.Map.Entry<? extends K, ? extends Integer>> i = m.entrySet().iterator();
 
          while(n-- != 0) {
-            java.util.Map.Entry<? extends K, ? extends Integer> e = (java.util.Map.Entry)i.next();
-            this.put(e.getKey(), (Integer)e.getValue());
+            java.util.Map.Entry<? extends K, ? extends Integer> e = i.next();
+            this.put(e.getKey(), e.getValue());
          }
       }
 
@@ -164,7 +163,7 @@ public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunctio
       int h = 0;
       int n = this.size();
 
-      for(ObjectIterator i = Object2IntMaps.fastIterator(this); n-- != 0; h += ((Object2IntMap.Entry)i.next()).hashCode()) {
+      for(ObjectIterator<Object2IntMap.Entry<K>> i = Object2IntMaps.fastIterator(this); n-- != 0; h += i.next().hashCode()) {
       }
 
       return h;
@@ -176,7 +175,7 @@ public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunctio
       } else if (!(o instanceof Map)) {
          return false;
       } else {
-         Map<?, ?> m = (Map)o;
+         Map<?, ?> m = (Map<?, ?>)o;
          return m.size() != this.size() ? false : this.object2IntEntrySet().containsAll(m.entrySet());
       }
    }
@@ -195,7 +194,7 @@ public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunctio
             s.append(", ");
          }
 
-         Object2IntMap.Entry<K> e = (Object2IntMap.Entry)i.next();
+         Object2IntMap.Entry<K> e = i.next();
          if (this == e.getKey()) {
             s.append("(this map)");
          } else {
@@ -223,11 +222,11 @@ public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunctio
          } else {
             Object k;
             if (o instanceof Object2IntMap.Entry) {
-               Object2IntMap.Entry<K> e = (Object2IntMap.Entry)o;
+               Object2IntMap.Entry<K> e = (Object2IntMap.Entry<K>)o;
                k = e.getKey();
                return this.map.containsKey(k) && this.map.getInt(k) == e.getIntValue();
             } else {
-               java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
+               java.util.Map.Entry<?, ?> e = (java.util.Map.Entry<?, ?>)o;
                k = e.getKey();
                Object value = e.getValue();
                if (value != null && value instanceof Integer) {
@@ -246,7 +245,7 @@ public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunctio
             Object2IntMap.Entry<K> e = (Object2IntMap.Entry)o;
             return this.map.remove(e.getKey(), e.getIntValue());
          } else {
-            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
+            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry<?, ?>)o;
             Object k = e.getKey();
             Object value = e.getValue();
             if (value != null && value instanceof Integer) {
@@ -263,7 +262,7 @@ public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunctio
       }
 
       public ObjectSpliterator<Object2IntMap.Entry<K>> spliterator() {
-         return ObjectSpliterators.asSpliterator(this.iterator(), Size64.sizeOf((Map)this.map), 65);
+         return ObjectSpliterators.asSpliterator(this.iterator(), Size64.sizeOf((Map<K, Integer>)this.map), 65);
       }
    }
 
@@ -300,10 +299,10 @@ public abstract class AbstractObject2IntMap<K> extends AbstractObject2IntFunctio
          if (!(o instanceof java.util.Map.Entry)) {
             return false;
          } else if (o instanceof Object2IntMap.Entry) {
-            Object2IntMap.Entry<K> e = (Object2IntMap.Entry)o;
+            Object2IntMap.Entry<K> e = (Object2IntMap.Entry<K>)o;
             return Objects.equals(this.key, e.getKey()) && this.value == e.getIntValue();
          } else {
-            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
+            java.util.Map.Entry<?, ?> e = (java.util.Map.Entry<?, ?>)o;
             Object key = e.getKey();
             Object value = e.getValue();
             if (value != null && value instanceof Integer) {

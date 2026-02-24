@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils;
+package dev.artixdev.practice.utils;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -9,7 +9,10 @@ import dev.artixdev.practice.Main;
 import dev.artixdev.practice.enums.ProjectileType;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -18,8 +21,8 @@ import java.util.stream.Collectors;
  */
 public class ProjectilePlayerValidator {
    
-   private static final int DEFAULT_COOLDOWN = 1100; // 1.1 seconds
-   
+   private static final long COOLDOWN_MS = 1100L;
+   private final Map<UUID, Long> playerCooldowns = new HashMap<>();
    private final Main plugin;
    private final ProjectileType projectileType;
    
@@ -154,7 +157,7 @@ public class ProjectilePlayerValidator {
     * @return cooldown in milliseconds
     */
    public int getProjectileCooldown() {
-      return DEFAULT_COOLDOWN;
+      return (int) COOLDOWN_MS;
    }
    
    /**
@@ -200,13 +203,14 @@ public class ProjectilePlayerValidator {
     * @return true if in cooldown
     */
    private boolean isPlayerInCooldown(Player player) {
-      if (player == null) {
-         return false;
-      }
-      
-      // TODO: Implement cooldown tracking
-      // This would require storing player cooldown times
-      return false;
+      if (player == null) return false;
+      Long last = playerCooldowns.get(player.getUniqueId());
+      return last != null && (System.currentTimeMillis() - last) < COOLDOWN_MS;
+   }
+
+   /** Call after player launches a projectile to start cooldown. */
+   public void setPlayerCooldown(Player player) {
+      if (player != null) playerCooldowns.put(player.getUniqueId(), System.currentTimeMillis());
    }
    
    /**

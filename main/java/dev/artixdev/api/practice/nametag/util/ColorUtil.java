@@ -1,4 +1,4 @@
-﻿package dev.artixdev.api.practice.nametag.util;
+package dev.artixdev.api.practice.nametag.util;
 
 import com.google.common.collect.ImmutableMap;
 import java.awt.Color;
@@ -21,6 +21,17 @@ public final class ColorUtil {
    private static final Map<ChatColor, Color> COLOR_MAPPINGS;
    private static final Pattern hexPattern;
 
+   /** Gets java.awt.Color from Bungee ChatColor via reflection (getColor() may not exist in older API). */
+   private static Color getBungeeColor(net.md_5.bungee.api.ChatColor bungeeColor) {
+      if (bungeeColor == null) return null;
+      try {
+         Object color = bungeeColor.getClass().getMethod("getColor").invoke(bungeeColor);
+         return color instanceof Color ? (Color) color : null;
+      } catch (Exception e) {
+         return null;
+      }
+   }
+
    public static NamedTextColor getLastColor(String input) {
       ChatColor color = getLastColors(input);
       NamedTextColor textColor = NamedTextColor.WHITE;
@@ -32,14 +43,18 @@ public final class ColorUtil {
             log.info("Last color is {} " + getRaw(md5Color.toString()));
          }
 
-         if (md5Color.getColor() == null) {
+         Color awtColor = getBungeeColor(md5Color);
+         if (awtColor == null) {
+            awtColor = COLOR_MAPPINGS.get(color);
+         }
+         if (awtColor == null) {
             if (NameTagHandler.getInstance().isDebugMode()) {
                log.info("MD5 color was null, {} " + getRaw(md5Color.toString()));
             }
 
             return textColor;
          } else {
-            TextColor parsed = TextColor.color(md5Color.getColor().getRed(), md5Color.getColor().getGreen(), md5Color.getColor().getBlue());
+            TextColor parsed = TextColor.color(awtColor.getRed(), awtColor.getGreen(), awtColor.getBlue());
             return NamedTextColor.nearestTo(parsed);
          }
       }
@@ -54,8 +69,13 @@ public final class ColorUtil {
          if (VersionUtil.canHex()) {
             try {
                String hexColor = prefixColor.replace("§", "").replace("x", "#");
-               net.md_5.bungee.api.ChatColor md5Color = net.md_5.bungee.api.ChatColor.of(hexColor);
-               color = getClosestChatColor(md5Color.getColor());
+               if (hexColor.length() == 7 && hexColor.charAt(0) == '#') {
+                  Color awtColor = new Color(Integer.parseInt(hexColor.substring(1), 16));
+                  color = getClosestChatColor(awtColor);
+               } else {
+                  ChatColor bukkitColor = ChatColor.getByChar(prefixColor.substring(prefixColor.length() - 1).charAt(0));
+                  color = bukkitColor;
+               }
             } catch (Exception e) {
                ChatColor bukkitColor = ChatColor.getByChar(prefixColor.substring(prefixColor.length() - 1).charAt(0));
                if (bukkitColor == null) {
@@ -88,8 +108,8 @@ public final class ColorUtil {
                try {
                   String color = matcher.group();
                   String hexColor = color.replace("&", "").replace("x", "#");
-                  net.md_5.bungee.api.ChatColor bungeeColor = net.md_5.bungee.api.ChatColor.of(hexColor);
-                  text = text.replace(color, bungeeColor.toString());
+                  String hexCode = buildHexCode(hexColor);
+                  text = text.replace(color, hexCode);
                } catch (Exception e) {
                }
             }
@@ -106,6 +126,18 @@ public final class ColorUtil {
 
    public static String getRaw(String string) {
       return string.replace("§", "&");
+   }
+
+   /** Builds the 1.16+ hex color code string (§x§R§R§G§G§B§B) from a #RRGGBB hex string. */
+   private static String buildHexCode(String hexColor) {
+      if (hexColor == null || hexColor.length() != 7 || hexColor.charAt(0) != '#') {
+         return "";
+      }
+      StringBuilder sb = new StringBuilder("\u00A7x");
+      for (char c : hexColor.substring(1).toCharArray()) {
+         sb.append('\u00A7').append(c);
+      }
+      return sb.toString();
    }
 
    public static ChatColor getClosestChatColor(Color color) {

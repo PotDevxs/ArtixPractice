@@ -31,7 +31,7 @@ public class AnimatedTitleCommand implements CommandExecutor, TabCompleter {
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("bolt.animatedtitle")) {
+        if (!sender.hasPermission("artix.animatedtitle")) {
             sender.sendMessage("§cYou don't have permission to use this command!");
             return true;
         }

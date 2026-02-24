@@ -1,9 +1,15 @@
-﻿package dev.artixdev.practice.menus.buttons;
+package dev.artixdev.practice.menus.buttons;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import dev.artixdev.api.practice.menu.Button;
 import dev.artixdev.practice.models.PlayerProfile;
+import dev.artixdev.practice.utils.ChatUtils;
+import dev.artixdev.practice.utils.ItemBuilder;
+import dev.artixdev.libs.com.cryptomorin.xseries.XMaterial;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerButton extends Button {
     private final PlayerProfile playerProfile;
@@ -14,14 +20,15 @@ public class PlayerButton extends Button {
 
     @Override
     public ItemStack getButtonItem(Player player) {
-        // Create player display item
-        // This would typically show player information like name, health, etc.
         return createPlayerItem(playerProfile);
     }
 
     private ItemStack createPlayerItem(PlayerProfile profile) {
-        // Implementation would create an ItemStack showing player details
-        // This is a placeholder - actual implementation would use ItemBuilder
-        return null; // Placeholder
+        if (profile == null) return new ItemBuilder(XMaterial.BARRIER).name(ChatUtils.colorize("&cNo player")).build();
+        String name = profile.getUsername() != null ? profile.getUsername() : "Unknown";
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatUtils.colorize("&7ELO: &f" + profile.getElo()));
+        lore.add(ChatUtils.colorize("&7Wins: &f" + profile.getWins() + " &7| Losses: &f" + profile.getLosses()));
+        return new ItemBuilder(XMaterial.PLAYER_HEAD).name(ChatUtils.colorize("&f" + name)).lore(lore).build();
     }
 }

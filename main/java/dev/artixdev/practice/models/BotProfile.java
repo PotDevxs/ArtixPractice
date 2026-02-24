@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.models;
+package dev.artixdev.practice.models;
 
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
@@ -26,7 +26,9 @@ public class BotProfile {
     private Vector velocity;
     private UUID targetPlayerId;
     private long lastAttackTimeMs;
-    
+    /** Name of knockback profile to apply (from KnockbackProfileManager). */
+    private String knockbackProfileName;
+
     public BotProfile(String name, String kit, String mode) {
         this.uuid = UUID.randomUUID();
         this.name = name;
@@ -157,5 +159,13 @@ public class BotProfile {
 
     public void setLastAttackTimeMs(long lastAttackTimeMs) {
         this.lastAttackTimeMs = lastAttackTimeMs;
+    }
+
+    public String getKnockbackProfileName() {
+        return knockbackProfileName;
+    }
+
+    public void setKnockbackProfileName(String knockbackProfileName) {
+        this.knockbackProfileName = knockbackProfileName;
     }
 }

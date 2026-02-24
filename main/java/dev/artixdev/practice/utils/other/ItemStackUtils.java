@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.utils.other;
+package dev.artixdev.practice.utils.other;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -19,9 +19,7 @@ public final class ItemStackUtils {
      * @return a default item stack, or null
      */
     public static Object getDefaultItemStack() {
-        // Original implementation was not decompiled
-        // Return null as placeholder
-        return null;
+        return new ItemStack(org.bukkit.Material.AIR);
     }
     
     /**

@@ -40,7 +40,7 @@ public class TablistThread extends BukkitRunnable {
                try {
                   layout.update(i, entry.getText(), entry.getPing(), entry.getSkin());
                } catch (NullPointerException e) {
-                  if (!this.handler.getPlugin().getName().equals("Bolt") || this.handler.isDebug()) {
+                  if (!this.handler.getPlugin().getName().equals("ArtixPractice") || this.handler.isDebug()) {
                      log.fatal("[{}] There was an error updating tablist for {}", this.handler.getPlugin().getName(), player.getName());
                      log.error(e);
                      e.printStackTrace();

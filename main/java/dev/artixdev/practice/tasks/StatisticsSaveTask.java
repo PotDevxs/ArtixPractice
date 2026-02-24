@@ -1,11 +1,11 @@
-﻿package dev.artixdev.practice.tasks;
+package dev.artixdev.practice.tasks;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import dev.artixdev.practice.Practice;
+import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.PlayerProfile;
 
 public class StatisticsSaveTask implements Runnable {
@@ -16,9 +16,8 @@ public class StatisticsSaveTask implements Runnable {
     public static final int TASK_VERSION = 1;
 
     private static String getTaskMessage(int param0, int param1) {
-        // This method was obfuscated and needs implementation
-        // Placeholder implementation for task message generation
-        return "StatisticsSaveTask";
+        if (param0 >= 0 && param0 < TASK_MESSAGES.length) return TASK_MESSAGES[param0];
+        return param1 > 0 ? TASK_MESSAGES[1] : TASK_CONSTANTS[0];
     }
 
     @Override

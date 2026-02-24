@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.storage;
+package dev.artixdev.practice.storage;
 
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.models.PlayerProfile;
@@ -9,6 +9,7 @@ import dev.artixdev.practice.models.Bot;
 import dev.artixdev.practice.storage.impl.MongoStorage;
 import dev.artixdev.practice.storage.impl.MySQLStorage;
 import dev.artixdev.practice.storage.impl.SQLiteStorage;
+import dev.artixdev.practice.storage.impl.FlatFileStorage;
 
 import java.util.UUID;
 import java.util.List;
@@ -45,9 +46,12 @@ public class StorageManager {
             case "SQLITE":
                 storageProvider = new SQLiteStorage(plugin);
                 break;
+            case "FLATFILE":
+                storageProvider = new FlatFileStorage(plugin);
+                break;
             default:
-                plugin.getLogger().warning("Unknown database type: " + databaseType + ", defaulting to SQLite");
-                storageProvider = new SQLiteStorage(plugin);
+                plugin.getLogger().warning("Unknown database type: " + databaseType + ", defaulting to FLATFILE (local)");
+                storageProvider = new FlatFileStorage(plugin);
                 break;
         }
         

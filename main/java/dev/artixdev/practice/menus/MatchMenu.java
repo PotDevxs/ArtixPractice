@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.menus;
+package dev.artixdev.practice.menus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import dev.artixdev.api.practice.menu.Button;
 import dev.artixdev.api.practice.menu.Menu;
 import dev.artixdev.practice.models.Match;
+import dev.artixdev.practice.menus.buttons.MatchInfoButton;
 import dev.artixdev.practice.utils.ChatUtils;
 
 /**
@@ -33,16 +34,12 @@ public class MatchMenu extends Menu {
    @Override
    public Map<Integer, Button> getButtons(Player player) {
       Map<Integer, Button> buttons = new HashMap<>();
-      
-      // TODO: Add buttons for match information
-      // This would typically show match details like:
-      // - Participants
-      // - Kit
-      // - Arena
-      // - Match status
-      // - Time elapsed
-      // - Statistics
-      
+      buttons.put(4, new MatchInfoButton(match, MatchInfoButton.InfoType.OVERVIEW));
+      buttons.put(20, new MatchInfoButton(match, MatchInfoButton.InfoType.PLAYER1));
+      buttons.put(22, new MatchInfoButton(match, MatchInfoButton.InfoType.KIT));
+      buttons.put(24, new MatchInfoButton(match, MatchInfoButton.InfoType.PLAYER2));
+      buttons.put(31, new MatchInfoButton(match, MatchInfoButton.InfoType.ARENA));
+      buttons.put(40, new MatchInfoButton(match, MatchInfoButton.InfoType.STATUS));
       return buttons;
    }
    

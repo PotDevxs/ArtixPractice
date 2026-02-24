@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.managers;
+package dev.artixdev.practice.managers;
 
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.configs.DatabaseConfig;
@@ -55,6 +55,10 @@ public class DatabaseManager {
                     break;
                 case "SQLITE":
                     initializeSQLite();
+                    break;
+                case "FLATFILE":
+                    // FLATFILE = arquivos JSON locais; sem conexão; StorageManager usa FlatFileStorage
+                    logger.info("Using FLATFILE storage (local JSON files). No database connection.");
                     break;
                 default:
                     logger.error("Unsupported database type: " + databaseType);
@@ -196,6 +200,9 @@ public class DatabaseManager {
                 return mysqlConnection;
             case "SQLITE":
                 return (Connection) sqliteConnection;
+            case "FLATFILE":
+            case "MONGODB":
+                return null;
             default:
                 throw new UnsupportedOperationException("Connection not supported for database type: " + databaseType);
         }
@@ -236,6 +243,8 @@ public class DatabaseManager {
                     return testMySQLConnection();
                 case "SQLITE":
                     return testSQLiteConnection();
+                case "FLATFILE":
+                    return true;
                 default:
                     return false;
             }

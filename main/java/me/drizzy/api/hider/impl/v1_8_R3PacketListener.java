@@ -6,13 +6,10 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import java.util.Iterator;
 import me.drizzy.api.hider.AbstractPacketListener;
-import net.minecraft.server.v1_8_R3.EntityItem;
-import net.minecraft.server.v1_8_R3.MathHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftItem;
+import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -56,17 +53,16 @@ public class v1_8_R3PacketListener extends AbstractPacketListener {
                BlockPosition position = (BlockPosition)event.getPacket().getBlockPositionModifier().readSafely(0);
                y = position.getX();
                z = position.getY();
-               int z = position.getZ();
+               int posZ = position.getZ();
                isInMatch = false;
-               boolean isInMatch = false;
-               Iterator var11 = receiver.getWorld().getEntitiesByClass(ThrownPotion.class).iterator();
+               Iterator<ThrownPotion> var11 = receiver.getWorld().getEntitiesByClass(ThrownPotion.class).iterator();
 
                while(var11.hasNext()) {
-                  ThrownPotion potion = (ThrownPotion)var11.next();
-                  int potionX = MathHelper.floor((double)y);
-                  int potionY = MathHelper.floor((double)z);
-                  int potionZ = MathHelper.floor((double)z);
-                  if (potion.getShooter() instanceof Player && y == potionX && z == potionY && z == potionZ) {
+                  ThrownPotion potion = var11.next();
+                  int potionX = (int) Math.floor((double)y);
+                  int potionY = (int) Math.floor((double)z);
+                  int potionZ = (int) Math.floor((double)posZ);
+                  if (potion.getShooter() instanceof Player && y == potionX && z == potionY && posZ == potionZ) {
                      isInMatch = true;
                      Player shooter = (Player)potion.getShooter();
                      if (receiver.canSee(shooter)) {
@@ -89,7 +85,7 @@ public class v1_8_R3PacketListener extends AbstractPacketListener {
                z = (Integer)event.getPacket().getIntegers().readSafely(2);
                boolean isVisible = false;
                isInMatch = false;
-               Iterator var29 = receiver.getWorld().getEntitiesByClasses(new Class[]{Player.class, Projectile.class}).iterator();
+               Iterator<Entity> var29 = receiver.getWorld().getEntitiesByClasses(new Class[]{Player.class, Projectile.class}).iterator();
 
                while(true) {
                   Entity entity;
@@ -176,12 +172,10 @@ public class v1_8_R3PacketListener extends AbstractPacketListener {
                }
             } else {
                entityID = (Integer)event.getPacket().getIntegers().readSafely(0);
-               net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftWorld)receiver.getWorld()).getHandle().a(entityID);
-               if (nmsEntity == null) {
+               Entity entity = getBukkitEntityById(receiver.getWorld(), entityID);
+               if (entity == null) {
                   return;
                }
-
-               Entity entity = nmsEntity.getBukkitEntity();
                Player dropper;
                if (entity instanceof Projectile) {
                   Projectile projectile = (Projectile)entity;
@@ -216,8 +210,20 @@ public class v1_8_R3PacketListener extends AbstractPacketListener {
 
    public Player getPlayerWhoDropped(Item item) {
       try {
-         String name = ((EntityItem)((CraftItem)item).getHandle()).n();
+         Object handle = item.getClass().getMethod("getHandle").invoke(item);
+         String name = (String) handle.getClass().getMethod("n").invoke(handle);
          return Bukkit.getPlayer(name);
+      } catch (Exception e) {
+         return null;
+      }
+   }
+
+   private static Entity getBukkitEntityById(World world, int entityId) {
+      try {
+         Object worldHandle = world.getClass().getMethod("getHandle").invoke(world);
+         Object nmsEntity = worldHandle.getClass().getMethod("a", int.class).invoke(worldHandle, entityId);
+         if (nmsEntity == null) return null;
+         return (Entity) nmsEntity.getClass().getMethod("getBukkitEntity").invoke(nmsEntity);
       } catch (Exception e) {
          return null;
       }

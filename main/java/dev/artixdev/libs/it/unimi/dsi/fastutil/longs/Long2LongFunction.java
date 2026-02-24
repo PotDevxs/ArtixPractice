@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.bytes.Byte2LongFunction;
@@ -36,7 +36,7 @@ public interface Long2LongFunction extends java.util.function.LongUnaryOperator,
    default Long put(Long key, Long value) {
       long k = key;
       boolean containsKey = this.containsKey(k);
-      long v = this.put(k, value);
+      long v = this.put(k, value.longValue());
       return containsKey ? v : null;
    }
 

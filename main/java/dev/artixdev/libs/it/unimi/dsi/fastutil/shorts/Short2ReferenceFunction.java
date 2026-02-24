@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.shorts;
 
 import java.util.function.IntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -42,7 +42,7 @@ public interface Short2ReferenceFunction<V> extends IntFunction<V>, Function<Sho
    V get(short var1);
 
    default V getOrDefault(short key, V defaultValue) {
-      Object v;
+      V v;
       return (v = this.get(key)) == this.defaultReturnValue() && !this.containsKey(key) ? defaultValue : v;
    }
 
@@ -66,7 +66,7 @@ public interface Short2ReferenceFunction<V> extends IntFunction<V>, Function<Sho
          return null;
       } else {
          short k = (Short)key;
-         Object v;
+         V v;
          return (v = this.get(k)) == this.defaultReturnValue() && !this.containsKey(k) ? null : v;
       }
    }

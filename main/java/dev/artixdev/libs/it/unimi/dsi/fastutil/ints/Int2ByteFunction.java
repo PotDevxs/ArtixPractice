@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.bytes.Byte2ByteFunction;
@@ -31,6 +31,10 @@ public interface Int2ByteFunction extends java.util.function.IntUnaryOperator, F
       return this.get(operand);
    }
 
+   default Byte apply(Integer k) {
+      return k == null ? null : get(k);
+   }
+
    default byte put(int key, byte value) {
       throw new UnsupportedOperationException();
    }
@@ -51,7 +55,7 @@ public interface Int2ByteFunction extends java.util.function.IntUnaryOperator, F
    default Byte put(Integer key, Byte value) {
       int k = key;
       boolean containsKey = this.containsKey(k);
-      byte v = this.put(k, value);
+      byte v = this.put(k, value.byteValue());
       return containsKey ? v : null;
    }
 

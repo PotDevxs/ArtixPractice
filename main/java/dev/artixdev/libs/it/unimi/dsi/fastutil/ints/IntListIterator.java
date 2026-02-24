@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.ints;
 
 import java.util.ListIterator;
 
@@ -18,13 +18,13 @@ public interface IntListIterator extends ListIterator<Integer>, IntBidirectional
    /** @deprecated */
    @Deprecated
    default void set(Integer k) {
-      this.set(k);
+      this.set(k.intValue());
    }
 
    /** @deprecated */
    @Deprecated
    default void add(Integer k) {
-      this.add(k);
+      this.add(k.intValue());
    }
 
    /** @deprecated */

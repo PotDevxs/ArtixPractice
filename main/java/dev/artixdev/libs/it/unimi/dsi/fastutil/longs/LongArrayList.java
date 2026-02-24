@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -152,7 +152,7 @@ public class LongArrayList extends AbstractLongList implements Serializable, Clo
    }
 
    public static LongArrayList toListWithExpectedSize(LongStream stream, int expectedSize) {
-      return expectedSize <= 10 ? toList(stream) : (LongArrayList)stream.collect(new LongCollections.SizeDecreasingSupplier(expectedSize, (size) -> {
+      return expectedSize <= 10 ? toList(stream) : stream.collect(new LongCollections.SizeDecreasingSupplier<LongArrayList>(expectedSize, (size) -> {
          return size <= 10 ? new LongArrayList() : new LongArrayList(size);
       }), LongArrayList::add, LongList::addAll);
    }

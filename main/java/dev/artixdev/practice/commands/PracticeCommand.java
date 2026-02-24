@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.commands;
+package dev.artixdev.practice.commands;
 
 import org.bukkit.entity.Player;
 import dev.artixdev.api.practice.command.annotation.Command;
@@ -7,7 +7,7 @@ import dev.artixdev.api.practice.command.annotation.Sender;
 import dev.artixdev.practice.Main;
 import dev.artixdev.practice.enums.EventType;
 import dev.artixdev.practice.enums.KitType;
-import dev.artixdev.practice.utils.ChatUtils;
+import dev.artixdev.practice.utils.Messages;
 
 /**
  * Practice Command
@@ -36,14 +36,14 @@ public class PracticeCommand {
       }
       
       // Open practice menu
-      player.sendMessage(ChatUtils.colorize("&b&lPractice Menu"));
-      player.sendMessage(ChatUtils.colorize("&7Use &e/practice <subcommand> &7for more options"));
-      player.sendMessage(ChatUtils.colorize("&3Available commands:"));
-      player.sendMessage(ChatUtils.colorize("&7- &e/practice queue &7- Join a queue"));
-      player.sendMessage(ChatUtils.colorize("&7- &e/practice arena &7- Manage arenas"));
-      player.sendMessage(ChatUtils.colorize("&7- &e/practice kit &7- Manage kits"));
-      player.sendMessage(ChatUtils.colorize("&7- &e/practice stats &7- View statistics"));
-      player.sendMessage(ChatUtils.colorize("&7- &e/practice help &7- Show help"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_TITLE"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_USE"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_AVAILABLE"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_QUEUE"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_ARENA"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_KIT"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_STATS"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_HELP"));
    }
    
    @Command(
@@ -53,19 +53,19 @@ public class PracticeCommand {
    )
    public void joinQueue(@Sender Player player, EventType eventType, KitType kitType) {
       if (player == null || eventType == null || kitType == null) {
-         player.sendMessage(ChatUtils.colorize("&cInvalid parameters!"));
+         player.sendMessage(Messages.get("PRACTICE.INVALID_PARAMETERS"));
          return;
       }
       
       // Check if player is already in a queue
       if (plugin.getQueueManager().isPlayerInQueue(player)) {
-         player.sendMessage(ChatUtils.colorize("&cYou are already in a queue!"));
+         player.sendMessage(Messages.get("PRACTICE.ALREADY_IN_QUEUE"));
          return;
       }
       
       // Check if player is in a match
       if (plugin.getMatchManager().isPlayerInMatch(player)) {
-         player.sendMessage(ChatUtils.colorize("&cYou cannot join a queue while in a match!"));
+         player.sendMessage(Messages.get("PRACTICE.CANNOT_QUEUE_IN_MATCH"));
          return;
       }
       
@@ -73,10 +73,10 @@ public class PracticeCommand {
       boolean success = plugin.getQueueManager().addPlayerToQueue(player, eventType, kitType);
       
       if (success) {
-         player.sendMessage(ChatUtils.colorize("&aJoined " + eventType.getDisplayName() + " queue for " + kitType.getName() + "!"));
-         player.sendMessage(ChatUtils.colorize("&7Players in queue: &f" + plugin.getQueueManager().getQueueSize(eventType, kitType)));
+         player.sendMessage(Messages.get("PRACTICE.JOINED_QUEUE", "type", eventType.getDisplayName(), "kit", kitType.getName()));
+         player.sendMessage(Messages.get("PRACTICE.PLAYERS_IN_QUEUE", "count", String.valueOf(plugin.getQueueManager().getQueueSize(eventType, kitType))));
       } else {
-         player.sendMessage(ChatUtils.colorize("&cFailed to join queue!"));
+         player.sendMessage(Messages.get("PRACTICE.FAILED_JOIN_QUEUE"));
       }
    }
    
@@ -90,9 +90,9 @@ public class PracticeCommand {
       }
       
       // Open arena management menu
-      player.sendMessage(ChatUtils.colorize("&6&lArena Management"));
-      player.sendMessage(ChatUtils.colorize("&7Available arenas: &f" + plugin.getArenaManager().getArenas().size()));
-      player.sendMessage(ChatUtils.colorize("&7Use &f/practice arena <name> &7to manage specific arena"));
+      player.sendMessage(Messages.get("PRACTICE.ARENA_MANAGEMENT_TITLE"));
+      player.sendMessage(Messages.get("PRACTICE.ARENA_COUNT", "count", String.valueOf(plugin.getArenaManager().getArenas().size())));
+      player.sendMessage(Messages.get("PRACTICE.ARENA_USE"));
    }
    
    @Command(
@@ -105,9 +105,9 @@ public class PracticeCommand {
       }
       
       // Open kit management menu
-      player.sendMessage(ChatUtils.colorize("&6&lKit Management"));
-      player.sendMessage(ChatUtils.colorize("&7Available kits: &f" + plugin.getKitManager().getKits().size()));
-      player.sendMessage(ChatUtils.colorize("&7Use &f/practice kit <name> &7to manage specific kit"));
+      player.sendMessage(Messages.get("PRACTICE.KIT_MANAGEMENT_TITLE"));
+      player.sendMessage(Messages.get("PRACTICE.KIT_COUNT", "count", String.valueOf(plugin.getKitManager().getKits().size())));
+      player.sendMessage(Messages.get("PRACTICE.KIT_USE"));
    }
    
    @Command(
@@ -122,18 +122,18 @@ public class PracticeCommand {
       // Get player profile
       dev.artixdev.practice.models.PlayerProfile profile = plugin.getPlayerManager().getPlayerProfile(player.getUniqueId());
       if (profile == null) {
-         player.sendMessage(ChatUtils.colorize("&cFailed to load your profile!"));
+         player.sendMessage(Messages.get("PRACTICE.PROFILE_LOAD_FAILED"));
          return;
       }
       
       // Display statistics
-      player.sendMessage(ChatUtils.colorize("&6&lYour Statistics"));
-      player.sendMessage(ChatUtils.colorize("&7Wins: &a" + profile.getWins()));
-      player.sendMessage(ChatUtils.colorize("&7Losses: &c" + profile.getLosses()));
-      player.sendMessage(ChatUtils.colorize("&7Kills: &a" + profile.getKills()));
-      player.sendMessage(ChatUtils.colorize("&7Deaths: &c" + profile.getDeaths()));
-      player.sendMessage(ChatUtils.colorize("&7Elo: &6" + profile.getElo()));
-      player.sendMessage(ChatUtils.colorize("&7Level: &b" + profile.getLevel()));
+      player.sendMessage(Messages.get("PRACTICE.STATS_TITLE"));
+      player.sendMessage(Messages.get("PRACTICE.STATS_WINS", "wins", String.valueOf(profile.getWins())));
+      player.sendMessage(Messages.get("PRACTICE.STATS_LOSSES", "losses", String.valueOf(profile.getLosses())));
+      player.sendMessage(Messages.get("PRACTICE.STATS_KILLS", "kills", String.valueOf(profile.getKills())));
+      player.sendMessage(Messages.get("PRACTICE.STATS_DEATHS", "deaths", String.valueOf(profile.getDeaths())));
+      player.sendMessage(Messages.get("PRACTICE.STATS_ELO", "elo", String.valueOf(profile.getElo())));
+      player.sendMessage(Messages.get("PRACTICE.STATS_LEVEL", "level", String.valueOf(profile.getLevel())));
    }
    
    @Command(
@@ -145,26 +145,26 @@ public class PracticeCommand {
          return;
       }
       
-      player.sendMessage(ChatUtils.colorize("&6&lBolt Practice Help"));
-      player.sendMessage(ChatUtils.colorize("&7Commands:"));
-      player.sendMessage(ChatUtils.colorize("&7- &f/practice &7- Open practice menu"));
-      player.sendMessage(ChatUtils.colorize("&7- &f/practice queue <type> <kit> &7- Join a queue"));
-      player.sendMessage(ChatUtils.colorize("&7- &f/practice arena &7- Manage arenas"));
-      player.sendMessage(ChatUtils.colorize("&7- &f/practice kit &7- Manage kits"));
-      player.sendMessage(ChatUtils.colorize("&7- &f/practice stats &7- View statistics"));
-      player.sendMessage(ChatUtils.colorize("&7- &f/practice help &7- Show this help"));
-      player.sendMessage(ChatUtils.colorize("&7"));
-      player.sendMessage(ChatUtils.colorize("&7Event Types:"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_TITLE"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_COMMANDS"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_PRACTICE"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_QUEUE_FULL"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_ARENA_CMD"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_KIT_CMD"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_STATS_CMD"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_HELP_CMD"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_BLANK"));
+      player.sendMessage(Messages.get("PRACTICE.EVENT_TYPES"));
       for (EventType type : EventType.values()) {
          if (type != EventType.NONE) {
-            player.sendMessage(ChatUtils.colorize("&7- &f" + type.getDisplayName() + " &7- " + type.getDescription()));
+            player.sendMessage(Messages.get("PRACTICE.EVENT_TYPE_LINE", "name", type.getDisplayName(), "description", type.getDescription()));
          }
       }
-      player.sendMessage(ChatUtils.colorize("&7"));
-      player.sendMessage(ChatUtils.colorize("&7Kit Types:"));
+      player.sendMessage(Messages.get("PRACTICE.HELP_BLANK"));
+      player.sendMessage(Messages.get("PRACTICE.KIT_TYPES"));
       for (KitType type : KitType.values()) {
          if (type != KitType.CUSTOM) {
-            player.sendMessage(ChatUtils.colorize("&7- &f" + type.getDisplayName() + " &7- " + type.getDescription()));
+            player.sendMessage(Messages.get("PRACTICE.KIT_TYPE_LINE", "name", type.getDisplayName(), "description", type.getDescription()));
          }
       }
    }
@@ -179,17 +179,16 @@ public class PracticeCommand {
       }
       
       // Check permission
-      if (!player.hasPermission("bolt.admin")) {
-         player.sendMessage(ChatUtils.colorize("&cYou don't have permission to reload the plugin!"));
+      if (!player.hasPermission("artix.admin")) {
+         player.sendMessage(Messages.get("GENERAL.NO_PERMISSION_RELOAD"));
          return;
       }
       
-      // Reload plugin
       plugin.reloadConfig();
       plugin.onDisable();
       plugin.onEnable();
       
-      player.sendMessage(ChatUtils.colorize("&aPlugin reloaded successfully!"));
+      player.sendMessage(Messages.get("GENERAL.RELOAD_SUCCESS"));
    }
    
    @Command(
@@ -201,9 +200,9 @@ public class PracticeCommand {
          return;
       }
       
-      player.sendMessage(ChatUtils.colorize("&6&lBolt Practice"));
-      player.sendMessage(ChatUtils.colorize("&7Version: &f" + plugin.getDescription().getVersion()));
-      player.sendMessage(ChatUtils.colorize("&7Author: &f" + plugin.getDescription().getAuthors()));
-      player.sendMessage(ChatUtils.colorize("&7Description: &f" + plugin.getDescription().getDescription()));
+      player.sendMessage(Messages.get("GENERAL.PLUGIN_INFO_TITLE"));
+      player.sendMessage(Messages.get("GENERAL.PLUGIN_VERSION", "version", plugin.getDescription().getVersion()));
+      player.sendMessage(Messages.get("GENERAL.PLUGIN_AUTHOR", "authors", String.valueOf(plugin.getDescription().getAuthors())));
+      player.sendMessage(Messages.get("GENERAL.PLUGIN_DESCRIPTION", "description", plugin.getDescription().getDescription() != null ? plugin.getDescription().getDescription() : ""));
    }
 }

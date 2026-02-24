@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.objects;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,7 +44,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
             this.minN = this.n = HashCommon.arraySize(expected, f);
             this.mask = this.n - 1;
             this.maxFill = HashCommon.maxFill(this.n, f);
-            this.key = new Object[this.n + 1];
+            this.key = (K[]) new Object[this.n + 1];
             this.value = new int[this.n + 1];
          }
       } else {
@@ -633,7 +633,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
       K[] key = this.key;
       int[] value = this.value;
       int mask = newN - 1;
-      K[] newKey = new Object[newN + 1];
+      K[] newKey = (K[]) new Object[newN + 1];
       int[] newValue = new int[newN + 1];
       int i = this.n;
 
@@ -721,13 +721,13 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
       this.n = HashCommon.arraySize(this.size, this.f);
       this.maxFill = HashCommon.maxFill(this.n, this.f);
       this.mask = this.n - 1;
-      K[] key = this.key = new Object[this.n + 1];
+      K[] key = this.key = (K[]) new Object[this.n + 1];
       int[] value = this.value = new int[this.n + 1];
 
       int v;
       int pos;
       for(int var6 = this.size; var6-- != 0; value[pos] = v) {
-         K k = s.readObject();
+         K k = (K) s.readObject();
          v = s.readInt();
          if (k == null) {
             pos = this.n;
@@ -767,7 +767,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
          } else {
             java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
             if (e.getValue() != null && e.getValue() instanceof Integer) {
-               K k = e.getKey();
+               K k = (K) e.getKey();
                int v = (Integer)e.getValue();
                if (k == null) {
                   return Object2IntOpenHashMap.this.containsNullKey && Object2IntOpenHashMap.this.value[Object2IntOpenHashMap.this.n] == v;
@@ -801,7 +801,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
          } else {
             java.util.Map.Entry<?, ?> e = (java.util.Map.Entry)o;
             if (e.getValue() != null && e.getValue() instanceof Integer) {
-               K k = e.getKey();
+               K k = (K) e.getKey();
                int v = (Integer)e.getValue();
                if (k == null) {
                   if (Object2IntOpenHashMap.this.containsNullKey && Object2IntOpenHashMap.this.value[Object2IntOpenHashMap.this.n] == v) {
@@ -939,7 +939,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
       }
    }
 
-   private final class EntryIterator extends Object2IntOpenHashMap.MapIterator implements ObjectIterator {
+   private final class EntryIterator extends Object2IntOpenHashMap<K>.MapIterator<Consumer<? super Object2IntMap.Entry<K>>> implements ObjectIterator<Object2IntMap.Entry<K>> {
       private Object2IntOpenHashMap<K>.MapEntry entry;
 
       private EntryIterator() {
@@ -965,7 +965,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
       }
    }
 
-   private final class ValueSpliterator extends Object2IntOpenHashMap.MapSpliterator implements IntSpliterator {
+   private final class ValueSpliterator extends Object2IntOpenHashMap<K>.MapSpliterator<IntConsumer, ValueSpliterator> implements IntSpliterator {
       private static final int POST_SPLIT_CHARACTERISTICS = 256;
 
       ValueSpliterator() {
@@ -989,7 +989,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
       }
    }
 
-   private final class ValueIterator extends Object2IntOpenHashMap.MapIterator implements IntIterator {
+   private final class ValueIterator extends Object2IntOpenHashMap<K>.MapIterator<IntConsumer> implements IntIterator {
       public ValueIterator() {
          super(null);
       }
@@ -1003,7 +1003,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
       }
    }
 
-   private final class KeySpliterator extends Object2IntOpenHashMap.MapSpliterator implements ObjectSpliterator {
+   private final class KeySpliterator extends Object2IntOpenHashMap<K>.MapSpliterator<Consumer<? super K>, KeySpliterator> implements ObjectSpliterator<K> {
       private static final int POST_SPLIT_CHARACTERISTICS = 1;
 
       KeySpliterator() {
@@ -1027,7 +1027,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
       }
    }
 
-   private final class KeyIterator extends Object2IntOpenHashMap.MapIterator implements ObjectIterator {
+   private final class KeyIterator extends Object2IntOpenHashMap<K>.MapIterator<Consumer<? super K>> implements ObjectIterator<K> {
       public KeyIterator() {
          super(null);
       }
@@ -1041,7 +1041,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
       }
    }
 
-   private final class EntrySpliterator extends Object2IntOpenHashMap.MapSpliterator implements ObjectSpliterator {
+   private final class EntrySpliterator extends Object2IntOpenHashMap<K>.MapSpliterator<Consumer<? super Object2IntMap.Entry<K>>, EntrySpliterator> implements ObjectSpliterator<Object2IntMap.Entry<K>> {
       private static final int POST_SPLIT_CHARACTERISTICS = 1;
 
       EntrySpliterator() {
@@ -1179,7 +1179,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
       }
    }
 
-   private final class FastEntryIterator extends Object2IntOpenHashMap.MapIterator implements ObjectIterator {
+   private final class FastEntryIterator extends Object2IntOpenHashMap<K>.MapIterator<Consumer<? super Object2IntMap.Entry<K>>> implements ObjectIterator<Object2IntMap.Entry<K>> {
       private final Object2IntOpenHashMap<K>.MapEntry entry;
 
       private FastEntryIterator() {
@@ -1314,7 +1314,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
                   this.wrapped = new ObjectArrayList(2);
                }
 
-               this.wrapped.add(key[pos]);
+               this.wrapped.add((K) key[pos]);
             }
 
             key[last] = curr;
@@ -1331,7 +1331,7 @@ public class Object2IntOpenHashMap<K> extends AbstractObject2IntMap<K> implement
                Object2IntOpenHashMap.this.key[Object2IntOpenHashMap.this.n] = null;
             } else {
                if (this.pos < 0) {
-                  Object2IntOpenHashMap.this.removeInt(this.wrapped.set(-this.pos - 1, (Object)null));
+                  Object2IntOpenHashMap.this.removeInt(this.wrapped.set(-this.pos - 1, null));
                   this.last = -1;
                   return;
                }

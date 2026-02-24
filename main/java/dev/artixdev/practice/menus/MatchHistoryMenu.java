@@ -1,4 +1,4 @@
-﻿package dev.artixdev.practice.menus;
+package dev.artixdev.practice.menus;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -40,13 +40,10 @@ public class MatchHistoryMenu extends PaginatedMenu {
         Map<Integer, Button> buttons = new HashMap<>();
         
         if (this.playerProfile == null) {
-            // Get player profile from manager
             this.playerProfile = Main.getInstance().getPlayerManager().getPlayerProfile(player.getUniqueId());
         }
 
-        // Get match history - for now using empty list as PlayerProfile doesn't have direct match history methods
-        // TODO: Implement proper match history retrieval from storage or StatsProfile
-        List<MatchHistory> allMatches = new ArrayList<>();
+        List<MatchHistory> allMatches = getMatchHistoryFromProfile(this.playerProfile);
 
         if (allMatches.isEmpty()) {
             this.setPlaceholder(true);
@@ -64,6 +61,22 @@ public class MatchHistoryMenu extends PaginatedMenu {
         }
 
         return buttons;
+    }
+
+    private static List<MatchHistory> getMatchHistoryFromProfile(PlayerProfile profile) {
+        if (profile == null) return new ArrayList<>();
+        Object stats = profile.getStatistics();
+        if (stats instanceof dev.artixdev.practice.models.StatsProfile) {
+            dev.artixdev.practice.models.StatsProfile sp = (dev.artixdev.practice.models.StatsProfile) stats;
+            List<MatchHistory> out = new ArrayList<>();
+            out.addAll(sp.getRankedMatchHistory());
+            out.addAll(sp.getUnrankedMatchHistory());
+            return out;
+        }
+        if (stats instanceof dev.artixdev.practice.models.PlayerStatistics) {
+            return new ArrayList<>(((dev.artixdev.practice.models.PlayerStatistics) stats).getMatchHistory());
+        }
+        return new ArrayList<>();
     }
 
     @Override

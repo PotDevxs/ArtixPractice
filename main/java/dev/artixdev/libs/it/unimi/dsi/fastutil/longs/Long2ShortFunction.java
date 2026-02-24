@@ -1,4 +1,4 @@
-﻿package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
+package dev.artixdev.libs.it.unimi.dsi.fastutil.longs;
 
 import java.util.function.LongToIntFunction;
 import dev.artixdev.libs.it.unimi.dsi.fastutil.Function;
@@ -52,7 +52,7 @@ public interface Long2ShortFunction extends LongToIntFunction, Function<Long, Sh
    default Short put(Long key, Short value) {
       long k = key;
       boolean containsKey = this.containsKey(k);
-      short v = this.put(k, value);
+      short v = this.put(k, value.shortValue());
       return containsKey ? v : null;
    }
 
